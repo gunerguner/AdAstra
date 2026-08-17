@@ -1,0 +1,51 @@
+{
+  "name": "adastra",
+  "version": "1.0.0",
+  "description": "可交互、可离线的实时星空 PWA",
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/dm-mono": "^5.3.0",
+    "@fontsource/fraunces": "^5.3.0",
+    "astronomy-engine": "^2.1.19",
+    "lucide-react": "^1.31.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run catalog:fixture && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "catalog:fixture": "node scripts/catalog/build-catalog.mjs",
+    "catalog:production": "node scripts/catalog/build-catalog.mjs --production",
+    "gate:data": "node scripts/catalog/check-release-gate.mjs",
+    "astro:golden": "node scripts/astronomy/check-golden.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gunerguner/AdAstra.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/gunerguner/AdAstra/issues"
+  },
+  "homepage": "https://github.com/gunerguner/AdAstra#readme",
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/three": "^0.185.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "jsdom": "^29.1.1",
+    "lightningcss": "^1.33.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.10",
+    "yaml": "^2.8.2"
+  }
+}

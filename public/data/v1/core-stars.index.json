@@ -1,0 +1,52 @@
+[
+  {
+    "id": "sirius",
+    "name": "Sirius",
+    "index": 0
+  },
+  {
+    "id": "canopus",
+    "name": "Canopus",
+    "index": 1
+  },
+  {
+    "id": "arcturus",
+    "name": "Arcturus",
+    "index": 2
+  },
+  {
+    "id": "vega",
+    "name": "Vega",
+    "index": 3
+  },
+  {
+    "id": "capella",
+    "name": "Capella",
+    "index": 4
+  },
+  {
+    "id": "rigel",
+    "name": "Rigel",
+    "index": 5
+  },
+  {
+    "id": "procyon",
+    "name": "Procyon",
+    "index": 6
+  },
+  {
+    "id": "betelgeuse",
+    "name": "Betelgeuse",
+    "index": 7
+  },
+  {
+    "id": "altair",
+    "name": "Altair",
+    "index": 8
+  },
+  {
+    "id": "aldebaran",
+    "name": "Aldebaran",
+    "index": 9
+  }
+]

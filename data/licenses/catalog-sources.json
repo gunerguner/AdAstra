@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "productionAllowed": false,
+  "sources": [
+    {
+      "id": "fixture-bright-stars",
+      "role": "development-fixture",
+      "license": "Project-owned test fixture",
+      "sourceUrl": null,
+      "writtenVerification": "not-required",
+      "approvedForProduction": false,
+      "notes": "仅用于 CI、渲染与二进制 schema 验证；不是发布星表。"
+    },
+    {
+      "id": "bsc5p",
+      "role": "bright-star-candidate",
+      "license": "PENDING written source-level verification",
+      "sourceUrl": "https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/bsc5p.html",
+      "writtenVerification": "pending",
+      "approvedForProduction": false,
+      "notes": "禁止打包到生产数据，直到法律/数据所有方归档书面授权结论。"
+    },
+    {
+      "id": "sao",
+      "role": "extended-star-candidate",
+      "license": "PENDING written source-level verification",
+      "sourceUrl": "https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/sao.html",
+      "writtenVerification": "pending",
+      "approvedForProduction": false,
+      "notes": "禁止打包到生产数据，直到法律/数据所有方归档书面授权结论。"
+    }
+  ]
+}

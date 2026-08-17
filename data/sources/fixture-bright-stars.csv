@@ -1,0 +1,11 @@
+id,name,raHours,decDeg,magnitude,properMotionRa,properMotionDec
+sirius,Sirius,6.7525,-16.7161,-1.46,-0.546,-1.223
+canopus,Canopus,6.3992,-52.6957,-0.74,0.019,0.023
+arcturus,Arcturus,14.2610,19.1824,-0.05,-1.093,-2.000
+vega,Vega,18.6156,38.7837,0.03,0.201,0.286
+capella,Capella,5.2782,45.9980,0.08,0.075,-0.427
+rigel,Rigel,5.2423,-8.2016,0.13,0.002,-0.001
+procyon,Procyon,7.6550,5.2250,0.38,-0.716,-1.036
+betelgeuse,Betelgeuse,5.9195,7.4071,0.50,0.028,0.010
+altair,Altair,19.8464,8.8683,0.76,0.536,0.386
+aldebaran,Aldebaran,4.5987,16.5093,0.85,0.063,-0.189

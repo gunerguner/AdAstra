@@ -1,0 +1,30 @@
+{
+  "name": "Ad Astra 实时星空",
+  "short_name": "Ad Astra",
+  "description": "可交互、可离线的实时星空",
+  "theme_color": "#050817",
+  "background_color": "#050817",
+  "display": "standalone",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

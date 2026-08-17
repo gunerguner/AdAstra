@@ -1,0 +1,145 @@
+source: fixture-bright-stars
+constellations:
+  - name: 猎户座
+    segments:
+      - [ meissa, betelgeuse ]
+      - [ meissa, bellatrix ]
+      - [ betelgeuse, alnitak ]
+      - [ bellatrix, mintaka ]
+      - [ alnitak, alnilam, mintaka ]
+      - [ alnitak, saiph ]
+      - [ mintaka, rigel ]
+      - [ saiph, rigel ]
+  - name: 大熊座
+    segments:
+      - [ dubhe, merak, phecda, megrez, dubhe ]
+      - [ megrez, alioth, mizar, alkaid ]
+  - name: 小熊座
+    segments:
+      - [ polaris, yildun, epsUmi, zetaUmi, etaUmi, pherkad ]
+      - [ etaUmi, kochab, pherkad ]
+  - name: 仙后座
+    segments:
+      - [ caph, schedar, gammaCas, ruchbah, segin ]
+  - name: 天鹅座
+    segments:
+      - [ deneb, sadr, albireo ]
+      - [ deltaCyg, sadr, gienahCyg ]
+  - name: 天琴座
+    segments:
+      - [ vega, zetaLyr, deltaLyr, vega ]
+      - [ zetaLyr, sheliak, sulafat, deltaLyr ]
+  - name: 天鹰座
+    segments:
+      - [ tarazed, altair, alshain ]
+      - [ altair, deltaAql ]
+      - [ zetaAql, altair ]
+  - name: 狮子座
+    segments:
+      - [ rasElased, muLeo, zetaLeo, algieba, etaLeo, regulus ]
+      - [ regulus, thetaLeo, denebola, zosma, algieba ]
+  - name: 天蝎座
+    segments:
+      - [ piSco, dschubba, betaSco ]
+      - [
+          dschubba,
+          sigmaSco,
+          antares,
+          tauSco,
+          epsilonSco,
+          muSco,
+          zetaSco,
+          etaSco,
+          sargas,
+          iotaSco,
+          kappaSco,
+          shaula
+        ]
+      - [ kappaSco, upsilonSco ]
+  - name: 金牛座
+    segments:
+      - [ electra, alcyone, atlas ]
+      - [ ain, aldebaran, zetaTau ]
+      - [ aldebaran, elnath ]
+  - name: 双子座
+    segments:
+      - [ castor, pollux ]
+      - [ castor, mebsuta, tejat, propus ]
+      - [ pollux, wasat, alhena ]
+  - name: 室女座
+    segments:
+      - [ vindemiatrix, zauwaken, porrima, spica ]
+      - [ porrima, heze ]
+  - name: 牧夫座
+    segments:
+      - [ nekkar, seginus, rhoBoo, izar, seginus ]
+      - [ rhoBoo, arcturus, muphrid ]
+      - [ izar, arcturus ]
+  - name: 仙女座
+    segments:
+      - [ alpheratz, deltaAnd, mirach, alamak ]
+  - name: 飞马座
+    segments:
+      - [ markab, scheat, alpheratz, algenib, markab ]
+      - [ markab, enif ]
+  - name: 英仙座
+    segments:
+      - [ gammaPer, mirfak, deltaPer, epsilonPer, atik ]
+      - [ mirfak, algol ]
+  - name: 御夫座
+    segments:
+      - [ hassaleh, capella, menkalinan, mahasim, hassaleh ]
+      - [ capella, almaaz ]
+      - [ mahasim, elnath ]
+  - name: 大犬座
+    segments:
+      - [ mirzam, sirius, wezen, adhara ]
+      - [ wezen, aludra ]
+  - name: 小犬座
+    segments:
+      - [ procyon, gomeisa ]
+  - name: 南十字座
+    segments:
+      - [ gacrux, acrux ]
+      - [ mimosa, deltaCru ]
+  - name: 半人马座
+    segments:
+      - [ rigilKentaurus, hadar ]
+  - name: 人马座
+    segments:
+      - [
+          kausBorealis,
+          kausMedia,
+          kausAustralis,
+          ascella,
+          nunki,
+          phiSgr,
+          kausMedia
+        ]
+      - [ nunki, albaldah, kausBorealis ]
+  - name: 白羊座
+    segments:
+      - [ hamal, sheratan, mesarthim ]
+  - name: 巨蟹座
+    segments:
+      - [ iotaCnc, asellusBorealis, asellusAustralis, acubens ]
+      - [ asellusAustralis, altarf ]
+  - name: 北冕座
+    segments:
+      - [ thetaCrB, nusakan, alphecca, gammaCrB, deltaCrB, epsilonCrB ]
+  - name: 武仙座
+    segments:
+      - [ zetaHer, etaHer, piHer, epsilonHer, zetaHer ]
+      - [ zetaHer, kornephoros ]
+  - name: 天龙座
+    segments:
+      - [ etamin, rastaban, grumium, etamin ]
+      - [ rastaban, zetaDra, thuban, giausar ]
+  - name: 长蛇座
+    segments:
+      - [ deltaHya, epsilonHya, zetaHya, sigmaHya ]
+      - [ zetaHya, alphard ]
+  - name: 蛇夫座
+    segments:
+      - [ rasalhague, cebrai, sabik ]
+      - [ yedPrior, zetaOph, sabik ]

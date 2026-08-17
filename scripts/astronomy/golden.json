@@ -1,0 +1,11 @@
+{
+  "reference": "Astronomy Engine pinned regression baseline; release validation must additionally compare with archived JPL Horizons output.",
+  "dateUtc": "2024-01-01T00:00:00Z",
+  "observer": { "latitude": 39.9042, "longitude": 116.4074, "height": 0 },
+  "maxAngularErrorDegrees": 0.02,
+  "bodies": [
+    { "name": "sun", "azimuth": 123.825428, "altitude": 3.324069 },
+    { "name": "moon", "azimuth": 258.377885, "altitude": 32.158619 },
+    { "name": "jupiter", "azimuth": 3.553757, "altitude": -37.385697 }
+  ]
+}
