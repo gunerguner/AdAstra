@@ -97,7 +97,7 @@ export function applyHorizonMatrixInto(
 
 export function applyHorizonMatrix(
   vector: { x: number; y: number; z: number },
-  matrix: readonly number[],
+  matrix: ArrayLike<number>,
 ) {
   return applyHorizonMatrixInto(vector, matrix, { x: 0, y: 0, z: 0 })
 }

@@ -1,3 +1,6 @@
+import { createHash } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import { resolve } from 'node:path'
 import { parse } from 'yaml'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -17,8 +20,30 @@ function yamlPlugin(): Plugin {
   }
 }
 
+function offlineShellPlugin(): Plugin {
+  return {
+    name: 'offline-shell',
+    apply: 'build',
+    async generateBundle(_options, bundle) {
+      const assets = Object.keys(bundle)
+        .filter((fileName) => fileName.startsWith('assets/'))
+        .map((fileName) => `/${fileName}`)
+      const precache = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg', '/favicon-32.png', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', ...assets]
+      const version = createHash('sha256').update(JSON.stringify(precache)).digest('hex').slice(0, 12)
+      const template = await readFile(resolve(import.meta.dirname, 'scripts/pwa/service-worker.template.js'), 'utf8')
+      this.emitFile({
+        type: 'asset',
+        fileName: 'service-worker.js',
+        source: template
+          .replace('__SHELL_CACHE__', `ad-astra-shell-${version}`)
+          .replace('__PRECACHE__', JSON.stringify(precache)),
+      })
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), yamlPlugin()],
+  plugins: [react(), yamlPlugin(), offlineShellPlugin()],
   css: {
     transformer: 'lightningcss',
   },

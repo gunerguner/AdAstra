@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MutableRefObject, type ReactNode, type RefObject } from 'react'
+import { useEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type RefObject } from 'react'
 import {
   BufferAttribute,
   BufferGeometry,
@@ -10,7 +10,6 @@ import {
   MeshBasicMaterial,
   PerspectiveCamera,
   Points,
-  Raycaster,
   Scene,
   ShaderMaterial,
   SphereGeometry,
@@ -20,15 +19,18 @@ import {
   AdditiveBlending,
   DoubleSide,
 } from 'three'
-import { constellationLines, countStarsThroughMagnitude, starById, stars } from '../data/catalog'
-import type { BodySnapshot } from '../engine/astronomyService'
+import { constellationLines, type Star } from '../data/catalog'
+import { interpolateBodySnapshots, type BodySnapshotWindow } from '../engine/astronomyService'
+import { AppError, logAppError, toAppError } from '../engine/appError'
+import type { RuntimeCatalog } from '../engine/catalogService'
 import {
   applyHorizonMatrixInto,
   eclipticEquatorialUnit,
   equatorialUnit,
   fillHorizonMatrix,
 } from '../engine/skyMath'
-import type { LayerState, SkySimulation } from '../engine/simulationState'
+import { densifyGreatCircle, horizontalVector, toVector3 } from '../engine/skyGeometry'
+import type { SkySimulation } from '../engine/simulationState'
 import {
   SKY_FOV_DEG,
   clampSkyFov,
@@ -37,12 +39,12 @@ import {
   projectSkyToNdc,
   skyOutsideViewGlsl,
   skyProjectionGlsl,
-  viewDirectionFromNdc,
 } from '../engine/skyProjection'
-
-export type { LayerState }
+import { detectRenderCapabilities } from '../engine/renderCapabilities'
+import ErrorPanel from './ErrorPanel'
 
 export type SelectedSkyObject = {
+  id: string
   name: string
   type: 'star' | 'body'
   magnitude?: number
@@ -52,6 +54,7 @@ export type SelectedSkyObject = {
 }
 
 type Props = {
+  catalog: RuntimeCatalog
   simulationRef: MutableRefObject<SkySimulation>
   onViewChange: (view: { azimuth: number; altitude: number; fov: number }) => void
   onSelect: (item: SelectedSkyObject | null) => void
@@ -61,12 +64,6 @@ type Props = {
   onWebglReady?: (mode: 'webgl2' | 'canvas') => void
 }
 
-const toVector = (point: { x: number; y: number; z: number }) => new Vector3(point.x, point.y, point.z)
-const horizontalPoint = (altitude: number, azimuth: number) => {
-  const alt = altitude * Math.PI / 180
-  const az = azimuth * Math.PI / 180
-  return new Vector3(Math.cos(alt) * Math.sin(az), Math.sin(alt), Math.cos(alt) * Math.cos(az))
-}
 const bodyAppearance: Record<string, { color: string; size: number }> = {
   sun: { color: '#ffe69a', size: 20 },
   moon: { color: '#edf4ff', size: 16 },
@@ -84,100 +81,80 @@ const cardinals = [
   { id: 'west', label: '西', azimuth: 270 },
 ] as const
 
-const constellationStars = constellationLines.map((line) => ({
-  name: line.name,
-  segments: line.segments.map((segment) =>
-    segment.map((id) => starById.get(id)).filter((star): star is NonNullable<typeof star> => Boolean(star)),
-  ),
-}))
-
-const constellationAnchors = constellationStars.map((line) => {
-  let x = 0
-  let y = 0
-  let z = 0
-  let count = 0
-  line.segments.forEach((segment) => {
-    segment.forEach((star) => {
-      const vector = equatorialUnit(star.raHours, star.decDeg)
-      x += vector.x
-      y += vector.y
-      z += vector.z
-      count += 1
-    })
-  })
-  const length = Math.hypot(x, y, z) || 1
-  return { name: line.name, x: x / length, y: y / length, z: z / length }
-})
-
-const densifyArc = (points: Vector3[]) => {
-  if (points.length < 2) return points
-  const out: Vector3[] = [points[0].clone().normalize()]
-  for (let index = 0; index < points.length - 1; index += 1) {
-    const a = points[index].clone().normalize()
-    const b = points[index + 1].clone().normalize()
-    const omega = a.angleTo(b)
-    const steps = Math.max(1, Math.ceil(omega / (Math.PI / 36)))
-    const sine = Math.sin(omega)
-    for (let step = 1; step <= steps; step += 1) {
-      const t = step / steps
-      if (sine < 1e-5) out.push(b.clone())
-      else {
-        out.push(a.clone().multiplyScalar(Math.sin((1 - t) * omega) / sine).add(b.clone().multiplyScalar(Math.sin(t * omega) / sine)))
-      }
-    }
-  }
-  return out
-}
-
-export default function SkyViewport({ simulationRef, onViewChange, onSelect, selected, objectCardRef, children, onWebglReady }: Props) {
+export default function SkyViewport({ catalog, simulationRef, onViewChange, onSelect, selected, objectCardRef, children, onWebglReady }: Props) {
   const mountRef = useRef<HTMLDivElement>(null)
   const hoverRef = useRef<HTMLDivElement>(null)
   const cardinalRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const constellationNameRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const bodySnapshotRef = useRef<BodySnapshot[]>([])
+  const bodySnapshotRef = useRef<BodySnapshotWindow | null>(null)
   const selectedRef = useRef(selected)
   selectedRef.current = selected
-  const [status, setStatus] = useState<'ready' | 'fallback'>('ready')
-
-  useEffect(() => {
-    const worker = new Worker(new URL('../workers/astro.worker.ts', import.meta.url), { type: 'module' })
-    let generation = 0
-    let raf = 0
-    let lastSentAt = 0
-    worker.onmessage = (event: MessageEvent<{ generation: number; bodies: BodySnapshot[] }>) => {
-      if (event.data.generation === generation) bodySnapshotRef.current = event.data.bodies
-    }
-    const requestSnapshot = (now: number) => {
-      if (now - lastSentAt >= 120) {
-        generation += 1
-        lastSentAt = now
-        const latest = simulationRef.current
-        worker.postMessage({
-          type: 'snapshot',
-          generation,
-          utcMillis: latest.utcMillis,
-          observer: latest.observer,
-        })
-      }
-      raf = requestAnimationFrame(requestSnapshot)
-    }
-    raf = requestAnimationFrame(requestSnapshot)
-    return () => {
-      cancelAnimationFrame(raf)
-      worker.terminate()
-    }
-  }, [simulationRef])
+  const callbacksRef = useRef({ onSelect, onViewChange, onWebglReady })
+  callbacksRef.current = { onSelect, onViewChange, onWebglReady }
+  const [viewportError, setViewportError] = useState<AppError | null>(null)
+  const constellationStars = useMemo(() => constellationLines.map((line) => ({
+    name: line.name,
+    segments: line.segments.map((segment) =>
+      segment.map((id) => catalog.starById.get(id)).filter((star): star is Star => Boolean(star)),
+    ),
+  })), [catalog])
+  const constellationAnchors = useMemo(() => constellationStars.map((line) => {
+    let x = 0
+    let y = 0
+    let z = 0
+    line.segments.forEach((segment) => {
+      segment.forEach((star) => {
+        const vector = equatorialUnit(star.raHours, star.decDeg)
+        x += vector.x
+        y += vector.y
+        z += vector.z
+      })
+    })
+    const length = Math.hypot(x, y, z) || 1
+    return { name: line.name, x: x / length, y: y / length, z: z / length }
+  }), [constellationStars])
 
   useEffect(() => {
     const mount = mountRef.current
     if (!mount) return
+    const { stars, starById, countStarsThroughMagnitude } = catalog
+    const worker = new Worker(new URL('../workers/astro.worker.ts', import.meta.url), { type: 'module' })
+    let bodyGeneration = 0
+    let lastBodyRequestAt = -Infinity
+    const reportError = (error: unknown, code: 'webgl' | 'worker') => {
+      const appError = toAppError(error, code)
+      logAppError(appError, 'SkyViewport')
+      setViewportError(appError)
+    }
+    worker.onmessage = (event: MessageEvent<{ type: 'snapshot' | 'error'; generation: number; window?: BodySnapshotWindow; message?: string }>) => {
+      if (event.data.generation !== bodyGeneration) return
+      if (event.data.type === 'error') {
+        reportError(new AppError('worker', event.data.message ?? '天体计算失败', { retryable: true }), 'worker')
+        return
+      }
+      if (event.data.window) {
+        bodySnapshotRef.current = event.data.window
+        setViewportError((current) => current?.code === 'worker' ? null : current)
+      }
+    }
+    worker.onerror = (event) => {
+      event.preventDefault()
+      reportError(new AppError('worker', '天体计算线程异常', { cause: event.error, retryable: true }), 'worker')
+    }
 
     let renderer: WebGLRenderer
+    if (detectRenderCapabilities().activeFallback !== 'main-thread-webgl2') {
+      reportError(new AppError('webgl', '当前浏览器不支持 WebGL2 星空渲染。'), 'webgl')
+      callbacksRef.current.onWebglReady?.('canvas')
+      worker.terminate()
+      return
+    }
     try {
       renderer = new WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'high-performance' })
-    } catch {
-      setStatus('fallback')
-      onWebglReady?.('canvas')
+    } catch (error) {
+      reportError(error, 'webgl')
+      callbacksRef.current.onWebglReady?.('canvas')
+      worker.terminate()
       return
     }
 
@@ -253,8 +230,11 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     renderer.setPixelRatio(qualityPixelRatio)
     renderer.setClearColor(0x02040c, 1)
     renderer.setAnimationLoop(null)
+    renderer.domElement.tabIndex = 0
+    renderer.domElement.setAttribute('role', 'application')
+    renderer.domElement.setAttribute('aria-label', '实时星空。使用方向键旋转视角，减号和加号缩放。')
     mount.appendChild(renderer.domElement)
-    onWebglReady?.(renderer.capabilities.isWebGL2 ? 'webgl2' : 'canvas')
+    callbacksRef.current.onWebglReady?.(renderer.capabilities.isWebGL2 ? 'webgl2' : 'canvas')
 
     const starGeometry = new BufferGeometry()
     const starPositions = new Float32Array(stars.length * 3)
@@ -423,7 +403,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
         float fbm(vec3 p) {
           float sum = 0.0;
           float amp = 0.52;
-          for (int i = 0; i < 5; i++) {
+          for (int i = 0; i < 3; i++) {
             sum += amp * vnoise(p);
             p = p * 2.11 + vec3(0.17, 0.31, 0.13);
             amp *= 0.55;
@@ -466,7 +446,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
         }
       `,
     })
-    const milkyWay = new Mesh(new SphereGeometry(1, 160, 96), milkyMaterial)
+    const milkyWay = new Mesh(new SphereGeometry(1, 96, 48), milkyMaterial)
     milkyWay.frustumCulled = false
     milkyWay.renderOrder = 0
     scene.add(milkyWay)
@@ -484,7 +464,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     const horizontalGridMaterial = makeLine('#6f9a7a', 0.5, false)
     constellationStars.forEach((line) => {
       line.segments.forEach((segment) => {
-        const points = densifyArc(segment.map((star) => toVector(equatorialUnit(star.raHours, star.decDeg))))
+        const points = densifyGreatCircle(segment.map((star) => toVector3(equatorialUnit(star.raHours, star.decDeg))))
         if (points.length > 1) {
           const mesh = new Line(new BufferGeometry().setFromPoints(points), constellationLineMaterial)
           mesh.frustumCulled = false
@@ -494,7 +474,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       })
     })
     const addSkyLine = (points: Vector3[], kind: string, material: ShaderMaterial) => {
-      const densified = densifyArc(points)
+      const densified = densifyGreatCircle(points)
       if (densified.length < 2) return
       const mesh = new Line(new BufferGeometry().setFromPoints(densified), material)
       mesh.frustumCulled = false
@@ -504,7 +484,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     ;[-60, -30, 0, 30, 60].forEach((dec) => {
       for (let start = 0; start < 360; start += 90) {
         addSkyLine(
-          Array.from({ length: 19 }, (_, index) => toVector(equatorialUnit((start + index * 5) / 15, dec))),
+          Array.from({ length: 19 }, (_, index) => toVector3(equatorialUnit((start + index * 5) / 15, dec))),
           'equatorialGrid',
           equatorialGridMaterial,
         )
@@ -512,7 +492,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     })
     for (let raHours = 0; raHours < 24; raHours += 2) {
       addSkyLine(
-        [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75].map((dec) => toVector(equatorialUnit(raHours, dec))),
+        [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75].map((dec) => toVector3(equatorialUnit(raHours, dec))),
         'equatorialGrid',
         equatorialGridMaterial,
       )
@@ -520,7 +500,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     ;[15, 30, 45, 60, 75].forEach((alt) => {
       for (let start = 0; start < 360; start += 90) {
         addSkyLine(
-          Array.from({ length: 19 }, (_, index) => horizontalPoint(alt, start + index * 5)),
+          Array.from({ length: 19 }, (_, index) => horizontalVector(alt, start + index * 5)),
           'horizontalGrid',
           horizontalGridMaterial,
         )
@@ -528,7 +508,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     })
     for (let az = 0; az < 360; az += 30) {
       addSkyLine(
-        [2, 15, 30, 45, 60, 75, 88].map((alt) => horizontalPoint(alt, az)),
+        [2, 15, 30, 45, 60, 75, 88].map((alt) => horizontalVector(alt, az)),
         'horizontalGrid',
         horizontalGridMaterial,
       )
@@ -584,11 +564,11 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     helperGroup.add(ground, horizonGlow, horizon)
 
     const ecliptic = new Line(
-      new BufferGeometry().setFromPoints(Array.from({ length: 145 }, (_, index) => toVector(eclipticEquatorialUnit(index * 2.5)))),
+      new BufferGeometry().setFromPoints(Array.from({ length: 145 }, (_, index) => toVector3(eclipticEquatorialUnit(index * 2.5)))),
       makeLine('#f0a03a', 0.92, true),
     )
     const equator = new Line(
-      new BufferGeometry().setFromPoints(Array.from({ length: 145 }, (_, index) => toVector(equatorialUnit((index / 144) * 24, 0)))),
+      new BufferGeometry().setFromPoints(Array.from({ length: 145 }, (_, index) => toVector3(equatorialUnit((index / 144) * 24, 0)))),
       makeLine('#4cc4e8', 0.88, true),
     )
     helperGroup.add(ecliptic, equator)
@@ -612,22 +592,43 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       if (points.length < 2) return 0
       return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y)
     }
-    const emitView = (next: { azimuth: number; altitude: number; fov: number }) => {
+    let lastViewSyncAt = 0
+    const emitView = (next: { azimuth: number; altitude: number; fov: number }, forceUiSync = false) => {
       simulationRef.current.azimuth = next.azimuth
       simulationRef.current.altitude = next.altitude
       simulationRef.current.fov = next.fov
-      onViewChange(next)
+      const now = performance.now()
+      if (forceUiSync || now - lastViewSyncAt >= 100) {
+        lastViewSyncAt = now
+        callbacksRef.current.onViewChange(next)
+      }
     }
     const hoverNode = hoverRef.current
-    let hoverTarget: { name: string; type: 'star' | 'body' } | null = null
+    let hoverTarget: { id: string; name: string; type: 'star' | 'body' } | null = null
+    let activeCard: HTMLElement | null = null
+    let altitudeStatNode: Element | null = null
+    let azimuthStatNode: Element | null = null
     const hideHover = () => {
       hoverTarget = null
       if (hoverNode) hoverNode.style.display = 'none'
       renderer.domElement.style.cursor = ''
     }
-    const poseOf = (item: { name: string; type: 'star' | 'body' }) => {
+    const bodiesAt = (utcMillis: number) => interpolateBodySnapshots(bodySnapshotRef.current, utcMillis)
+    const requestBodySnapshot = (now: number, latest: SkySimulation) => {
+      if (document.hidden || now - lastBodyRequestAt < 120) return
+      bodyGeneration += 1
+      lastBodyRequestAt = now
+      worker.postMessage({
+        type: 'snapshot',
+        generation: bodyGeneration,
+        utcMillis: latest.utcMillis,
+        lookAheadMillis: 6 * 60 * 60 * 1000,
+        observer: latest.observer,
+      })
+    }
+    const poseOf = (item: { id: string; name: string; type: 'star' | 'body' }) => {
       if (item.type === 'body') {
-        const body = bodySnapshotRef.current.find((entry) => entry.name === item.name)
+        const body = bodiesAt(simulationRef.current.utcMillis).find((entry) => entry.id === item.id)
         if (!body) return null
         applyHorizonMatrixInto(equatorialUnit(body.raHours, body.decDeg), horizonMat, horizonScratch)
         return {
@@ -635,7 +636,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
           azimuth: (Math.atan2(horizonScratch.x, horizonScratch.z) * 180 / Math.PI + 360) % 360,
         }
       }
-      const star = stars.find((entry) => entry.name === item.name)
+      const star = starById.get(item.id)
       if (!star) return null
       applyHorizonMatrixInto(equatorialUnit(star.raHours, star.decDeg), horizonMat, horizonScratch)
       return {
@@ -651,7 +652,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       offsetY: number,
       size?: { width: number; height: number },
     ) => {
-      const ndc = projectSkyToNdc(horizontalPoint(altitude, azimuth), camera, simulationRef.current.fov, camera.aspect)
+      const ndc = projectSkyToNdc(horizontalVector(altitude, azimuth), camera, simulationRef.current.fov, camera.aspect)
       const width = renderer.domElement.clientWidth
       const height = renderer.domElement.clientHeight
       if (!ndc || Math.abs(ndc.x) > 1.18 || Math.abs(ndc.y) > 1.18) {
@@ -670,64 +671,64 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       node.style.transform = `translate3d(${x}px, ${y}px, 0)`
       return true
     }
+    const pickPoint = new Vector2()
     const hitAt = (clientX: number, clientY: number) => {
       const rect = renderer.domElement.getBoundingClientRect()
-      const pointer = new Vector2(
+      pickPoint.set(
         ((clientX - rect.left) / rect.width) * 2 - 1,
         -((clientY - rect.top) / rect.height) * 2 + 1,
       )
-      const fov = simulationRef.current.fov
-      const look = viewDirectionFromNdc(pointer.x, pointer.y, fov, camera.aspect).applyQuaternion(camera.quaternion)
-      const ray = new Raycaster(new Vector3(0, 0, 0), look)
       const latest = simulationRef.current
       fillHorizonMatrix(new Date(latest.utcMillis), latest.observer, horizonMat)
+      const minScreenSize = Math.max(1, Math.min(rect.width, rect.height))
+      const ndcRadiusForPixels = (pixels: number) => pixels * 2 / minScreenSize
       const pickBody = () => {
         if (!latest.layers.bodies) return null
-        const body = bodySnapshotRef.current
-          .map((item) => {
-            applyHorizonMatrixInto(equatorialUnit(item.raHours, item.decDeg), horizonMat, horizonScratch)
-            return {
-              item,
-              altitude: Math.asin(Math.max(-1, Math.min(1, horizonScratch.y))) * 180 / Math.PI,
-              azimuth: (Math.atan2(horizonScratch.x, horizonScratch.z) * 180 / Math.PI + 360) % 360,
-              angle: ray.ray.direction.angleTo(new Vector3(horizonScratch.x, horizonScratch.y, horizonScratch.z)),
-            }
-          })
-          .filter(({ altitude, angle, item }) => item.magnitude <= latest.magnitudeLimit && (latest.layers.horizon || altitude > -3) && angle < 0.08)
-          .sort((a, b) => a.angle - b.angle)[0]
-        return body
-          ? { name: body.item.name, type: 'body' as const, magnitude: body.item.magnitude, altitude: body.altitude, azimuth: body.azimuth }
+        let best: { id: string; name: string; magnitude: number; altitude: number; azimuth: number; distance: number } | null = null
+        for (const item of bodiesAt(latest.utcMillis)) {
+          if (!latest.layers.showBelowHorizon && item.altitude < -3) continue
+          const ndc = projectSkyToNdc(horizontalVector(item.altitude, item.azimuth), camera, latest.fov, camera.aspect)
+          if (!ndc) continue
+          const distance = Math.hypot(ndc.x - pickPoint.x, ndc.y - pickPoint.y)
+          const appearance = bodyAppearance[item.id]
+          const radius = ndcRadiusForPixels((appearance?.size ?? 8) * renderer.getPixelRatio() + 10)
+          if (distance > radius || (best && distance >= best.distance)) continue
+          best = { ...item, distance }
+        }
+        return best
+          ? { id: best.id, name: best.name, type: 'body' as const, magnitude: best.magnitude, altitude: best.altitude, azimuth: best.azimuth }
           : null
       }
       if (!latest.layers.stars) return pickBody()
       const limit = countStarsThroughMagnitude(latest.magnitudeLimit)
-      const hits: { star: (typeof stars)[number]; altitude: number; azimuth: number; angle: number }[] = []
+      let best: { star: Star; altitude: number; azimuth: number; distance: number } | null = null
       for (let index = 0; index < limit; index += 1) {
         const star = stars[index]
-        const horizon = applyHorizonMatrixInto(equatorialUnit(star.raHours, star.decDeg), horizonMat, horizonScratch)
-        if (!latest.layers.horizon && horizon.y < -0.05) continue
-        const angle = ray.ray.direction.angleTo(toVector(horizon))
-        if (angle > 0.08) continue
-        hits.push({
+        const horizonDir = applyHorizonMatrixInto(equatorialUnit(star.raHours, star.decDeg), horizonMat, horizonScratch)
+        if (!latest.layers.showBelowHorizon && horizonDir.y < -0.05) continue
+        const ndc = projectSkyToNdc(projected.set(horizonDir.x, horizonDir.y, horizonDir.z), camera, latest.fov, camera.aspect)
+        if (!ndc) continue
+        const distance = Math.hypot(ndc.x - pickPoint.x, ndc.y - pickPoint.y)
+        const brightness = Math.max(0, Math.min(1, (3.1 - star.magnitude) / 4.6))
+        const size = 9 + brightness * 44
+        const radius = ndcRadiusForPixels(size * renderer.getPixelRatio() * 0.65 + 8)
+        if (distance > radius || (best && distance >= best.distance)) continue
+        best = {
           star,
-          altitude: Math.asin(Math.max(-1, Math.min(1, horizon.y))) * 180 / Math.PI,
-          azimuth: (Math.atan2(horizon.x, horizon.z) * 180 / Math.PI + 360) % 360,
-          angle,
-        })
+          altitude: Math.asin(Math.max(-1, Math.min(1, horizonDir.y))) * 180 / Math.PI,
+          azimuth: (Math.atan2(horizonDir.x, horizonDir.z) * 180 / Math.PI + 360) % 360,
+          distance,
+        }
       }
-      hits.sort((a, b) => {
-        const namedDelta = Number(b.star.id.startsWith('fixture-')) - Number(a.star.id.startsWith('fixture-'))
-        return namedDelta || a.angle - b.angle || a.star.magnitude - b.star.magnitude
-      })
-      const hit = hits[0]
-      if (hit) {
+      if (best) {
         return {
-          name: hit.star.name,
+          id: best.star.id,
+          name: best.star.name,
           type: 'star' as const,
-          magnitude: hit.star.magnitude,
-          constellation: hit.star.constellation,
-          altitude: hit.altitude,
-          azimuth: hit.azimuth,
+          magnitude: best.star.magnitude,
+          constellation: best.star.constellation,
+          altitude: best.altitude,
+          azimuth: best.azimuth,
         }
       }
       if (!latest.layers.bodies) return null
@@ -770,7 +771,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       }
       const hit = hitAt(event.clientX, event.clientY)
       if (hit && hoverNode) {
-        hoverTarget = { name: hit.name, type: hit.type }
+        hoverTarget = { id: hit.id, name: hit.name, type: hit.type }
         hoverNode.textContent = hit.name
         renderer.domElement.style.cursor = 'pointer'
         const pose = poseOf(hit)
@@ -782,9 +783,14 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       if (pointers.size < 2) pinch = null
       if (drag && !drag.moved && pointers.size === 0) {
         const hit = hitAt(event.clientX, event.clientY)
-        onSelect(hit)
+        callbacksRef.current.onSelect(hit)
+      }
+      if (drag?.moved && pointers.size === 0) {
+        const latest = simulationRef.current
+        emitView({ azimuth: latest.azimuth, altitude: latest.altitude, fov: latest.fov }, true)
       }
       if (pointers.size === 0) drag = null
+      if (renderer.domElement.hasPointerCapture(event.pointerId)) renderer.domElement.releasePointerCapture(event.pointerId)
     }
     const onPointerLeave = () => {
       if (!drag) hideHover()
@@ -796,7 +802,31 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
         azimuth: latest.azimuth,
         altitude: latest.altitude,
         fov: clampSkyFov(latest.fov * Math.exp(event.deltaY * 0.0016)),
-      })
+      }, true)
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      const latest = simulationRef.current
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault()
+        emitView({
+          azimuth: (latest.azimuth + (event.key === 'ArrowLeft' ? 6 : -6) + 360) % 360,
+          altitude: latest.altitude,
+          fov: latest.fov,
+        }, true)
+      } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        event.preventDefault()
+        emitView({
+          azimuth: latest.azimuth,
+          altitude: Math.max(-30, Math.min(89, latest.altitude + (event.key === 'ArrowUp' ? 4 : -4))),
+          fov: latest.fov,
+        }, true)
+      } else if (event.key === '+' || event.key === '=') {
+        event.preventDefault()
+        emitView({ ...latest, fov: clampSkyFov(latest.fov * 0.9) }, true)
+      } else if (event.key === '-') {
+        event.preventDefault()
+        emitView({ ...latest, fov: clampSkyFov(latest.fov * 1.1) }, true)
+      }
     }
     renderer.domElement.addEventListener('pointerdown', onPointerDown)
     renderer.domElement.addEventListener('pointermove', onPointerMove)
@@ -804,20 +834,29 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
     renderer.domElement.addEventListener('pointercancel', onPointerUp)
     renderer.domElement.addEventListener('pointerleave', onPointerLeave)
     renderer.domElement.addEventListener('wheel', onWheel, { passive: false })
+    renderer.domElement.addEventListener('keydown', onKeyDown)
 
     const lookTarget = new Vector3()
     const projected = new Vector3()
     let lastFrameAt = performance.now()
     const recentFrameTimes: number[] = []
     let running = true
+    let frame = 0
     const render = () => {
       if (!running) return
+      if (document.hidden) {
+        frame = requestAnimationFrame(render)
+        return
+      }
       const frameStartedAt = performance.now()
       const latest = simulationRef.current
+      requestBodySnapshot(frameStartedAt, latest)
       const date = new Date(latest.utcMillis)
       fillHorizonMatrix(date, latest.observer, horizonMat)
-      showBelowUniform.value = latest.layers.horizon ? 1 : 0
-      daylightUniform.value = latest.layers.daylightEffect ? 1 : 0
+      showBelowUniform.value = latest.layers.showBelowHorizon ? 1 : 0
+      const bodySnapshots = bodiesAt(latest.utcMillis)
+      const sunAltitude = bodySnapshots.find((body) => body.id === 'sun')?.altitude ?? -18
+      daylightUniform.value = latest.layers.daylightEffect ? Math.min(1, Math.max(0, (sunAltitude + 12) / 18)) : 0
       skyUniforms.uFov.value = latest.fov * Math.PI / 180
       starMaterial.uniforms.uPixelRatio.value = renderer.getPixelRatio()
       starGeometry.setDrawRange(0, countStarsThroughMagnitude(latest.magnitudeLimit))
@@ -846,7 +885,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       cardinals.forEach((cardinal) => {
         const node = cardinalRefs.current[cardinal.id]
         if (!node) return
-        const ndc = projectSkyToNdc(horizontalPoint(3.5, cardinal.azimuth), camera, latest.fov, camera.aspect)
+        const ndc = projectSkyToNdc(horizontalVector(3.5, cardinal.azimuth), camera, latest.fov, camera.aspect)
         const onScreen = Boolean(ndc && Math.abs(ndc.x) < 1.2 && Math.abs(ndc.y) < 1.2)
         node.style.display = onScreen ? 'block' : 'none'
         if (!ndc || !onScreen) return
@@ -874,7 +913,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       })
 
       if (hoverNode && hoverTarget) {
-        if (selectedRef.current?.name === hoverTarget.name) hoverNode.style.display = 'none'
+        if (selectedRef.current?.id === hoverTarget.id) hoverNode.style.display = 'none'
         else {
           const pose = poseOf(hoverTarget)
           if (pose) placeOverlay(hoverNode, pose.altitude, pose.azimuth, 14, -18)
@@ -883,14 +922,17 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       const card = objectCardRef?.current
       const currentSelected = selectedRef.current
       if (card) {
+        if (card !== activeCard) {
+          activeCard = card
+          altitudeStatNode = card.querySelector('[data-stat="altitude"]')
+          azimuthStatNode = card.querySelector('[data-stat="azimuth"]')
+        }
         if (!currentSelected) card.style.display = 'none'
         else {
           const pose = poseOf(currentSelected)
           if (pose) {
-            const altitudeNode = card.querySelector('[data-stat="altitude"]')
-            const azimuthNode = card.querySelector('[data-stat="azimuth"]')
-            if (altitudeNode) altitudeNode.textContent = `${pose.altitude.toFixed(1)}°`
-            if (azimuthNode) azimuthNode.textContent = `${pose.azimuth.toFixed(1)}°`
+            if (altitudeStatNode) altitudeStatNode.textContent = `${pose.altitude.toFixed(1)}°`
+            if (azimuthStatNode) azimuthStatNode.textContent = `${pose.azimuth.toFixed(1)}°`
             placeOverlay(card, pose.altitude, pose.azimuth, 18, -36, { width: card.offsetWidth, height: card.offsetHeight })
           } else card.style.display = 'none'
         }
@@ -904,7 +946,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       equator.visible = latest.layers.celestialEquator
 
       if (latest.layers.bodies) {
-        bodySnapshotRef.current.forEach((body) => {
+        bodySnapshots.forEach((body) => {
           const appearance = bodyAppearance[body.id]
           if (!appearance) return
           let bodyMesh = bodyMeshes.get(body.id)
@@ -920,7 +962,7 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
           bodyMesh.position.set(horizonScratch.x, horizonScratch.y, horizonScratch.z)
           const magScale = Math.max(0.42, Math.min(2.1, (2.6 - body.magnitude) / 5.2))
           bodyMesh.scale.setScalar(magScale)
-          bodyMesh.visible = body.magnitude <= latest.magnitudeLimit && (horizonScratch.y >= -0.12 || latest.layers.horizon)
+          bodyMesh.visible = horizonScratch.y >= -0.12 || latest.layers.showBelowHorizon
           ;(bodyMesh.material as MeshBasicMaterial).opacity = horizonScratch.y > 0 ? 1 : 0.25
         })
       }
@@ -940,9 +982,9 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
           resize()
         }
       }
-      requestAnimationFrame(render)
+      if (running) frame = requestAnimationFrame(render)
     }
-    const frame = requestAnimationFrame(render)
+    frame = requestAnimationFrame(render)
 
     return () => {
       running = false
@@ -954,6 +996,8 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       renderer.domElement.removeEventListener('pointercancel', onPointerUp)
       renderer.domElement.removeEventListener('pointerleave', onPointerLeave)
       renderer.domElement.removeEventListener('wheel', onWheel)
+      renderer.domElement.removeEventListener('keydown', onKeyDown)
+      worker.terminate()
       starGeometry.dispose()
       starMaterial.dispose()
       milkyWay.geometry.dispose()
@@ -982,11 +1026,16 @@ export default function SkyViewport({ simulationRef, onViewChange, onSelect, sel
       renderer.dispose()
       renderer.domElement.remove()
     }
-  }, [onSelect, onViewChange, onWebglReady, simulationRef])
+  }, [catalog, constellationAnchors, constellationStars, objectCardRef, simulationRef])
 
   return (
-    <div className={`sky-viewport ${status === 'fallback' ? 'is-fallback' : ''}`} ref={mountRef}>
-      {status === 'fallback' && <div className="canvas-fallback">需要 WebGL2</div>}
+    <div className={`sky-viewport ${viewportError?.code === 'webgl' ? 'is-fallback' : ''}`} ref={mountRef}>
+      {viewportError && (
+        <ErrorPanel
+          error={viewportError}
+          onRetry={viewportError.code === 'worker' ? () => setViewportError(null) : undefined}
+        />
+      )}
       <div className="star-hover" ref={hoverRef} />
       <div className="sky-grain" />
       <div className="sky-vignette" />

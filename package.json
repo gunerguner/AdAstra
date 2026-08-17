@@ -17,11 +17,14 @@
     "build": "npm run catalog:fixture && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "lint": "oxlint src tests vite.config.ts vitest.config.ts scripts",
     "test": "vitest run",
+    "verify": "npm run typecheck && npm run lint && npm test && npm run astro:golden",
     "catalog:fixture": "node scripts/catalog/build-catalog.mjs",
     "catalog:production": "node scripts/catalog/build-catalog.mjs --production",
     "gate:data": "node scripts/catalog/check-release-gate.mjs",
-    "astro:golden": "node scripts/astronomy/check-golden.mjs"
+    "astro:golden": "node scripts/astronomy/check-golden.mjs",
+    "build:release": "npm run gate:data && npm run catalog:production && npm run verify && vite build"
   },
   "repository": {
     "type": "git",
@@ -43,6 +46,7 @@
     "@vitejs/plugin-react": "^6.0.5",
     "jsdom": "^29.1.1",
     "lightningcss": "^1.33.0",
+    "oxlint": "^1.78.0",
     "typescript": "^7.0.2",
     "vite": "^8.2.1",
     "vitest": "^4.1.10",

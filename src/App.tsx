@@ -20,9 +20,13 @@ import {
 } from 'lucide-react'
 import type { SelectedSkyObject } from './components/SkyViewport'
 import type { LayerState, SkySimulation } from './engine/simulationState'
-import { cities, defaultCityIndex } from './data/catalog'
+import { cities, defaultCityIndex } from './data/cities'
+import { catalogService, type RuntimeCatalog } from './engine/catalogService'
+import { isAbortError, logAppError, toAppError, type AppError } from './engine/appError'
 import { SimulationClock } from './engine/simulationClock'
 import { SKY_FOV_DEG } from './engine/skyProjection'
+import { formatDateTimeLocal, parseDateTimeLocal } from './engine/timeZone'
+import ErrorPanel from './components/ErrorPanel'
 
 const SkyViewport = lazy(() => import('./components/SkyViewport'))
 
@@ -32,6 +36,7 @@ const defaultLayers: LayerState = {
   constellationNames: true,
   bodies: true,
   horizon: true,
+  showBelowHorizon: false,
   ecliptic: true,
   celestialEquator: true,
   equatorialGrid: false,
@@ -56,6 +61,9 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(true)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(false)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
+  const [catalog, setCatalog] = useState<RuntimeCatalog | null>(null)
+  const [catalogError, setCatalogError] = useState<AppError | null>(null)
+  const [catalogRetry, setCatalogRetry] = useState(0)
   const objectCardRef = useRef<HTMLElement>(null)
   const clock = useRef(new SimulationClock())
   const timelineAnchor = useRef(currentTime.getTime())
@@ -74,15 +82,12 @@ export default function App() {
     altitude: view.altitude,
     fov: view.fov,
   })
-  simulationRef.current = {
-    utcMillis: isPlaying ? simulationRef.current.utcMillis : currentTime.getTime(),
-    observer: { latitude: observer.latitude, longitude: observer.longitude },
-    magnitudeLimit,
-    layers,
-    azimuth: view.azimuth,
-    altitude: view.altitude,
-    fov: view.fov,
-  }
+  simulationRef.current.observer = { latitude: observer.latitude, longitude: observer.longitude }
+  simulationRef.current.magnitudeLimit = magnitudeLimit
+  simulationRef.current.layers = layers
+  simulationRef.current.azimuth = view.azimuth
+  simulationRef.current.altitude = view.altitude
+  simulationRef.current.fov = view.fov
   const formattedTime = useMemo(() => new Intl.DateTimeFormat('zh-CN', {
     timeZone: observer.timeZone,
     weekday: 'short',
@@ -94,12 +99,48 @@ export default function App() {
   }).format(currentTime), [currentTime, observer.timeZone])
 
   useEffect(() => {
+    let active = true
+    const controller = new AbortController()
+    catalogService.loadCoreCatalog(controller.signal)
+      .then((next) => {
+        if (!active) return
+        setCatalog(next)
+        setCatalogError(null)
+      })
+      .catch((error: unknown) => {
+        if (!active || isAbortError(error)) return
+        const appError = toAppError(error, 'catalog')
+        logAppError(appError, '加载星表')
+        setCatalogError(appError)
+      })
+    return () => {
+      active = false
+      controller.abort()
+    }
+  }, [catalogRetry])
+
+  const commitTime = useCallback((utcMillis: number, resetTimeline = true) => {
+    clock.current.seek(utcMillis)
+    simulationRef.current.utcMillis = utcMillis
+    if (resetTimeline) {
+      timelineAnchor.current = utcMillis
+      setTimelineOffset(0)
+    }
+    setCurrentTime(new Date(utcMillis))
+  }, [])
+
+  const pausePlayback = useCallback(() => {
+    clock.current.pause()
+    const utcMillis = clock.current.now().utcMillis
+    commitTime(utcMillis, false)
+    setIsPlaying(false)
+  }, [commitTime])
+
+  useEffect(() => {
     if (!isPlaying) {
       clock.current.pause()
-      clock.current.seek(currentTime.getTime())
       return
     }
-    clock.current.seek(currentTime.getTime())
     clock.current.play(speed)
     let frame = 0
     let lastUi = 0
@@ -118,23 +159,14 @@ export default function App() {
   }, [isPlaying, speed])
 
   const adjustTime = (milliseconds: number) => {
-    setIsPlaying(false)
-    setCurrentTime((value) => {
-      const next = new Date(value.getTime() + milliseconds)
-      clock.current.seek(next.getTime())
-      timelineAnchor.current = next.getTime()
-      setTimelineOffset(0)
-      return next
-    })
+    pausePlayback()
+    commitTime(simulationRef.current.utcMillis + milliseconds)
   }
 
   const resetNow = () => {
-    setIsPlaying(false)
+    pausePlayback()
     const now = new Date()
-    clock.current.seek(now.getTime())
-    timelineAnchor.current = now.getTime()
-    setTimelineOffset(0)
-    setCurrentTime(now)
+    commitTime(now.getTime())
     setView({ azimuth: 180, altitude: 0, fov: SKY_FOV_DEG })
     setSelected(null)
   }
@@ -152,8 +184,9 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <Suspense fallback={<div className="sky-viewport" />}>
-        <SkyViewport
+      <Suspense fallback={<div className="sky-viewport" aria-busy="true" />}>
+        {catalog ? <SkyViewport
+          catalog={catalog}
           simulationRef={simulationRef}
           onViewChange={onViewChange}
           onSelect={setSelected}
@@ -173,7 +206,14 @@ export default function App() {
               </div>
             </aside>
           )}
-        </SkyViewport>
+        </SkyViewport> : catalogError ? (
+          <ErrorPanel error={catalogError} onRetry={() => {
+            setCatalogError(null)
+            setCatalogRetry((value) => value + 1)
+          }} />
+        ) : (
+          <div className="error-panel is-loading" role="status">正在加载星表…</div>
+        )}
       </Suspense>
 
       <div className="atmosphere-panel" />
@@ -221,7 +261,11 @@ export default function App() {
         </div>
       </section>
 
-      <aside className={`control-panel ${isSettingsOpen ? '' : 'is-collapsed'}`} aria-hidden={!isSettingsOpen}>
+      <aside
+        className={`control-panel ${isSettingsOpen ? '' : 'is-collapsed'}`}
+        aria-hidden={!isSettingsOpen}
+        inert={!isSettingsOpen}
+      >
         <div className="panel-scroll">
           <section className="control-section">
             <div className="section-title"><MapPin size={14} /> 地点</div>
@@ -258,10 +302,12 @@ export default function App() {
               id="datetime"
               className="datetime-control"
               type="datetime-local"
-              value={new Date(currentTime.getTime() - currentTime.getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
+              value={formatDateTimeLocal(currentTime.getTime(), observer.timeZone)}
               onChange={(event) => {
-                setIsPlaying(false)
-                setCurrentTime(new Date(event.target.value))
+                const utcMillis = parseDateTimeLocal(event.target.value, observer.timeZone)
+                if (utcMillis === null) return
+                pausePlayback()
+                commitTime(utcMillis)
               }}
             />
           </section>
@@ -275,6 +321,8 @@ export default function App() {
                 ['constellationLines', '星座', ''],
                 ['bodies', '行星', ''],
                 ['horizon', '地平', ''],
+                ['showBelowHorizon', '地平以下', ''],
+                ['daylightEffect', '昼夜影响', ''],
                 ['ecliptic', '黄道', '#f0a03a'],
                 ['celestialEquator', '天赤道', '#4cc4e8'],
                 ['equatorialGrid', '赤道网', ''],
@@ -284,6 +332,7 @@ export default function App() {
                   key={key}
                   className={`layer-toggle ${layers[key as keyof LayerState] ? 'is-active' : ''} ${key === 'celestialEquator' ? 'is-equator' : ''} ${key === 'ecliptic' ? 'is-ecliptic' : ''}`}
                   onClick={() => updateLayer(key as keyof LayerState)}
+                  aria-pressed={layers[key as keyof LayerState]}
                 >
                   {swatch && <i className="layer-swatch" style={{ background: swatch }} />}
                   {label}
@@ -323,7 +372,14 @@ export default function App() {
           <div className="timeline-label"><strong>{currentTime.getFullYear()}</strong></div>
           <div className="playback-actions">
             {isTimeDeckOpen && <button className="time-step" onClick={() => adjustTime(-3600000)} aria-label="后退一小时"><ChevronLeft size={18} /></button>}
-            <button className="play-button" onClick={() => setIsPlaying((value) => !value)} aria-label={isPlaying ? '暂停' : '播放'}>
+            <button
+              className="play-button"
+              onClick={() => {
+                if (isPlaying) pausePlayback()
+                else setIsPlaying(true)
+              }}
+              aria-label={isPlaying ? '暂停' : '播放'}
+            >
               {isPlaying ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}
             </button>
             {isTimeDeckOpen && <button className="time-step" onClick={() => adjustTime(3600000)} aria-label="前进一小时"><ChevronRight size={18} /></button>}
@@ -362,15 +418,13 @@ export default function App() {
                 value={timelineOffset}
                 onChange={(event) => {
                   const nextOffset = Number(event.target.value)
-                  setIsPlaying(false)
+                  pausePlayback()
                   setTimelineOffset(nextOffset)
-                  const next = new Date(timelineAnchor.current + nextOffset)
-                  clock.current.seek(next.getTime())
-                  setCurrentTime(next)
+                  commitTime(timelineAnchor.current + nextOffset, false)
                 }}
                 onMouseDown={() => {
-                  setIsPlaying(false)
-                  timelineAnchor.current = currentTime.getTime()
+                  pausePlayback()
+                  timelineAnchor.current = simulationRef.current.utcMillis
                   setTimelineOffset(0)
                 }}
               />

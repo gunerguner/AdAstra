@@ -1,10 +1,11 @@
 /// <reference lib="webworker" />
-import { astronomyService } from '../engine/astronomyService'
+import { astronomyService, type BodySnapshotWindow } from '../engine/astronomyService'
 
 type Request = {
   type: 'snapshot'
   generation: number
   utcMillis: number
+  lookAheadMillis: number
   observer: { latitude: number; longitude: number }
 }
 
@@ -15,16 +16,28 @@ self.onmessage = (event: MessageEvent<Request>) => {
   latestGeneration = Math.max(latestGeneration, request.generation)
   if (request.type !== 'snapshot') return
 
-  const bodies = astronomyService.getBodies(new Date(request.utcMillis), request.observer)
-  if (request.generation !== latestGeneration) return
-
-  self.postMessage({
-    type: 'snapshot',
-    generation: request.generation,
-    utcMillis: request.utcMillis,
-    bodies,
-    moonPhase: astronomyService.getMoonPhase(new Date(request.utcMillis)),
-  })
+  try {
+    const window: BodySnapshotWindow = {
+      fromUtcMillis: request.utcMillis,
+      toUtcMillis: request.utcMillis + request.lookAheadMillis,
+      from: astronomyService.getBodies(new Date(request.utcMillis), request.observer),
+      to: astronomyService.getBodies(new Date(request.utcMillis + request.lookAheadMillis), request.observer),
+    }
+    if (request.generation !== latestGeneration) return
+    self.postMessage({
+      type: 'snapshot',
+      generation: request.generation,
+      window,
+    })
+  } catch (error) {
+    if (request.generation !== latestGeneration) return
+    const message = error instanceof Error ? error.message : '天体计算失败'
+    self.postMessage({
+      type: 'error',
+      generation: request.generation,
+      message,
+    })
+  }
 }
 
 export {}

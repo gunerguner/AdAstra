@@ -6,6 +6,7 @@ export type LayerState = {
   constellationNames: boolean
   bodies: boolean
   horizon: boolean
+  showBelowHorizon: boolean
   ecliptic: boolean
   celestialEquator: boolean
   equatorialGrid: boolean

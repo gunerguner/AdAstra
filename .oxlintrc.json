@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "react", "react-hooks"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": ["dist/**", "public/data/**"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "eslint-plugin-import/no-unassigned-import": "off",
+    "no-unused-vars": "error",
+    "no-shadow": "error",
+    "react-hooks/exhaustive-deps": "error"
+  }
+}
