@@ -1,5 +1,6 @@
 import type { RefObject } from 'react'
 import type { SkySimulation, SkyView } from '@/shared/types/sky'
+import { clampSkyFov } from '@/engine/render/skyProjection'
 import { fillHorizonMatrix } from '@/engine/coordinates/skyMath'
 import { pickSkyObject } from './skyPicker'
 import { nudgeView, panView, zoomView } from './viewConstraints'
@@ -19,6 +20,7 @@ export class SkyViewController {
   private pinch: { distance: number; fov: number } | null = null
   private lastViewSyncAt = 0
   private listeners: AbortController | null = null
+  private viewSyncTimer = 0
 
   constructor(
     private readonly ctx: SkySceneContext,
@@ -36,10 +38,18 @@ export class SkyViewController {
     this.simulationRef.current.altitude = next.altitude
     this.simulationRef.current.fov = next.fov
     const now = performance.now()
-    if (forceUiSync || now - this.lastViewSyncAt >= 100) {
+    if (forceUiSync || now - this.lastViewSyncAt >= 50) {
       this.lastViewSyncAt = now
       this.callbacks.onViewChange(next)
     }
+  }
+
+  private flushViewSoon() {
+    window.clearTimeout(this.viewSyncTimer)
+    this.viewSyncTimer = window.setTimeout(() => {
+      const latest = this.simulationRef.current
+      this.emitView({ azimuth: latest.azimuth, altitude: latest.altitude, fov: latest.fov }, true)
+    }, 80)
   }
 
   hitAt(clientX: number, clientY: number) {
@@ -134,7 +144,13 @@ export class SkyViewController {
   onWheel = (event: WheelEvent) => {
     event.preventDefault()
     const latest = this.simulationRef.current
-    this.emitView(zoomView(latest, Math.exp(event.deltaY * 0.0016)), true)
+    const pixels = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaMode === 2 ? event.deltaY * 800 : event.deltaY
+    this.emitView({
+      azimuth: latest.azimuth,
+      altitude: latest.altitude,
+      fov: clampSkyFov(latest.fov + pixels * 0.038),
+    })
+    this.flushViewSoon()
   }
 
   onKeyDown = (event: KeyboardEvent) => {
@@ -159,6 +175,7 @@ export class SkyViewController {
   }
 
   unbind() {
+    window.clearTimeout(this.viewSyncTimer)
     this.listeners?.abort()
     this.listeners = null
   }

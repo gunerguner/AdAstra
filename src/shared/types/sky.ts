@@ -8,6 +8,8 @@ export type SelectedSkyObject = {
   constellation?: string
   altitude: number
   azimuth: number
+  phaseFraction?: number
+  phaseName?: string
 }
 
 export type LayerState = {

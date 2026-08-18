@@ -27,6 +27,8 @@ const body: BodySnapshot = {
   raHours: 12,
   decDeg: -90,
   magnitude: -2,
+  phaseAngle: 12,
+  phaseFraction: 0.98,
 }
 
 function pick(overrides: Partial<Parameters<typeof pickSkyObject>[0]> = {}) {

@@ -3,7 +3,6 @@ import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
 import { ErrorPanel, LoadingPanel } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
-import LocationSection from '@/features/location-controls/LocationSection'
 import LayerSection from '@/features/layer-controls/LayerSection'
 import { MagnitudeSection, QuickViewSection } from '@/features/layer-controls/ViewSections'
 import TimeDeck from '@/features/time-controls/TimeDeck'
@@ -78,32 +77,27 @@ export default function App() {
 
       <div className={styles.atmosphere} />
       <TopBar
-        observerName={observer.name}
-        timeZone={observer.timeZone}
-        formattedTime={playback.formattedTime}
+        cities={cities}
+        activeCityIndex={activeCityIndex}
+        observer={observer}
+        datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
         azimuth={view.azimuth}
         altitude={view.altitude}
         settingsOpen={isSettingsOpen}
+        onCityChange={setCity}
+        onLatitudeChange={setLatitude}
+        onLongitudeChange={setLongitude}
+        onDateTimeChange={(value) => {
+          const utcMillis = parseDateTimeLocal(value, observer.timeZone)
+          if (utcMillis === null) return
+          playback.pausePlayback()
+          playback.commitTime(utcMillis)
+        }}
         onResetNow={resetNow}
         onToggleSettings={() => setIsSettingsOpen((value) => !value)}
       />
 
       <ControlPanel open={isSettingsOpen}>
-        <LocationSection
-          cities={cities}
-          activeCityIndex={activeCityIndex}
-          observer={observer}
-          datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
-          onCityChange={setCity}
-          onLatitudeChange={setLatitude}
-          onLongitudeChange={setLongitude}
-          onDateTimeChange={(value) => {
-            const utcMillis = parseDateTimeLocal(value, observer.timeZone)
-            if (utcMillis === null) return
-            playback.pausePlayback()
-            playback.commitTime(utcMillis)
-          }}
-        />
         <LayerSection layers={layers} onToggle={toggleLayer} />
         <MagnitudeSection magnitudeLimit={magnitudeLimit} onChange={setMagnitudeLimit} />
         <QuickViewSection view={view} onChange={setView} />

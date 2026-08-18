@@ -44,6 +44,13 @@ function offlineShellPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), yamlPlugin(), offlineShellPlugin()],
+  server: {
+    watch: {
+      // Cursor 和受管文件系统偶尔不会向 Vite 转发 FSEvents；轮询确保热更新始终检测到源码变动。
+      usePolling: true,
+      interval: 150,
+    },
+  },
   resolve: {
     alias: {
       '@': resolve(import.meta.dirname, 'src'),

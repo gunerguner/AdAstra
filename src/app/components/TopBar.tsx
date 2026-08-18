@@ -2,24 +2,41 @@ import { CircleDot, Compass, MapPin, RotateCcw, Settings2, Sparkles } from 'luci
 import { IconButton } from '@/shared/ui'
 import styles from './TopBar.module.css'
 
-type Props = {
-  observerName: string
+type Observer = {
+  name: string
+  latitude: number
+  longitude: number
   timeZone: string
-  formattedTime: string
+}
+
+type Props = {
+  cities: readonly Observer[]
+  activeCityIndex: number
+  observer: Observer
+  datetimeValue: string
   azimuth: number
   altitude: number
   settingsOpen: boolean
+  onCityChange: (index: number) => void
+  onLatitudeChange: (value: number) => void
+  onLongitudeChange: (value: number) => void
+  onDateTimeChange: (value: string) => void
   onResetNow: () => void
   onToggleSettings: () => void
 }
 
 export default function TopBar({
-  observerName,
-  timeZone,
-  formattedTime,
+  cities,
+  activeCityIndex,
+  observer,
+  datetimeValue,
   azimuth,
   altitude,
   settingsOpen,
+  onCityChange,
+  onLatitudeChange,
+  onLongitudeChange,
+  onDateTimeChange,
   onResetNow,
   onToggleSettings,
 }: Props) {
@@ -32,16 +49,53 @@ export default function TopBar({
         <small>实时星空</small>
       </div>
       <div className={styles.status}>
-        <div className={styles.stat}>
+        <label className={styles.stat}>
           <MapPin size={13} />
           <span>地点</span>
-          <strong>{observerName}</strong>
-        </div>
-        <div className={`${styles.stat} ${styles.time}`}>
+          <select
+            aria-label="城市"
+            value={activeCityIndex}
+            onChange={(event) => onCityChange(Number(event.target.value))}
+          >
+            {cities.map((city, index) => (
+              <option value={index} key={city.name}>{city.name}</option>
+            ))}
+          </select>
+        </label>
+        <label className={`${styles.stat} ${styles.coord}`}>
+          <span>纬度</span>
+          <input
+            aria-label="纬度"
+            type="number"
+            min="-90"
+            max="90"
+            step="0.01"
+            value={observer.latitude}
+            onChange={(event) => onLatitudeChange(Number(event.target.value))}
+          />
+        </label>
+        <label className={`${styles.stat} ${styles.coord}`}>
+          <span>经度</span>
+          <input
+            aria-label="经度"
+            type="number"
+            min="-180"
+            max="180"
+            step="0.01"
+            value={observer.longitude}
+            onChange={(event) => onLongitudeChange(Number(event.target.value))}
+          />
+        </label>
+        <label className={`${styles.stat} ${styles.time}`}>
           <CircleDot size={13} />
-          <span>{timeZone}</span>
-          <strong>{formattedTime}</strong>
-        </div>
+          <span>{observer.timeZone}</span>
+          <input
+            aria-label="时刻"
+            type="datetime-local"
+            value={datetimeValue}
+            onChange={(event) => onDateTimeChange(event.target.value)}
+          />
+        </label>
         <div className={`${styles.stat} ${styles.view}`}>
           <Compass size={13} />
           <span>视线</span>

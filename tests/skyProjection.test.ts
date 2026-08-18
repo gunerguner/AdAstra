@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Camera, Vector3 } from 'three'
-import { SKY_HORIZON_LIFT, projectSkyToNdc, viewDirectionFromNdc } from '../src/engine/render/skyProjection'
+import { SKY_HORIZON_LIFT, projectSkyToNdc, skyProjectionGlsl, viewDirectionFromNdc } from '../src/engine/render/skyProjection'
 
 const identityCamera = {
   matrixWorldInverse: { elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },
@@ -33,5 +33,10 @@ describe('skyProjection', () => {
   it('points behind the camera stay off-screen', () => {
     expect(projectSkyToNdc(new Vector3(0, 0, 1), identityCamera, 100, 16 / 9)).toBeNull()
     expect(projectSkyToNdc(new Vector3(0.2, 0.1, 0.97), identityCamera, 100, 16 / 9)).toBeNull()
+  })
+
+  it('does not fling off-sky vertices to huge NDC', () => {
+    expect(skyProjectionGlsl).not.toContain('away * 8.0')
+    expect(skyProjectionGlsl).toContain('projected.z')
   })
 })

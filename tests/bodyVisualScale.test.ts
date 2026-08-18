@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bodyPointSize, bodyVisualScale, daylightFactor, starBrightness } from '../src/engine/render/bodyAppearance'
+import { bodyPickSize, bodyPointSize, bodyVisualScale, daylightFactor, starBrightness } from '../src/engine/render/bodyAppearance'
 
 describe('body appearance', () => {
   it('preserves the Sun and Moon visual scale', () => {
@@ -13,5 +13,15 @@ describe('body appearance', () => {
     expect(starBrightness(20)).toBe(0)
     expect(daylightFactor(-20, true)).toBe(0)
     expect(daylightFactor(20, true)).toBe(1)
+  })
+
+  it('keeps planets smaller than the Moon and Sun glow', () => {
+    expect(bodyPointSize('venus', -4)).toBeLessThan(bodyPointSize('moon', -12))
+    expect(bodyPointSize('jupiter', -2)).toBeLessThan(bodyPointSize('moon', -12))
+    expect(bodyPointSize('sun', -26)).toBeGreaterThan(bodyPointSize('moon', -12))
+  })
+
+  it('gives Saturn a larger pick size than Jupiter because of rings', () => {
+    expect(bodyPickSize('saturn', -0.5)).toBeGreaterThan(bodyPickSize('jupiter', -2))
   })
 })

@@ -47,12 +47,14 @@ export type SkySceneContext = {
     horizonGlow: LineLoop
     ecliptic: Line
     equator: Line
+    skyLimb: Mesh
   }
   materials: {
     constellationLine: ShaderMaterial
     equatorialGrid: ShaderMaterial
     horizontalGrid: ShaderMaterial
     ground: ShaderMaterial
+    skyLimb: ShaderMaterial
   }
   resize: () => void
 }

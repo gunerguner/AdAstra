@@ -14,6 +14,7 @@ import { createStarLayer } from './layers/starLayer'
 import { createMilkyWayLayer } from './layers/milkyWayLayer'
 import { createGridLayer } from './layers/gridLayer'
 import { createHelperLayer } from './layers/helperLayer'
+import { createSkyLimbLayer, disposeSkyLimbLayer } from './layers/skyLimbLayer'
 import { createBodiesLayer } from './layers/bodyLayer'
 import type { SkySceneContext } from './skyContext'
 
@@ -23,7 +24,7 @@ export function createSkyScene(options: {
   constellationStars: ConstellationStars[]
 }): SkySceneContext {
   const { mount, stars, constellationStars } = options
-  const renderer = new WebGLRenderer({ antialias: false, alpha: false, powerPreference: 'high-performance' })
+  const renderer = new WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' })
   const scene = new Scene()
   const camera = new PerspectiveCamera(SKY_FOV_DEG, 1, 0.01, 10)
   camera.position.set(0, 0, 0)
@@ -35,7 +36,7 @@ export function createSkyScene(options: {
 
   let qualityPixelRatio = Math.min(window.devicePixelRatio, 1.5)
   renderer.setPixelRatio(qualityPixelRatio)
-  renderer.setClearColor(0x02040c, 1)
+  renderer.setClearColor(0x000309, 1)
   renderer.setAnimationLoop(null)
   renderer.domElement.tabIndex = 0
   renderer.domElement.setAttribute('role', 'application')
@@ -55,6 +56,8 @@ export function createSkyScene(options: {
   scene.add(bodies.points)
   const helpers = createHelperLayer(sharedUniforms)
   scene.add(helpers.group)
+  const skyLimb = createSkyLimbLayer(sky)
+  scene.add(skyLimb.mesh)
 
   const resize = () => {
     const { width, height } = mount.getBoundingClientRect()
@@ -89,12 +92,14 @@ export function createSkyScene(options: {
       horizonGlow: helpers.horizonGlow,
       ecliptic: helpers.ecliptic,
       equator: helpers.equator,
+      skyLimb: skyLimb.mesh,
     },
     materials: {
       constellationLine: grids.constellationLine,
       equatorialGrid: grids.equatorialGrid,
       horizontalGrid: grids.horizontalGrid,
       ground: helpers.groundMaterial,
+      skyLimb: skyLimb.material,
     },
     resize,
   }
@@ -121,6 +126,7 @@ export function disposeSkyScene(ctx: SkySceneContext) {
   ;(ctx.layers.horizonGlow.material as ShaderMaterial).dispose()
   ctx.layers.ground.geometry.dispose()
   ctx.materials.ground.dispose()
+  disposeSkyLimbLayer(ctx.layers.skyLimb)
   ctx.renderer.dispose()
   ctx.renderer.domElement.remove()
 }

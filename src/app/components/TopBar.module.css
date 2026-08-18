@@ -3,7 +3,7 @@
   z-index: 10;
   top: var(--safe-top);
   inset-inline: 0;
-  height: 58px;
+  min-height: 58px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
@@ -49,11 +49,18 @@
 
 .status {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   min-width: 0;
   justify-self: center;
+  max-width: 100%;
+  overflow-x: auto;
   border: 1px solid var(--color-border-muted);
   background: rgba(6, 12, 31, 0.45);
+  scrollbar-width: none;
+}
+
+.status::-webkit-scrollbar {
+  display: none;
 }
 
 .stat {
@@ -61,7 +68,7 @@
   align-items: center;
   gap: 7px;
   min-width: 0;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-right: 1px solid var(--color-divider);
   color: var(--color-gold);
 }
@@ -78,13 +85,47 @@
   white-space: nowrap;
 }
 
-.stat strong {
+.stat strong,
+.stat select,
+.stat input {
   color: var(--color-text);
   font-size: 12px;
   font-weight: 600;
+  font-family: var(--font-sans);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color-scheme: dark;
+}
+
+.stat select {
+  max-width: 88px;
+  padding: 0;
+  cursor: pointer;
+  appearance: none;
+  background: linear-gradient(90deg, transparent, rgba(245, 207, 136, 0.08));
+}
+
+.stat select option {
+  background: var(--color-option);
+}
+
+.coord input {
+  width: 72px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat input[type='number']::-webkit-inner-spin-button,
+.stat input[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+}
+
+.stat input[type='datetime-local'] {
+  width: 168px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .time {
@@ -93,6 +134,11 @@
 
 .view {
   color: var(--color-view);
+}
+
+.view strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .meta {
@@ -132,11 +178,13 @@
     padding: 5px 8px;
   }
 
-  .stat strong {
-    font-size: 10px;
+  .coord input {
+    width: 62px;
+    font-size: 11px;
   }
 
-  .time span {
-    display: none;
+  .stat input[type='datetime-local'] {
+    width: 148px;
+    font-size: 10px;
   }
 }

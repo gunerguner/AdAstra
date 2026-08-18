@@ -186,6 +186,10 @@ export function startSkyRenderLoop(options: {
       latest.layers,
       uniforms.horizonMat,
       scratch.horizon,
+      camera,
+      latest.fov,
+      camera.aspect,
+      scratch.projected,
     )
 
     renderer.render(scene, camera)

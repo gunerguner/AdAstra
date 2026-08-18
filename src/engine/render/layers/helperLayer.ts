@@ -11,35 +11,38 @@ export function createHelperLayer(uniforms: {
   showBelow: { value: number }
 }) {
   const group = new Group()
-  group.renderOrder = 9
   const groundMaterial = makeGroundMaterial(uniforms.sky)
   const ground = new Mesh(new SphereGeometry(1, 96, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), groundMaterial)
   ground.frustumCulled = false
   ground.renderOrder = 0
   const horizon = new LineLoop(
-    new BufferGeometry().setFromPoints(Array.from({ length: 257 }, (_, index) => {
-      const angle = (index / 256) * Math.PI * 2
+    new BufferGeometry().setFromPoints(Array.from({ length: 361 }, (_, index) => {
+      const angle = (index / 360) * Math.PI * 2
       return new Vector3(Math.sin(angle), 0, Math.cos(angle))
     })),
-    makeSkyLineMaterial('#f3e1b0', 1, false, uniforms),
+    makeSkyLineMaterial('#f8e6b8', 1, false, uniforms),
   )
   const horizonGlow = new LineLoop(
-    new BufferGeometry().setFromPoints(Array.from({ length: 257 }, (_, index) => {
-      const angle = (index / 256) * Math.PI * 2
-      return new Vector3(Math.sin(angle), 0.004, Math.cos(angle))
+    new BufferGeometry().setFromPoints(Array.from({ length: 361 }, (_, index) => {
+      const angle = (index / 360) * Math.PI * 2
+      return new Vector3(Math.sin(angle), 0.006, Math.cos(angle))
     })),
-    makeSkyLineMaterial('#c9a15a', 0.45, false, uniforms),
+    makeSkyLineMaterial('#e0b56a', 0.72, false, uniforms),
   )
+  horizon.renderOrder = 6
+  horizonGlow.renderOrder = 6
   group.add(ground, horizonGlow, horizon)
 
   const ecliptic = new Line(
-    new BufferGeometry().setFromPoints(Array.from({ length: 145 }, (_, index) => toVector3(eclipticEquatorialUnit(index * 2.5)))),
+    new BufferGeometry().setFromPoints(Array.from({ length: 361 }, (_, index) => toVector3(eclipticEquatorialUnit(index)))),
     makeSkyLineMaterial('#f0a03a', 0.92, true, uniforms),
   )
   const equator = new Line(
-    new BufferGeometry().setFromPoints(Array.from({ length: 145 }, (_, index) => toVector3(equatorialUnit((index / 144) * 24, 0)))),
+    new BufferGeometry().setFromPoints(Array.from({ length: 361 }, (_, index) => toVector3(equatorialUnit((index / 360) * 24, 0)))),
     makeSkyLineMaterial('#4cc4e8', 0.88, true, uniforms),
   )
+  ecliptic.renderOrder = 7
+  equator.renderOrder = 7
   group.add(ecliptic, equator)
 
   return { group, ground, groundMaterial, horizon, horizonGlow, ecliptic, equator }

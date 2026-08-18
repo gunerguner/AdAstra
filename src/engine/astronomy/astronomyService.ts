@@ -1,5 +1,6 @@
-import { Body, Equator, Horizon, Illumination, Observer as AstronomyObserver } from 'astronomy-engine'
+import { Body, Equator, Horizon, Illumination, MoonPhase, Observer as AstronomyObserver } from 'astronomy-engine'
 import type { Observer } from '@/shared/types/observer'
+import { lerpDegrees } from './moonPhaseName'
 
 export type BodySnapshot = {
   id: string
@@ -9,6 +10,10 @@ export type BodySnapshot = {
   raHours: number
   decDeg: number
   magnitude: number
+  phaseAngle: number
+  phaseFraction: number
+  synodicDeg?: number
+  ringTilt?: number
 }
 
 export type BodySnapshotWindow = {
@@ -26,6 +31,8 @@ const bodyDefinitions = [
   [Body.Mars, 'mars', '火星'],
   [Body.Jupiter, 'jupiter', '木星'],
   [Body.Saturn, 'saturn', '土星'],
+  [Body.Uranus, 'uranus', '天王星'],
+  [Body.Neptune, 'neptune', '海王星'],
 ] as const
 
 export class AstronomyService {
@@ -43,6 +50,10 @@ export class AstronomyService {
         raHours: equatorial.ra,
         decDeg: equatorial.dec,
         magnitude: light.mag,
+        phaseAngle: light.phase_angle,
+        phaseFraction: light.phase_fraction,
+        synodicDeg: id === 'moon' ? MoonPhase(date) : undefined,
+        ringTilt: light.ring_tilt,
       }
     })
   }
@@ -84,6 +95,14 @@ export function interpolateBodySnapshots(window: BodySnapshotWindow | null, utcM
       altitude: from.altitude + (to.altitude - from.altitude) * t,
       azimuth: from.azimuth + ((((to.azimuth - from.azimuth + 540) % 360) - 180) * t),
       magnitude: from.magnitude + (to.magnitude - from.magnitude) * t,
+      phaseAngle: from.phaseAngle + (to.phaseAngle - from.phaseAngle) * t,
+      phaseFraction: from.phaseFraction + (to.phaseFraction - from.phaseFraction) * t,
+      synodicDeg: from.synodicDeg != null && to.synodicDeg != null
+        ? lerpDegrees(from.synodicDeg, to.synodicDeg, t)
+        : from.synodicDeg,
+      ringTilt: from.ringTilt != null && to.ringTilt != null
+        ? from.ringTilt + (to.ringTilt - from.ringTilt) * t
+        : from.ringTilt,
     }
   })
 }

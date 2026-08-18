@@ -2,7 +2,8 @@ import type { Camera, Vector3 } from 'three'
 import type { BodySnapshot } from '@/engine/astronomy/astronomyService'
 import { applyHorizonMatrixInto, equatorialUnit, horizonAnglesFromVector } from '@/engine/coordinates/skyMath'
 import { projectSkyToNdc } from '@/engine/render/skyProjection'
-import { bodyAppearance, starPointSize } from '@/engine/render/bodyAppearance'
+import { moonPhaseName } from '@/engine/astronomy/moonPhaseName'
+import { bodyAppearance, bodyPickSize, starPointSize } from '@/engine/render/bodyAppearance'
 import type { SelectedSkyObject } from '@/shared/types/sky'
 import type { Star } from '@/shared/types/star'
 import type { LayerState } from '@/shared/types/sky'
@@ -36,6 +37,8 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
     azimuth: number
     distance: number
     priority: number
+    phaseFraction?: number
+    synodicDeg?: number
   } | null = null
   for (const item of input.bodies) {
     const appearance = bodyAppearance[item.id]
@@ -49,7 +52,7 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
     )
     if (!ndc) continue
     const distance = Math.hypot(ndc.x - input.ndcX, ndc.y - input.ndcY)
-    const radius = ndcRadiusForPixels((appearance?.size ?? 12) * 0.85 + 16, input.minScreenSize)
+    const radius = ndcRadiusForPixels(bodyPickSize(item.id, item.magnitude) * 0.85 + 16, input.minScreenSize)
     if (distance > radius) continue
     const priority = appearance?.priority ?? 10
     if (best && (priority < best.priority || (priority === best.priority && distance >= best.distance))) continue
@@ -60,9 +63,17 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
       ...horizonAnglesFromVector(input.horizonScratch),
     }
   }
-  return best
-    ? { id: best.id, name: best.name, type: 'body', magnitude: best.magnitude, altitude: best.altitude, azimuth: best.azimuth }
-    : null
+  if (!best) return null
+  return {
+    id: best.id,
+    name: best.name,
+    type: 'body',
+    magnitude: best.magnitude,
+    altitude: best.altitude,
+    azimuth: best.azimuth,
+    phaseFraction: best.phaseFraction,
+    phaseName: best.id === 'moon' && best.synodicDeg != null ? moonPhaseName(best.synodicDeg) : undefined,
+  }
 }
 
 function pickStar(input: PickInput): SelectedSkyObject | null {

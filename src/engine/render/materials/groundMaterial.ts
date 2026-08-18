@@ -15,18 +15,24 @@ export function makeGroundMaterial(sky: SkyProjectionUniforms) {
     vertexShader: `
       ${skyProjectionUniformDeclsGlsl}
       varying vec3 vViewDir;
+      varying float vGroundY;
       ${skyProjectionGlsl}
       void main() {
         vViewDir = skyViewDir(position);
+        vGroundY = position.y;
         gl_Position = projectSkyDir(vViewDir);
       }
     `,
     fragmentShader: `
       varying vec3 vViewDir;
+      varying float vGroundY;
       ${skyOutsideViewGlsl}
       void main() {
         if (skyOutsideView(vViewDir) > 0.5) discard;
-        gl_FragColor = vec4(0.015, 0.02, 0.035, 0.88);
+        float rim = 1.0 - smoothstep(0.0, 0.055, abs(vGroundY));
+        vec3 soil = vec3(0.018, 0.024, 0.04);
+        vec3 edge = vec3(0.42, 0.34, 0.2);
+        gl_FragColor = vec4(mix(soil, edge, rim * 0.9), 0.9);
       }
     `,
   })

@@ -28,15 +28,17 @@ vec3 skyViewDir(vec3 worldPos) {
 }
 
 vec4 projectSkyDir(vec3 dir) {
+  dir = normalize(dir);
   float tanQ = tan(uFov * 0.25);
-  float denom = max(1.0 - dir.z, 1.0e-4);
-  vec2 stereo = dir.xy / denom;
+  vec3 projected = dir;
+  if (dir.z > 0.0) {
+    float awayLen = length(dir.xy);
+    projected = vec3(mix(vec2(1.0, 0.0), dir.xy / max(awayLen, 1.0e-6), step(1.0e-6, awayLen)), 0.0);
+  }
+  float denom = max(1.0 - projected.z, 1.0e-4);
+  vec2 stereo = projected.xy / denom;
   vec2 ndc = vec2(stereo.x / (tanQ * uAspect), stereo.y / tanQ - ${SKY_HORIZON_LIFT.toFixed(3)});
-  float invalid = step(0.08, dir.z);
-  vec2 away = dir.xy;
-  float awayLen = length(away);
-  away = mix(vec2(1.0, 0.0), away / max(awayLen, 1.0e-6), step(1.0e-6, awayLen));
-  ndc = mix(ndc, away * 8.0, invalid);
+  float invalid = step(0.02, dir.z);
   return vec4(ndc, mix(0.51 + 0.49 * dir.z, 2.0, invalid), 1.0);
 }
 
