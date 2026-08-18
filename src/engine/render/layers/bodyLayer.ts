@@ -1,6 +1,6 @@
 import { BufferAttribute, BufferGeometry, Points, type Camera, type ShaderMaterial, type Texture, Vector3 } from 'three'
-import type { BodySnapshot } from '@/engine/astronomy/astronomyService'
-import { applyHorizonMatrixInto, equatorialUnit } from '@/engine/coordinates/skyMath'
+import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
+import { applyHorizonMatrixInto, equatorialUnitInto } from '@/engine/coordinates/skyMath'
 import { bodyAppearance, bodyPointSize, bodyRenderOrder } from '@/engine/render/bodyAppearance'
 import { brightLimbAngle } from '@/engine/render/bodyLimb'
 import { createBodyAtlasTexture } from '@/engine/render/createBodyAtlas'
@@ -12,6 +12,9 @@ import type { SkyProjectionUniforms, Vec3 } from '@/engine/render/skyContext'
 const bodyIds = bodyRenderOrder
 const sunView = new Vector3()
 const bodyView = new Vector3()
+const unitScratch = { x: 0, y: 0, z: 0 }
+const ndcScratch = { x: 0, y: 0, z: 0 }
+const snapshotById: Record<string, BodySnapshot | undefined> = Object.create(null)
 
 export function createBodiesLayer(sky: SkyProjectionUniforms, pixelRatio: number) {
   const geometry = new BufferGeometry()
@@ -48,28 +51,30 @@ export function updateBodiesLayer(
   const sizes = points.geometry.getAttribute('size') as BufferAttribute
   const opacities = points.geometry.getAttribute('opacity') as BufferAttribute
   const colors = points.geometry.getAttribute('color') as BufferAttribute
-  const byId = new Map(snapshots.map((body) => [body.id, body]))
-  const sun = byId.get('sun')
+  for (const id of bodyIds) snapshotById[id] = undefined
+  for (const body of snapshots) snapshotById[body.id] = body
+  const sun = snapshotById.sun
   let hasSunView = false
   if (sun) {
-    applyHorizonMatrixInto(equatorialUnit(sun.raHours, sun.decDeg), horizonMat, horizonScratch)
+    applyHorizonMatrixInto(equatorialUnitInto(sun.raHours, sun.decDeg, unitScratch), horizonMat, horizonScratch)
     sunView.set(horizonScratch.x, horizonScratch.y, horizonScratch.z).applyMatrix4(camera.matrixWorldInverse)
     hasSunView = true
   }
   bodyIds.forEach((id, index) => {
-    const body = byId.get(id)
+    const body = snapshotById[id]
     const appearance = bodyAppearance[id]
     if (!body || !appearance) {
       sizes.setX(index, 0)
       opacities.setX(index, 0)
       return
     }
-    applyHorizonMatrixInto(equatorialUnit(body.raHours, body.decDeg), horizonMat, horizonScratch)
+    applyHorizonMatrixInto(equatorialUnitInto(body.raHours, body.decDeg, unitScratch), horizonMat, horizonScratch)
     const ndc = projectSkyToNdc(
       projected.set(horizonScratch.x, horizonScratch.y, horizonScratch.z),
       camera,
       fov,
       aspect,
+      ndcScratch,
     )
     const onScreen = ndc != null && Math.abs(ndc.x) <= 1 && Math.abs(ndc.y) <= 1
     const above = horizonScratch.y >= -0.12 || layers.showBelowHorizon
@@ -93,5 +98,6 @@ export function disposeBodiesLayer(points: Points) {
   points.geometry.dispose()
   const atlas = points.userData.atlas as Texture | undefined
   atlas?.dispose()
+  points.userData.atlas = undefined
   ;(points.material as ShaderMaterial).dispose()
 }

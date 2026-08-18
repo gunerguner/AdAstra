@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { MoonPhase } from 'astronomy-engine'
-import { astronomyService, interpolateBodySnapshots, type BodySnapshot, type BodySnapshotWindow } from '../src/engine/astronomy/astronomyService'
+import { astronomyService } from '../src/engine/astronomy/astronomyService'
+import { interpolateBodySnapshots, type BodySnapshot, type BodySnapshotWindow } from '../src/engine/astronomy/bodyInterpolation'
 import { lerpDegrees, moonPhaseName } from '../src/engine/astronomy/moonPhaseName'
 
 function sample(overrides: Partial<BodySnapshot> = {}): BodySnapshot {
@@ -47,6 +48,12 @@ describe('天体快照插值', () => {
   it('把窗口外时间夹到首尾样本，避免过冲', () => {
     expect(interpolateBodySnapshots(window, 500)[0].altitude).toBe(10)
     expect(interpolateBodySnapshots(window, 2_500)[0].altitude).toBe(14)
+  })
+
+  it('在同一窗口与时间上复用插值结果', () => {
+    const first = interpolateBodySnapshots(window, 1_500)
+    const second = interpolateBodySnapshots(window, 1_500)
+    expect(second).toBe(first)
   })
 
   it('按最短弧插值朔望角', () => {

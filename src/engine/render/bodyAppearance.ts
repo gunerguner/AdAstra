@@ -49,7 +49,9 @@ export function bodyPointSize(id: string, magnitude: number) {
 
 export function bodyPickSize(id: string, magnitude: number) {
   const appearance = bodyAppearance[id]
-  return bodyPointSize(id, magnitude) * (appearance?.spriteScale ?? 1)
+  const size = bodyPointSize(id, magnitude)
+  if (id === 'sun') return size * 0.52
+  return size * (appearance?.spriteScale ?? 1)
 }
 
 export function starBrightness(magnitude: number) {

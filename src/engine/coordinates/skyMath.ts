@@ -3,32 +3,41 @@ import type { Observer } from '@/shared/types/observer'
 const degToRad = (value: number) => (value * Math.PI) / 180
 const radToDeg = (value: number) => (value * 180) / Math.PI
 
-const julianDate = (date: Date) => date.getTime() / 86400000 + 2440587.5
+const utcMillisOf = (time: number | Date) => (typeof time === 'number' ? time : time.getTime())
 
-export function localSiderealHours(date: Date, longitude: number) {
-  const jd = julianDate(date)
+const julianDate = (utcMillis: number) => utcMillis / 86400000 + 2440587.5
+
+export function localSiderealHours(time: number | Date, longitude: number) {
+  const jd = julianDate(utcMillisOf(time))
   const d = jd - 2451545.0
   return ((18.697374558 + 24.06570982441908 * d + longitude / 15) % 24 + 24) % 24
 }
 
-export function equatorialUnit(raHours: number, decDeg: number) {
+export function equatorialUnitInto(
+  raHours: number,
+  decDeg: number,
+  out: { x: number; y: number; z: number },
+) {
   const ra = degToRad(raHours * 15)
   const dec = degToRad(decDeg)
   const cosDec = Math.cos(dec)
-  return {
-    x: cosDec * Math.cos(ra),
-    y: cosDec * Math.sin(ra),
-    z: Math.sin(dec),
-  }
+  out.x = cosDec * Math.cos(ra)
+  out.y = cosDec * Math.sin(ra)
+  out.z = Math.sin(dec)
+  return out
+}
+
+export function equatorialUnit(raHours: number, decDeg: number) {
+  return equatorialUnitInto(raHours, decDeg, { x: 0, y: 0, z: 0 })
 }
 
 /** Equatorial (x=春分点, z=北天极) → 地平 (x=东, y=天顶, z=北) */
 export function fillHorizonMatrix(
-  date: Date,
+  time: number | Date,
   observer: Observer,
   out: number[] | Float32Array,
 ) {
-  const lst = degToRad(localSiderealHours(date, observer.longitude) * 15)
+  const lst = degToRad(localSiderealHours(time, observer.longitude) * 15)
   const lat = degToRad(observer.latitude)
   const sinLst = Math.sin(lst)
   const cosLst = Math.cos(lst)

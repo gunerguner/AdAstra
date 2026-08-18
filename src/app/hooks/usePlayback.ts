@@ -46,6 +46,7 @@ export function usePlayback(timeZone: string, simulationRef: RefObject<SkySimula
     let frame = 0
     let lastUi = 0
     const tick = () => {
+      if (document.hidden) return
       const utcMillis = clock.current.now()
       simulationRef.current.utcMillis = utcMillis
       const now = performance.now()
@@ -55,8 +56,22 @@ export function usePlayback(timeZone: string, simulationRef: RefObject<SkySimula
       }
       frame = requestAnimationFrame(tick)
     }
+    const onVisibility = () => {
+      if (document.hidden) {
+        clock.current.pause()
+        cancelAnimationFrame(frame)
+        frame = 0
+        return
+      }
+      clock.current.play(speed)
+      if (!frame) frame = requestAnimationFrame(tick)
+    }
+    document.addEventListener('visibilitychange', onVisibility)
     frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      cancelAnimationFrame(frame)
+    }
   }, [isPlaying, speed, simulationRef])
 
   const adjustTime = (milliseconds: number) => {

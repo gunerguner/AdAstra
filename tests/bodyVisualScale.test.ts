@@ -24,4 +24,9 @@ describe('body appearance', () => {
   it('gives Saturn a larger pick size than Jupiter because of rings', () => {
     expect(bodyPickSize('saturn', -0.5)).toBeGreaterThan(bodyPickSize('jupiter', -2))
   })
+
+  it('keeps the Sun pick target near the disc instead of the glow', () => {
+    expect(bodyPickSize('sun', -26)).toBeLessThan(bodyPointSize('sun', -26))
+    expect(bodyPickSize('sun', -26)).toBeGreaterThan(bodyPickSize('moon', -12) * 0.8)
+  })
 })

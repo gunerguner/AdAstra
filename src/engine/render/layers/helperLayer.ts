@@ -12,7 +12,7 @@ export function createHelperLayer(uniforms: {
 }) {
   const group = new Group()
   const groundMaterial = makeGroundMaterial(uniforms.sky)
-  const ground = new Mesh(new SphereGeometry(1, 96, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), groundMaterial)
+  const ground = new Mesh(new SphereGeometry(1, 64, 16, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), groundMaterial)
   ground.frustumCulled = false
   ground.renderOrder = 0
   const horizon = new LineLoop(

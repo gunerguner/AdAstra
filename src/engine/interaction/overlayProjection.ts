@@ -35,10 +35,13 @@ export function overlayScreenPosition(
 
 export function applyOverlayPlacement(node: HTMLElement, placement: OverlayPlacement) {
   if (!placement.visible) {
-    node.style.display = 'none'
+    if (node.style.display !== 'none') node.style.display = 'none'
     return false
   }
-  node.style.display = 'block'
-  node.style.transform = `translate3d(${placement.x}px, ${placement.y}px, 0)`
+  const x = Math.round(placement.x)
+  const y = Math.round(placement.y)
+  const transform = `translate3d(${x}px, ${y}px, 0)`
+  if (node.style.display !== 'block') node.style.display = 'block'
+  if (node.style.transform !== transform) node.style.transform = transform
   return true
 }

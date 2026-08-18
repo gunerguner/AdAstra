@@ -38,6 +38,13 @@ describe('shader sky projection uniforms', () => {
 
   it('declares and uses projection uniforms only in vertex shaders', () => {
     for (const material of materials) {
+      if (material === materials[4]) {
+        expect(material.fragmentShader).toContain('uniform float uFov')
+        expect(material.fragmentShader).toContain('uniform float uAspect')
+        expect(material.fragmentShader).toContain('skyViewDirFromNdc')
+        expect(material.vertexShader).not.toContain('projectSkyDir')
+        continue
+      }
       expect(material.vertexShader).toContain('uniform float uFov')
       expect(material.vertexShader).toContain('uniform float uAspect')
       expect(material.vertexShader).toContain('projectSkyDir')

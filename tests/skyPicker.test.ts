@@ -3,7 +3,7 @@ import { Camera, Vector3 } from 'three'
 import { pickSkyObject } from '../src/engine/interaction/skyPicker'
 import { defaultLayers } from '../src/config/defaultLayers'
 import type { Star } from '../src/shared/types/star'
-import type { BodySnapshot } from '../src/engine/astronomy/astronomyService'
+import type { BodySnapshot } from '../src/engine/astronomy/bodyInterpolation'
 
 const identityCamera = {
   matrixWorldInverse: { elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },
@@ -71,5 +71,28 @@ describe('skyPicker', () => {
       layers: { ...defaultLayers, bodies: false, showBelowHorizon: false },
       stars: [below],
     })).toBeNull()
+  })
+
+  it('点击更靠近行星时不会被太阳光晕抢走', () => {
+    const sun: BodySnapshot = {
+      id: 'sun',
+      name: '太阳',
+      altitude: 20,
+      azimuth: 0,
+      raHours: 12,
+      decDeg: -82,
+      magnitude: -26,
+      phaseAngle: 0,
+      phaseFraction: 1,
+    }
+    const venus: BodySnapshot = {
+      ...body,
+      id: 'venus',
+      name: '金星',
+    }
+    const hit = pick({
+      bodies: [sun, venus],
+    })
+    expect(hit?.id).toBe('venus')
   })
 })

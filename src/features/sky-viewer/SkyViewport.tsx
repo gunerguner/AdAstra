@@ -2,11 +2,10 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState, type ReactNode, t
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
-import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/astronomyService'
+import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { buildConstellationAnchors, buildConstellationStars } from '@/engine/astronomy/constellationData'
 import { attachAstroWorker } from '@/engine/astronomy/attachAstroWorker'
 import { createSkyScene, disposeSkyScene } from '@/engine/render/createSkyScene'
-import { disposeBodiesLayer } from '@/engine/render/layers/bodyLayer'
 import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
 import { SkyViewController } from '@/engine/interaction/SkyViewController'
 import { ErrorPanel } from '@/shared/ui'
@@ -91,6 +90,7 @@ export default function SkyViewport({
       ctx.renderer.domElement.style.cursor = ''
     }
     const bodiesAt = () => interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)
+    const scheduler = { wake() {} }
     const controller = new SkyViewController(
       ctx,
       simulationRef,
@@ -107,9 +107,10 @@ export default function SkyViewport({
         } else hideHover()
       },
       hideHover,
+      () => scheduler.wake(),
     )
     controller.bind()
-    const stopLoop = startSkyRenderLoop({
+    const loop = startSkyRenderLoop({
       ctx,
       catalog,
       simulationRef,
@@ -124,16 +125,16 @@ export default function SkyViewport({
       requestBodySnapshot: worker.requestSnapshot,
       onSelect: selectObject,
     })
+    scheduler.wake = loop.wake
 
     return () => {
-      stopLoop()
+      loop.stop()
       resizeObserver.disconnect()
       controller.unbind()
       worker.terminate()
-      disposeBodiesLayer(ctx.layers.bodyPoints)
       disposeSkyScene(ctx)
     }
-  }, [catalog, constellationAnchors, constellationStars, objectCardRef, simulationRef])
+  }, [catalog, objectCardRef, simulationRef, constellationAnchors, constellationStars])
 
   return (
     <div className={`${styles.viewport} ${viewportError?.code === 'webgl' ? styles.fallback : ''}`} ref={mountRef}>

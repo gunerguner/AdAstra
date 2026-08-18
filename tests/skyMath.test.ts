@@ -11,7 +11,7 @@ describe('skyMath', () => {
   it('maps a meridian equatorial point to the zenith at the equator', () => {
     const date = new Date('2024-01-01T00:00:00Z')
     const observer = { latitude: 0, longitude: 0 }
-    const matrix = fillHorizonMatrix(date, observer, new Float32Array(9))
+    const matrix = fillHorizonMatrix(date.getTime(), observer, new Float32Array(9))
     const point = applyHorizonMatrixInto(
       equatorialUnit(localSiderealHours(date, observer.longitude), 0),
       matrix,

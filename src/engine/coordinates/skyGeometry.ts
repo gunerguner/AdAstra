@@ -3,14 +3,18 @@ import { Vector3 } from 'three'
 export const toVector3 = (point: { x: number; y: number; z: number }) =>
   new Vector3(point.x, point.y, point.z)
 
-export function horizontalVector(altitude: number, azimuth: number) {
+export function horizontalVectorInto(altitude: number, azimuth: number, out: Vector3) {
   const alt = altitude * Math.PI / 180
   const az = azimuth * Math.PI / 180
-  return new Vector3(
+  return out.set(
     Math.cos(alt) * Math.sin(az),
     Math.sin(alt),
     Math.cos(alt) * Math.cos(az),
   )
+}
+
+export function horizontalVector(altitude: number, azimuth: number) {
+  return horizontalVectorInto(altitude, azimuth, new Vector3())
 }
 
 export function densifyGreatCircle(points: Vector3[], maxStepRad = Math.PI / 36) {

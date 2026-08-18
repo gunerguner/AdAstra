@@ -1,6 +1,6 @@
 import { ClampToEdgeWrapping, DataTexture, LinearFilter, RGBAFormat, UnsignedByteType } from 'three'
 
-const CELL = 256
+const CELL = 128
 const GRID = 3
 const SIZE = CELL * GRID
 

@@ -1,5 +1,5 @@
 import { AdditiveBlending, DoubleSide, ShaderMaterial } from 'three'
-import { skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
+import { skyProjectionUniformDeclsGlsl, skyViewDirFromNdcGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
 export function makeSkyLimbMaterial(sky: SkyProjectionUniforms) {
@@ -14,18 +14,18 @@ export function makeSkyLimbMaterial(sky: SkyProjectionUniforms) {
       uAspect: sky.uAspect,
     },
     vertexShader: `
-      ${skyProjectionUniformDeclsGlsl}
-      varying vec3 vViewDir;
-      ${skyProjectionGlsl}
+      varying vec2 vNdc;
       void main() {
-        vViewDir = skyViewDir(position);
-        gl_Position = projectSkyDir(vViewDir);
+        vNdc = position.xy;
+        gl_Position = vec4(position.xy, 0.0, 1.0);
       }
     `,
     fragmentShader: `
-      varying vec3 vViewDir;
+      ${skyProjectionUniformDeclsGlsl}
+      ${skyViewDirFromNdcGlsl}
+      varying vec2 vNdc;
       void main() {
-        float z = normalize(vViewDir).z;
+        float z = skyViewDirFromNdc(vNdc).z;
         float edgeAA = max(fwidth(z) * 1.5, 0.001);
         float edge = 1.0 - smoothstep(0.11 - edgeAA, 0.11 + edgeAA, z);
         float rim = 1.0 - smoothstep(0.0, 0.07, abs(z));

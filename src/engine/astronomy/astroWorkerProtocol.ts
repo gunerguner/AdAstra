@@ -1,4 +1,4 @@
-import type { BodySnapshotWindow } from './astronomyService'
+import type { BodySnapshotWindow } from './bodyInterpolation'
 import type { Observer } from '@/shared/types/observer'
 
 export type AstroWorkerRequest = {

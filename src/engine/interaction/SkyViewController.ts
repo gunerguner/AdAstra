@@ -2,10 +2,10 @@ import type { RefObject } from 'react'
 import type { SkySimulation, SkyView } from '@/shared/types/sky'
 import { clampSkyFov } from '@/engine/render/skyProjection'
 import { fillHorizonMatrix } from '@/engine/coordinates/skyMath'
-import { pickSkyObject } from './skyPicker'
+import { createPickerStarGrid, pickSkyObject } from './skyPicker'
 import { nudgeView, panView, zoomView } from './viewConstraints'
 import type { SkySceneContext } from '@/engine/render/skyContext'
-import type { BodySnapshot } from '@/engine/astronomy/astronomyService'
+import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 import type { Star } from '@/shared/types/star'
 import type { SelectedSkyObject } from '@/shared/types/sky'
 
@@ -21,6 +21,10 @@ export class SkyViewController {
   private lastViewSyncAt = 0
   private listeners: AbortController | null = null
   private viewSyncTimer = 0
+  private hoverFrame = 0
+  private pendingHover: { x: number; y: number } | null = null
+  private readonly starGrid = createPickerStarGrid()
+  private readonly starGridKey = { current: '' }
 
   constructor(
     private readonly ctx: SkySceneContext,
@@ -31,12 +35,14 @@ export class SkyViewController {
     private readonly countStarsThroughMagnitude: (limit: number) => number,
     private readonly onHover: (hit: SelectedSkyObject | null) => void,
     private readonly hideHover: () => void,
+    private readonly onActivity: () => void,
   ) {}
 
   emitView(next: SkyView, forceUiSync = false) {
     this.simulationRef.current.azimuth = next.azimuth
     this.simulationRef.current.altitude = next.altitude
     this.simulationRef.current.fov = next.fov
+    this.onActivity()
     const now = performance.now()
     if (forceUiSync || now - this.lastViewSyncAt >= 50) {
       this.lastViewSyncAt = now
@@ -60,7 +66,7 @@ export class SkyViewController {
       -((clientY - rect.top) / rect.height) * 2 + 1,
     )
     const latest = this.simulationRef.current
-    fillHorizonMatrix(new Date(latest.utcMillis), latest.observer, uniforms.horizonMat)
+    fillHorizonMatrix(latest.utcMillis, latest.observer, uniforms.horizonMat)
     return pickSkyObject({
       ndcX: scratch.pickPoint.x,
       ndcY: scratch.pickPoint.y,
@@ -77,6 +83,8 @@ export class SkyViewController {
       horizonMat: uniforms.horizonMat,
       horizonScratch: scratch.horizon,
       projected: scratch.projected,
+      starGrid: this.starGrid,
+      starGridKey: this.starGridKey,
     })
   }
 
@@ -86,7 +94,20 @@ export class SkyViewController {
     return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y)
   }
 
+  private queueHover(clientX: number, clientY: number) {
+    this.onActivity()
+    this.pendingHover = { x: clientX, y: clientY }
+    if (this.hoverFrame) return
+    this.hoverFrame = requestAnimationFrame(() => {
+      this.hoverFrame = 0
+      const pending = this.pendingHover
+      if (!pending || this.drag || this.pinch) return
+      this.onHover(this.hitAt(pending.x, pending.y))
+    })
+  }
+
   onPointerDown = (event: PointerEvent) => {
+    this.onActivity()
     this.ctx.renderer.domElement.setPointerCapture(event.pointerId)
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
     const latest = this.simulationRef.current
@@ -118,7 +139,7 @@ export class SkyViewController {
       ))
       return
     }
-    this.onHover(this.hitAt(event.clientX, event.clientY))
+    this.queueHover(event.clientX, event.clientY)
   }
 
   onPointerUp = (event: PointerEvent) => {
@@ -138,6 +159,7 @@ export class SkyViewController {
   }
 
   onPointerLeave = () => {
+    this.pendingHover = null
     if (!this.drag) this.hideHover()
   }
 
@@ -176,6 +198,9 @@ export class SkyViewController {
 
   unbind() {
     window.clearTimeout(this.viewSyncTimer)
+    cancelAnimationFrame(this.hoverFrame)
+    this.hoverFrame = 0
+    this.pendingHover = null
     this.listeners?.abort()
     this.listeners = null
   }

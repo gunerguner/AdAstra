@@ -1,6 +1,6 @@
 import type { Camera, Vector3 } from 'three'
-import type { BodySnapshot } from '@/engine/astronomy/astronomyService'
-import { applyHorizonMatrixInto, equatorialUnit, horizonAnglesFromVector } from '@/engine/coordinates/skyMath'
+import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
+import { applyHorizonMatrixInto, equatorialUnitInto, horizonAnglesFromVector } from '@/engine/coordinates/skyMath'
 import { projectSkyToNdc } from '@/engine/render/skyProjection'
 import { moonPhaseName } from '@/engine/astronomy/moonPhaseName'
 import { bodyAppearance, bodyPickSize, starPointSize } from '@/engine/render/bodyAppearance'
@@ -8,6 +8,13 @@ import type { SelectedSkyObject } from '@/shared/types/sky'
 import type { Star } from '@/shared/types/star'
 import type { LayerState } from '@/shared/types/sky'
 import { ndcRadiusForPixels } from './overlayProjection'
+import {
+  addStarToPickGrid,
+  clearStarPickGrid,
+  createStarPickGrid,
+  queryStarPickGrid,
+  type StarPickGrid,
+} from './starPickGrid'
 
 export type PickInput = {
   ndcX: number
@@ -25,7 +32,14 @@ export type PickInput = {
   horizonMat: Float32Array
   horizonScratch: { x: number; y: number; z: number }
   projected: Vector3
+  starGrid?: StarPickGrid
+  starGridKey?: { current: string }
 }
+
+const unitScratch = { x: 0, y: 0, z: 0 }
+const ndcScratch = { x: 0, y: 0, z: 0 }
+const candidateScratch: number[] = []
+const LINEAR_PICK_LIMIT = 400
 
 function pickBody(input: PickInput): SelectedSkyObject | null {
   if (!input.layers.bodies) return null
@@ -42,13 +56,14 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
   } | null = null
   for (const item of input.bodies) {
     const appearance = bodyAppearance[item.id]
-    applyHorizonMatrixInto(equatorialUnit(item.raHours, item.decDeg), input.horizonMat, input.horizonScratch)
+    applyHorizonMatrixInto(equatorialUnitInto(item.raHours, item.decDeg, unitScratch), input.horizonMat, input.horizonScratch)
     if (!input.layers.showBelowHorizon && input.horizonScratch.y < -0.05) continue
     const ndc = projectSkyToNdc(
       input.projected.set(input.horizonScratch.x, input.horizonScratch.y, input.horizonScratch.z),
       input.camera,
       input.fov,
       input.aspect,
+      ndcScratch,
     )
     if (!ndc) continue
     const distance = Math.hypot(ndc.x - input.ndcX, ndc.y - input.ndcY)
@@ -57,7 +72,11 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
     const priority = appearance?.priority ?? 10
     if (best && (priority < best.priority || (priority === best.priority && distance >= best.distance))) continue
     best = {
-      ...item,
+      id: item.id,
+      name: item.name,
+      magnitude: item.magnitude,
+      phaseFraction: item.phaseFraction,
+      synodicDeg: item.synodicDeg,
       distance,
       priority,
       ...horizonAnglesFromVector(input.horizonScratch),
@@ -76,24 +95,73 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
   }
 }
 
+function considerStar(input: PickInput, index: number, best: { star: Star; altitude: number; azimuth: number; distance: number } | null) {
+  const star = input.stars[index]
+  const horizonDir = applyHorizonMatrixInto(
+    equatorialUnitInto(star.raHours, star.decDeg, unitScratch),
+    input.horizonMat,
+    input.horizonScratch,
+  )
+  if (!input.layers.showBelowHorizon && horizonDir.y < -0.05) return best
+  const ndc = projectSkyToNdc(
+    input.projected.set(horizonDir.x, horizonDir.y, horizonDir.z),
+    input.camera,
+    input.fov,
+    input.aspect,
+    ndcScratch,
+  )
+  if (!ndc) return best
+  const distance = Math.hypot(ndc.x - input.ndcX, ndc.y - input.ndcY)
+  const size = starPointSize(star.magnitude)
+  const radius = ndcRadiusForPixels(size * input.pixelRatio * 0.65 + 8, input.minScreenSize)
+  if (distance > radius || (best && distance >= best.distance)) return best
+  return {
+    star,
+    ...horizonAnglesFromVector(horizonDir),
+    distance,
+  }
+}
+
+function maxStarPickRadius(input: PickInput) {
+  return ndcRadiusForPixels(starPointSize(-1.5) * input.pixelRatio * 0.65 + 8, input.minScreenSize)
+}
+
+function fillStarGrid(input: PickInput, grid: StarPickGrid, limit: number) {
+  clearStarPickGrid(grid)
+  for (let index = 0; index < limit; index += 1) {
+    const star = input.stars[index]
+    const horizonDir = applyHorizonMatrixInto(
+      equatorialUnitInto(star.raHours, star.decDeg, unitScratch),
+      input.horizonMat,
+      input.horizonScratch,
+    )
+    if (!input.layers.showBelowHorizon && horizonDir.y < -0.05) continue
+    const ndc = projectSkyToNdc(
+      input.projected.set(horizonDir.x, horizonDir.y, horizonDir.z),
+      input.camera,
+      input.fov,
+      input.aspect,
+      ndcScratch,
+    )
+    if (!ndc) continue
+    addStarToPickGrid(grid, index, ndc.x, ndc.y)
+  }
+}
+
 function pickStar(input: PickInput): SelectedSkyObject | null {
   const limit = input.countStarsThroughMagnitude(input.magnitudeLimit)
   let best: { star: Star; altitude: number; azimuth: number; distance: number } | null = null
-  for (let index = 0; index < limit; index += 1) {
-    const star = input.stars[index]
-    const horizonDir = applyHorizonMatrixInto(equatorialUnit(star.raHours, star.decDeg), input.horizonMat, input.horizonScratch)
-    if (!input.layers.showBelowHorizon && horizonDir.y < -0.05) continue
-    const ndc = projectSkyToNdc(input.projected.set(horizonDir.x, horizonDir.y, horizonDir.z), input.camera, input.fov, input.aspect)
-    if (!ndc) continue
-    const distance = Math.hypot(ndc.x - input.ndcX, ndc.y - input.ndcY)
-    const size = starPointSize(star.magnitude)
-    const radius = ndcRadiusForPixels(size * input.pixelRatio * 0.65 + 8, input.minScreenSize)
-    if (distance > radius || (best && distance >= best.distance)) continue
-    best = {
-      star,
-      ...horizonAnglesFromVector(horizonDir),
-      distance,
+  if (limit <= LINEAR_PICK_LIMIT || !input.starGrid) {
+    for (let index = 0; index < limit; index += 1) best = considerStar(input, index, best)
+  } else {
+    const m = input.camera.matrixWorldInverse.elements
+    const key = `${m[0]}:${m[2]}:${m[8]}:${m[10]}:${input.fov}:${input.aspect}:${input.magnitudeLimit}:${input.layers.showBelowHorizon}:${limit}`
+    if (!input.starGridKey || input.starGridKey.current !== key) {
+      fillStarGrid(input, input.starGrid, limit)
+      if (input.starGridKey) input.starGridKey.current = key
     }
+    queryStarPickGrid(input.starGrid, input.ndcX, input.ndcY, maxStarPickRadius(input), candidateScratch)
+    for (const index of candidateScratch) best = considerStar(input, index, best)
   }
   if (!best) return null
   return {
@@ -111,4 +179,8 @@ export function pickSkyObject(input: PickInput): SelectedSkyObject | null {
   const bodyHit = pickBody(input)
   if (bodyHit || !input.layers.stars) return bodyHit
   return pickStar(input)
+}
+
+export function createPickerStarGrid() {
+  return createStarPickGrid()
 }

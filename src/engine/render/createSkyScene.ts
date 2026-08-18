@@ -15,7 +15,7 @@ import { createMilkyWayLayer } from './layers/milkyWayLayer'
 import { createGridLayer } from './layers/gridLayer'
 import { createHelperLayer } from './layers/helperLayer'
 import { createSkyLimbLayer, disposeSkyLimbLayer } from './layers/skyLimbLayer'
-import { createBodiesLayer } from './layers/bodyLayer'
+import { createBodiesLayer, disposeBodiesLayer } from './layers/bodyLayer'
 import type { SkySceneContext } from './skyContext'
 
 export function createSkyScene(options: {
@@ -127,6 +127,7 @@ export function disposeSkyScene(ctx: SkySceneContext) {
   ctx.layers.ground.geometry.dispose()
   ctx.materials.ground.dispose()
   disposeSkyLimbLayer(ctx.layers.skyLimb)
+  disposeBodiesLayer(ctx.layers.bodyPoints)
   ctx.renderer.dispose()
   ctx.renderer.domElement.remove()
 }
