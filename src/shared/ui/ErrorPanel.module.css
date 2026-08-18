@@ -1,0 +1,48 @@
+.panel {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  width: min(360px, calc(100vw - 40px));
+  padding: 22px 24px;
+  background: var(--color-error-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  text-align: left;
+}
+
+.loading {
+  text-align: center;
+  color: var(--color-body);
+}
+
+.eyebrow {
+  color: var(--color-label);
+  font: 9px var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.panel h2 {
+  margin: 6px 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.panel p {
+  margin: 0 0 16px;
+  color: var(--color-body);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.panel button {
+  color: #081018;
+  background: var(--color-gold);
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+}

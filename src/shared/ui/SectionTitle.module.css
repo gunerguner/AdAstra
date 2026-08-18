@@ -1,0 +1,23 @@
+.title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--color-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 13px;
+}
+
+.title svg {
+  color: var(--color-gold);
+}
+
+.title b {
+  margin-left: auto;
+  color: var(--color-gold-soft);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0;
+}

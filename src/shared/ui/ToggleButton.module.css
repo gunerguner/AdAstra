@@ -1,0 +1,39 @@
+.toggle {
+  position: relative;
+  padding: 9px 8px;
+  min-height: 32px;
+  border: 1px solid var(--color-border-muted);
+  text-align: left;
+  background: var(--color-toggle);
+  color: var(--color-toggle-text);
+  font-size: 11px;
+  border-radius: 3px;
+  transition: 0.18s;
+}
+
+.active {
+  color: var(--color-gold-warm);
+  border-color: var(--color-gold-border);
+  background: var(--color-gold-fill);
+}
+
+.ecliptic.active {
+  color: #ffd9a0;
+  border-color: rgba(240, 160, 58, 0.7);
+  background: rgba(240, 160, 58, 0.14);
+}
+
+.equator.active {
+  color: #c8f0ff;
+  border-color: rgba(76, 196, 232, 0.7);
+  background: rgba(76, 196, 232, 0.14);
+}
+
+.swatch {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 5px;
+  border-radius: 50%;
+  vertical-align: 0;
+}

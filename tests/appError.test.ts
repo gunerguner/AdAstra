@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { AppError, isAbortError, toAppError } from '../src/engine/appError'
+import { AppError, isAbortError, toAppError } from '../src/shared/errors/appError'
 
 describe('统一错误处理', () => {
   it('保留已有 AppError 的编码与可重试标记', () => {

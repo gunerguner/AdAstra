@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { interpolateBodySnapshots, type BodySnapshotWindow } from '../src/engine/astronomyService'
+import { interpolateBodySnapshots, type BodySnapshotWindow } from '../src/engine/astronomy/astronomyService'
 
 const window: BodySnapshotWindow = {
   fromUtcMillis: 1_000,

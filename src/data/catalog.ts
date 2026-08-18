@@ -1,20 +1,9 @@
-import { AppError } from '../engine/appError'
+import { AppError } from '@/shared/errors/appError'
 import constellationCatalog from './constellations.yaml'
+import type { ConstellationLine } from '@/shared/types/star'
 
-export type Star = {
-  id: string
-  name: string
-  constellation: string
-  raHours: number
-  decDeg: number
-  magnitude: number
-  color: string
-}
-
-export type ConstellationLine = {
-  name: string
-  segments: string[][]
-}
+export type { Star, ConstellationLine } from '@/shared/types/star'
+export { countStarsThroughMagnitude } from '@/shared/types/star'
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
@@ -35,17 +24,6 @@ function readConstellations(value: unknown): ConstellationLine[] {
       }),
     }
   })
-}
-
-export function countStarsThroughMagnitude(stars: readonly Star[], limit: number) {
-  let low = 0
-  let high = stars.length
-  while (low < high) {
-    const mid = (low + high) >> 1
-    if (stars[mid].magnitude <= limit) low = mid + 1
-    else high = mid
-  }
-  return low
 }
 
 export const constellationLines: ConstellationLine[] = readConstellations(constellationCatalog)

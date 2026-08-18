@@ -1,0 +1,133 @@
+.deck {
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  bottom: calc(22px + var(--safe-bottom));
+  transform: translateX(-50%);
+  width: min(688px, calc(100vw - 360px));
+  padding: 14px 18px 11px;
+  background: var(--color-deck);
+  border: 1px solid var(--color-border);
+  backdrop-filter: blur(20px);
+}
+
+.collapsed {
+  width: min(520px, calc(100vw - 360px));
+  padding: 8px 12px;
+}
+
+.top,
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.toggle {
+  flex: none;
+}
+
+.label {
+  display: grid;
+  gap: 2px;
+}
+
+.label strong {
+  font: 14px var(--font-serif);
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.step,
+.play {
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  background: var(--color-control);
+  display: grid;
+  place-items: center;
+  height: 31px;
+  width: 31px;
+  min-width: 31px;
+  border-radius: 50%;
+}
+
+.play {
+  width: 39px;
+  height: 39px;
+  color: #171a23;
+  border-color: var(--color-gold);
+  background: var(--color-gold);
+}
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 10px var(--font-mono);
+  color: var(--color-label);
+}
+
+.speed select {
+  width: 100px;
+  padding: 6px 7px;
+  font: 10px var(--font-mono);
+  background: var(--color-field);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: 35px 1fr 35px;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 11px;
+  color: var(--color-label);
+  font: 9px var(--font-mono);
+}
+
+.timeline input {
+  width: 100%;
+  accent-color: var(--color-gold);
+}
+
+.bottom {
+  border-top: 1px solid var(--color-divider);
+  padding-top: 9px;
+  gap: 8px;
+  color: var(--color-label);
+  font-size: 9px;
+}
+
+.bottom button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--color-gold);
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media (max-width: 940px) {
+  .deck,
+  .collapsed {
+    width: min(590px, calc(100vw - 28px));
+  }
+}
+
+@media (max-width: 680px) {
+  .deck {
+    width: min(100% - 24px, 590px);
+    bottom: calc(10px + var(--safe-bottom));
+    padding: 10px 12px;
+  }
+}

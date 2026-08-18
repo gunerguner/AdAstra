@@ -1,0 +1,142 @@
+.topbar {
+  position: absolute;
+  z-index: 10;
+  top: var(--safe-top);
+  inset-inline: 0;
+  height: 58px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--color-topbar);
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.19em;
+  font-weight: 500;
+}
+
+.mark {
+  color: var(--color-gold-soft);
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid var(--color-gold-border);
+  border-radius: 50%;
+}
+
+.brand i {
+  width: 1px;
+  height: 15px;
+  background: rgba(190, 218, 247, 0.32);
+}
+
+.brand small {
+  font-family: var(--font-sans);
+  letter-spacing: 0.06em;
+  color: var(--color-label);
+  font-size: 11px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  justify-self: center;
+  border: 1px solid var(--color-border-muted);
+  background: rgba(6, 12, 31, 0.45);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 6px 12px;
+  border-right: 1px solid var(--color-divider);
+  color: var(--color-gold);
+}
+
+.stat:last-child {
+  border: 0;
+}
+
+.stat span {
+  color: var(--color-label);
+  font: 9px var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.stat strong {
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.time {
+  color: var(--color-cyan);
+}
+
+.view {
+  color: #c8a56e;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+@media (max-width: 1080px) {
+  .brand small,
+  .brand i {
+    display: none;
+  }
+
+  .stat span {
+    display: none;
+  }
+}
+
+@media (max-width: 940px) {
+  .view {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
+
+  .brand span:nth-of-type(2) {
+    display: none;
+  }
+
+  .stat {
+    padding: 5px 8px;
+  }
+
+  .stat strong {
+    font-size: 10px;
+  }
+
+  .time span {
+    display: none;
+  }
+}

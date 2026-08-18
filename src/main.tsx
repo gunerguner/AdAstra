@@ -5,10 +5,10 @@ import '@fontsource/dm-mono/400.css'
 import '@fontsource/dm-mono/500.css'
 import '@fontsource/fraunces/500.css'
 import '@fontsource/fraunces/600.css'
-import App from './App'
-import ErrorBoundary from './components/ErrorBoundary'
-import { AppError, logAppError, toAppError } from './engine/appError'
-import './styles.css'
+import App from './app/App'
+import { ErrorBoundary } from './shared/ui'
+import { AppError, logAppError, toAppError } from './shared/errors/appError'
+import './styles/index.css'
 
 const root = document.getElementById('root')
 if (!root) throw new AppError('render', '找不到应用根节点')

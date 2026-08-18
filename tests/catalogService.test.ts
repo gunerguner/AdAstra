@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CatalogService } from '../src/engine/catalogService'
+import { CatalogService } from '../src/engine/catalog/catalogService'
 
 const catalogBuffer = new Float32Array([6.75, -16.7, -1.46, 0, 0]).buffer
 const sha256 = createHash('sha256').update(new Uint8Array(catalogBuffer)).digest('hex')

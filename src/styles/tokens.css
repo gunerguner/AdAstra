@@ -1,0 +1,45 @@
+:root {
+  --font-sans: 'Manrope Variable', Manrope, sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-serif: 'Fraunces', serif;
+  --color-page: #050817;
+  --color-text: #ecf5ff;
+  --color-heading: #d8e8f8;
+  --color-body: #c5d8ec;
+  --color-label: #9bb4cc;
+  --color-gold: #ecc378;
+  --color-gold-soft: #f5cf88;
+  --color-gold-warm: #f3e2be;
+  --color-gold-border: rgba(245, 207, 136, 0.5);
+  --color-gold-fill: rgba(182, 128, 52, 0.18);
+  --color-cyan: #81c8df;
+  --color-border: rgba(141, 187, 226, 0.2);
+  --color-border-muted: rgba(125, 165, 202, 0.18);
+  --color-border-strong: rgba(173, 218, 255, 0.5);
+  --color-divider: rgba(141, 187, 226, 0.12);
+  --color-panel: rgba(7, 14, 34, 0.78);
+  --color-topbar: rgba(4, 8, 23, 0.44);
+  --color-deck: rgba(5, 12, 29, 0.82);
+  --color-card: rgba(8, 16, 37, 0.86);
+  --color-control: rgba(14, 25, 53, 0.58);
+  --color-control-hover: rgba(76, 121, 168, 0.42);
+  --color-field: rgba(93, 128, 169, 0.12);
+  --color-toggle: rgba(12, 24, 50, 0.55);
+  --color-toggle-text: #bdd0e4;
+  --color-tooltip: rgba(8, 16, 36, 0.78);
+  --color-error-panel: rgba(12, 19, 39, 0.92);
+  --color-cardinal: rgba(210, 230, 245, 0.82);
+  --color-constellation: rgba(186, 198, 232, 0.72);
+  --blur-panel: 24px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --app-bg:
+    radial-gradient(ellipse at 54% 45%, rgba(22, 56, 105, 0.36) 0%, rgba(9, 19, 47, 0.28) 34%, transparent 63%),
+    linear-gradient(170deg, #0d1634 0%, #071026 53%, #030610 100%);
+  color: var(--color-text);
+  background: var(--color-page);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+}

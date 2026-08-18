@@ -1,0 +1,87 @@
+.viewport,
+.viewport canvas {
+  inset: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.viewport canvas {
+  z-index: 1;
+  outline: none;
+  touch-action: none;
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.2;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+.vignette {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 42%, rgba(0, 1, 9, 0.54) 100%);
+}
+
+.cardinal {
+  position: absolute;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  color: var(--color-cardinal);
+  font: 12px var(--font-mono);
+  letter-spacing: 0.16em;
+  transform: translate3d(-999px, -999px, 0);
+  will-change: transform;
+  text-shadow: 0 0 12px rgba(5, 10, 24, 0.9);
+  margin: -8px 0 0 -10px;
+}
+
+.cardinalNorth {
+  color: var(--color-gold-soft);
+}
+
+.constellationName {
+  position: absolute;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  display: none;
+  color: var(--color-constellation);
+  font: 11px var(--font-sans);
+  letter-spacing: 0.18em;
+  text-shadow: 0 0 12px rgba(5, 10, 24, 0.95);
+  transform: translate3d(-999px, -999px, 0);
+  margin: -6px 0 0 -18px;
+}
+
+.hover {
+  position: absolute;
+  z-index: 7;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  display: none;
+  padding: 3px 8px;
+  color: var(--color-text);
+  font: 12px var(--font-sans);
+  background: var(--color-tooltip);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  text-shadow: 0 0 10px rgba(5, 10, 24, 0.9);
+}
+
+.fallback {
+  background: #050817;
+}

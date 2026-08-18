@@ -44,6 +44,11 @@ function offlineShellPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), yamlPlugin(), offlineShellPlugin()],
+  resolve: {
+    alias: {
+      '@': resolve(import.meta.dirname, 'src'),
+    },
+  },
   css: {
     transformer: 'lightningcss',
   },

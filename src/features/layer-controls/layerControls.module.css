@@ -1,0 +1,40 @@
+.section {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.section:last-child {
+  border: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.range {
+  accent-color: var(--color-gold);
+  width: 100%;
+}
+
+.quickViews {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.quickViews button {
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-toggle);
+  color: var(--color-toggle-text);
+  padding: 7px 2px;
+  min-height: 32px;
+  font-size: 10px;
+  border-radius: 3px;
+}
+
+.quickViews button:hover {
+  color: var(--color-gold-soft);
+  border-color: var(--color-gold-border);
+}

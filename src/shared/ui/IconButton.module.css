@@ -1,0 +1,24 @@
+.button {
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  background: var(--color-control);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: var(--radius-md);
+  transition: 0.2s ease;
+}
+
+.button:hover {
+  background: var(--color-control-hover);
+  border-color: var(--color-border-strong);
+}
+
+.active {
+  color: var(--color-gold-soft);
+  border-color: var(--color-gold-border);
+  background: var(--color-gold-fill);
+}
