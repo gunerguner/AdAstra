@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    image: adastra-frontend:local
+    container_name: adastra-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PUBLISH_PORT:-8083}:8080"

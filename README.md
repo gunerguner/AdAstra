@@ -2,6 +2,8 @@
 
 Ad Astra 是一款可交互、可离线使用的实时星空 Web 应用。它根据观测地点和时间，在浏览器中还原当时当地的星空，适合天文科普、认识星座以及直观观察星空随时间的变化。
 
+**预览**：[https://adastra.zhangzhicheng.info/](https://adastra.zhangzhicheng.info/)
+
 ## 功能介绍
 
 - **查看任意时空下的星空**：选择常用城市或手动输入经纬度，并设置日期和时间。
@@ -152,6 +154,18 @@ npm run preview
 ```
 
 普通 `build` 会先生成开发夹具星表，再把静态产物输出到 `dist/`。`dist/` 可以部署到支持 HTTPS 的静态文件服务器或 CDN；正式环境需要 HTTPS，Service Worker 才能正常工作。
+
+## Docker 与线上部署
+
+本仓库是纯前端，Compose 栈只有一个 Nginx 容器，默认把 **8083** 映射到宿主机。与 stockManager / carSales / Astock 同机时，由 **tencentDocker** 边缘 Nginx 将 `https://adastra.zhangzhicheng.info` 转到该端口。
+
+```bash
+cp docker/.env.example docker/.env
+docker compose -f docker/docker-compose.yml --env-file docker/.env build
+docker compose -f docker/docker-compose.yml --env-file docker/.env up -d
+```
+
+命令、端口约定、PWA 缓存与证书步骤见 [docker/README.md](docker/README.md)；整机四站点部署见 `tencentDocker/docs/deploy-guide.md`。
 
 ## 数据构建与正式发布
 

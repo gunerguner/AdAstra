@@ -1,2 +1,42 @@
-node_modules
-dist
+# Dependencies
+node_modules/
+
+# Build
+dist/
+dist-ssr/
+
+# Vite / TypeScript cache
+.vite/
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment (keep *.example)
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Local overrides
+*.local
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# IDE / local tools
+.vscode/
+.idea/
+.cursor/
+.claude/
+.trae/
