@@ -1,13 +1,10 @@
 import type { Observer } from '@/shared/types/observer'
 import { AppError } from '@/shared/errors/appError'
 import type { BodySnapshotWindow } from '@/engine/astronomy/astronomyService'
-
-type WorkerMessage = {
-  type: 'snapshot' | 'error'
-  generation: number
-  window?: BodySnapshotWindow
-  message?: string
-}
+import {
+  type AstroWorkerRequest,
+  type AstroWorkerResponse,
+} from '@/engine/astronomy/astroWorkerProtocol'
 
 export function attachAstroWorker(handlers: {
   onSnapshot: (window: BodySnapshotWindow) => void
@@ -17,13 +14,13 @@ export function attachAstroWorker(handlers: {
   let bodyGeneration = 0
   let lastBodyRequestAt = -Infinity
 
-  worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
+  worker.onmessage = (event: MessageEvent<AstroWorkerResponse>) => {
     if (event.data.generation !== bodyGeneration) return
     if (event.data.type === 'error') {
-      handlers.onError(new AppError('worker', event.data.message ?? '天体计算失败', { retryable: true }))
+      handlers.onError(new AppError('worker', event.data.message, { retryable: true }))
       return
     }
-    if (event.data.window) handlers.onSnapshot(event.data.window)
+    handlers.onSnapshot(event.data.window)
   }
   worker.onerror = (event) => {
     event.preventDefault()
@@ -35,13 +32,14 @@ export function attachAstroWorker(handlers: {
       if (document.hidden || now - lastBodyRequestAt < 120) return
       bodyGeneration += 1
       lastBodyRequestAt = now
-      worker.postMessage({
+      const request: AstroWorkerRequest = {
         type: 'snapshot',
         generation: bodyGeneration,
         utcMillis,
         lookAheadMillis: 6 * 60 * 60 * 1000,
         observer,
-      })
+      }
+      worker.postMessage(request)
     },
     terminate() {
       worker.terminate()

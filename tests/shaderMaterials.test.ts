@@ -1,17 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { MeshBasicMaterial, Vector3 } from 'three'
+import { Vector3 } from 'three'
 import { makeBodyMaterial } from '../src/engine/render/materials/bodyMaterial'
 import { makeGroundMaterial } from '../src/engine/render/materials/groundMaterial'
 import { makeMilkyWayMaterial } from '../src/engine/render/materials/milkyWayMaterial'
 import { makeSkyLineMaterial } from '../src/engine/render/materials/skyLineMaterial'
 import { makeStarMaterial } from '../src/engine/render/materials/starMaterial'
-import {
-  createSkyProjectionUniforms,
-  fragmentDeclaresUnusedSkyProjectionUniforms,
-  patchSkyProjection,
-  shaderDeclaresSkyProjectionUniforms,
-  shaderUsesSkyProjection,
-} from '../src/engine/render/skyProjection'
+import { createSkyProjectionUniforms } from '../src/engine/render/skyProjection'
 
 const sky = createSkyProjectionUniforms()
 const horizonMat = new Float32Array(9)
@@ -41,25 +35,11 @@ describe('shader sky projection uniforms', () => {
 
   it('declares and uses projection uniforms only in vertex shaders', () => {
     for (const material of materials) {
-      expect(shaderDeclaresSkyProjectionUniforms(material.vertexShader)).toBe(true)
-      expect(shaderUsesSkyProjection(material.vertexShader)).toBe(true)
-      expect(fragmentDeclaresUnusedSkyProjectionUniforms(material.fragmentShader)).toBe(false)
+      expect(material.vertexShader).toContain('uniform float uFov')
+      expect(material.vertexShader).toContain('uniform float uAspect')
+      expect(material.vertexShader).toContain('projectSkyDir')
+      expect(material.fragmentShader).not.toContain('uniform float uFov')
+      expect(material.fragmentShader).not.toContain('uniform float uAspect')
     }
-  })
-
-  it('injects vertex uniforms for patched built-in materials without unused fragment uniforms', () => {
-    const material = new MeshBasicMaterial()
-    patchSkyProjection(material, sky)
-    const shader = {
-      uniforms: {} as { uFov?: typeof sky.uFov; uAspect?: typeof sky.uAspect },
-      vertexShader: '#include <project_vertex>',
-      fragmentShader: 'void main() {\n}',
-    }
-    material.onBeforeCompile?.(shader as never, undefined as never)
-    expect(shader.uniforms.uFov).toBe(sky.uFov)
-    expect(shader.uniforms.uAspect).toBe(sky.uAspect)
-    expect(shaderDeclaresSkyProjectionUniforms(shader.vertexShader)).toBe(true)
-    expect(shaderUsesSkyProjection(shader.vertexShader)).toBe(true)
-    expect(fragmentDeclaresUnusedSkyProjectionUniforms(shader.fragmentShader)).toBe(false)
   })
 })

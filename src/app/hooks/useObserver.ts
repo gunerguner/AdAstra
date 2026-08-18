@@ -20,7 +20,6 @@ export function useObserver() {
   return {
     cities,
     activeCityIndex,
-    selectedCity,
     observer,
     setCity: (index: number) => {
       setManualPosition(null)

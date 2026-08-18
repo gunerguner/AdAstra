@@ -7,7 +7,7 @@ export type LayerToggleDef = {
   variant?: 'ecliptic' | 'equator'
 }
 
-export const layerToggles: LayerToggleDef[] = [
+export const layerToggles = [
   { key: 'stars', label: '恒星' },
   { key: 'milkyWay', label: '银河' },
   { key: 'constellationLines', label: '星座' },
@@ -19,4 +19,4 @@ export const layerToggles: LayerToggleDef[] = [
   { key: 'celestialEquator', label: '天赤道', swatch: '#4cc4e8', variant: 'equator' },
   { key: 'equatorialGrid', label: '赤道网' },
   { key: 'horizontalGrid', label: '地平网' },
-]
+] satisfies LayerToggleDef[]

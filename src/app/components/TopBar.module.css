@@ -28,8 +28,8 @@
   color: var(--color-gold-soft);
   display: grid;
   place-items: center;
+  aspect-ratio: 1;
   width: 25px;
-  height: 25px;
   border: 1px solid var(--color-gold-border);
   border-radius: 50%;
 }
@@ -92,7 +92,7 @@
 }
 
 .view {
-  color: #c8a56e;
+  color: var(--color-view);
 }
 
 .meta {

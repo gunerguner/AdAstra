@@ -51,7 +51,7 @@
   background: var(--color-control);
   display: grid;
   place-items: center;
-  height: 31px;
+  aspect-ratio: 1;
   width: 31px;
   min-width: 31px;
   border-radius: 50%;
@@ -59,7 +59,6 @@
 
 .play {
   width: 39px;
-  height: 39px;
   color: #171a23;
   border-color: var(--color-gold);
   background: var(--color-gold);

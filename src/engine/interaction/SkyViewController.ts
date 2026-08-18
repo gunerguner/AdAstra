@@ -1,4 +1,4 @@
-import type { MutableRefObject } from 'react'
+import type { RefObject } from 'react'
 import type { SkySimulation, SkyView } from '@/shared/types/sky'
 import { fillHorizonMatrix } from '@/engine/coordinates/skyMath'
 import { pickSkyObject } from './skyPicker'
@@ -11,7 +11,6 @@ import type { SelectedSkyObject } from '@/shared/types/sky'
 type Callbacks = {
   onViewChange: (view: SkyView) => void
   onSelect: (item: SelectedSkyObject | null) => void
-  onWebglReady?: (mode: 'webgl2' | 'canvas') => void
 }
 
 export class SkyViewController {
@@ -19,15 +18,16 @@ export class SkyViewController {
   private pointers = new Map<number, { x: number; y: number }>()
   private pinch: { distance: number; fov: number } | null = null
   private lastViewSyncAt = 0
+  private listeners: AbortController | null = null
 
   constructor(
     private readonly ctx: SkySceneContext,
-    private readonly simulationRef: MutableRefObject<SkySimulation>,
-    private readonly callbacksRef: MutableRefObject<Callbacks>,
+    private readonly simulationRef: RefObject<SkySimulation>,
+    private readonly callbacks: Callbacks,
     private readonly bodiesAt: () => BodySnapshot[],
     private readonly stars: Star[],
     private readonly countStarsThroughMagnitude: (limit: number) => number,
-    private readonly onHover: (hit: SelectedSkyObject | null, clientX: number, clientY: number) => void,
+    private readonly onHover: (hit: SelectedSkyObject | null) => void,
     private readonly hideHover: () => void,
   ) {}
 
@@ -38,7 +38,7 @@ export class SkyViewController {
     const now = performance.now()
     if (forceUiSync || now - this.lastViewSyncAt >= 100) {
       this.lastViewSyncAt = now
-      this.callbacksRef.current.onViewChange(next)
+      this.callbacks.onViewChange(next)
     }
   }
 
@@ -108,14 +108,14 @@ export class SkyViewController {
       ))
       return
     }
-    this.onHover(this.hitAt(event.clientX, event.clientY), event.clientX, event.clientY)
+    this.onHover(this.hitAt(event.clientX, event.clientY))
   }
 
   onPointerUp = (event: PointerEvent) => {
     this.pointers.delete(event.pointerId)
     if (this.pointers.size < 2) this.pinch = null
     if (this.drag && !this.drag.moved && this.pointers.size === 0) {
-      this.callbacksRef.current.onSelect(this.hitAt(event.clientX, event.clientY))
+      this.callbacks.onSelect(this.hitAt(event.clientX, event.clientY))
     }
     if (this.drag?.moved && this.pointers.size === 0) {
       const latest = this.simulationRef.current
@@ -145,24 +145,21 @@ export class SkyViewController {
   }
 
   bind() {
+    this.unbind()
+    this.listeners = new AbortController()
+    const { signal } = this.listeners
     const element = this.ctx.renderer.domElement
-    element.addEventListener('pointerdown', this.onPointerDown)
-    element.addEventListener('pointermove', this.onPointerMove)
-    element.addEventListener('pointerup', this.onPointerUp)
-    element.addEventListener('pointercancel', this.onPointerUp)
-    element.addEventListener('pointerleave', this.onPointerLeave)
-    element.addEventListener('wheel', this.onWheel, { passive: false })
-    element.addEventListener('keydown', this.onKeyDown)
+    element.addEventListener('pointerdown', this.onPointerDown, { signal })
+    element.addEventListener('pointermove', this.onPointerMove, { signal })
+    element.addEventListener('pointerup', this.onPointerUp, { signal })
+    element.addEventListener('pointercancel', this.onPointerUp, { signal })
+    element.addEventListener('pointerleave', this.onPointerLeave, { signal })
+    element.addEventListener('wheel', this.onWheel, { passive: false, signal })
+    element.addEventListener('keydown', this.onKeyDown, { signal })
   }
 
   unbind() {
-    const element = this.ctx.renderer.domElement
-    element.removeEventListener('pointerdown', this.onPointerDown)
-    element.removeEventListener('pointermove', this.onPointerMove)
-    element.removeEventListener('pointerup', this.onPointerUp)
-    element.removeEventListener('pointercancel', this.onPointerUp)
-    element.removeEventListener('pointerleave', this.onPointerLeave)
-    element.removeEventListener('wheel', this.onWheel)
-    element.removeEventListener('keydown', this.onKeyDown)
+    this.listeners?.abort()
+    this.listeners = null
   }
 }

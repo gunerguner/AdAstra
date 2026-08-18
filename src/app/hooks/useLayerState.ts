@@ -7,5 +7,5 @@ export function useLayerState() {
   const toggleLayer = (key: keyof LayerState) => {
     setLayers((value) => ({ ...value, [key]: !value[key] }))
   }
-  return { layers, setLayers, toggleLayer }
+  return { layers, toggleLayer }
 }

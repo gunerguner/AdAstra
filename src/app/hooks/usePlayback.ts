@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import { SimulationClock } from '@/engine/clock/simulationClock'
 import { defaultPlaybackSpeed } from '@/config/playbackSpeeds'
 import type { SkySimulation } from '@/shared/types/sky'
 
-export function usePlayback(timeZone: string, simulationRef: MutableRefObject<SkySimulation>) {
+export function usePlayback(timeZone: string, simulationRef: RefObject<SkySimulation>) {
   const [currentTime, setCurrentTime] = useState(() => new Date())
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState(defaultPlaybackSpeed)
@@ -33,7 +33,7 @@ export function usePlayback(timeZone: string, simulationRef: MutableRefObject<Sk
 
   const pausePlayback = useCallback(() => {
     clock.current.pause()
-    commitTime(clock.current.now().utcMillis, false)
+    commitTime(clock.current.now(), false)
     setIsPlaying(false)
   }, [commitTime])
 
@@ -46,7 +46,7 @@ export function usePlayback(timeZone: string, simulationRef: MutableRefObject<Sk
     let frame = 0
     let lastUi = 0
     const tick = () => {
-      const utcMillis = clock.current.now().utcMillis
+      const utcMillis = clock.current.now()
       simulationRef.current.utcMillis = utcMillis
       const now = performance.now()
       if (now - lastUi >= 200) {

@@ -92,7 +92,7 @@ export default function TimeDeck({
               max="21600000"
               value={timelineOffset}
               onChange={(event) => onTimelineChange(Number(event.target.value))}
-              onMouseDown={onTimelineAnchor}
+              onPointerDown={onTimelineAnchor}
             />
             <span>+6h</span>
           </div>

@@ -66,7 +66,7 @@ export default function App() {
             objectCardRef={objectCardRef}
           >
             {selected && (
-              <ObjectCard selected={selected} onClose={() => setSelected(null)} cardRef={objectCardRef} />
+              <ObjectCard selected={selected} onClose={() => setSelected(null)} ref={objectCardRef} />
             )}
           </SkyViewport>
         ) : catalogError ? (

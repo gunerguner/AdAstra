@@ -1,0 +1,17 @@
+.panel {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  width: min(360px, calc(100vw - 40px));
+  padding: 22px 24px;
+  background: var(--color-error-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  text-align: left;
+}
+
+.loading {
+  text-align: center;
+  color: var(--color-body);
+}

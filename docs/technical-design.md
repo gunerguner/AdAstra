@@ -8,6 +8,7 @@
 - 目标平台：桌面端 Web
 - 部署形态：静态 PWA，首次完成资源缓存后可离线运行
 - 浏览器范围：Chrome、Edge、Safari、Firefox 近两个主版本
+- 运行下限：ES2022、WebGL2、ES Module Worker、Service Worker 与安全上下文（HTTPS 或 localhost）；不提供 `modulePreload` polyfill，也不提供 WebGL1/Canvas2D 星空渲染
 - 授权目标：优先公共领域、CC0、MIT、BSD 等可商用来源
 - 技术重点：数据源与授权、连续时间交互、渲染性能
 
@@ -16,7 +17,7 @@
 推荐采用自研轻量星空引擎：
 
 - 应用层：React + TypeScript + Vite。
-- 渲染层：Three.js `WebGLRenderer` + WebGL2；能力检测通过时运行于 OffscreenCanvas 渲染 Worker，否则回退主线程。
+- 渲染层：Three.js `WebGLRenderer` + 主线程 WebGL2；不支持 WebGL2 时展示明确错误，不进入 OffscreenCanvas 或 Canvas2D 星空渲染。
 - 天文计算：Astronomy Engine，放入独立计算 Worker。
 - 恒星渲染：单批次 GPU 点精灵，自定义 ShaderMaterial。
 - 时间动画：统一模拟时钟 + 精确采样 + 帧间球面插值。
@@ -173,10 +174,10 @@ flowchart LR
     Scheduler --> Interpolator[球面插值器]
     Samples --> Interpolator
 
-    Catalog[二进制星表] --> DataWorker[数据解析 Worker]
-    DataWorker --> GPUBuffer[GPU 星表缓冲]
+    Catalog[二进制星表] --> CatalogService[主线程星表加载]
+    CatalogService --> GPUBuffer[GPU 星表缓冲]
 
-    Camera --> Renderer[OffscreenCanvas 渲染 Worker]
+    Camera --> Renderer[主线程 WebGL2 渲染器]
     Interpolator --> Renderer
     GPUBuffer --> Renderer
     Scheduler --> Renderer
@@ -261,14 +262,14 @@ flowchart LR
 - 提供名称、星座锚点和选中对象查询。
 - 根据版本和校验和决定是否使用缓存。
 
-### 7.4 `SkyRenderer`
+### 7.4 `createSkyScene` / `startSkyRenderLoop`
 
 职责：
 
 - 创建和销毁 Three.js 资源。
 - 管理各渲染图层及绘制顺序。
-- 接收只读帧快照。
-- 上报帧耗时、绘制批次和上下文丢失。
+- 读取 `simulationRef` 中的时间、视角和图层状态。
+- 在同一 rAF 内更新地平矩阵、相机、uniforms、DOM overlay 并 `render`。
 
 禁止：
 
@@ -276,14 +277,13 @@ flowchart LR
 - 发起星历计算。
 - 直接修改应用状态。
 
-### 7.5 `InteractionController`
+### 7.5 `SkyViewController`
 
 职责：
 
 - Pointer Events、滚轮和键盘输入。
 - 指针捕获和拖拽惯性。
 - 相机方位、高度和视场角约束。
-- 时间轴手势和过时任务取消。
 - 天体拾取。
 
 ### 7.6 Worker
@@ -294,28 +294,13 @@ flowchart LR
 - 长跨度跳转终点计算。
 - 数据解析和可选的星表历元传播。
 
-`render.worker.ts`：
+当前实现不使用 OffscreenCanvas 渲染 Worker。星空始终在主线程 WebGL2 提交；计算 Worker 只负责天体快照。不支持 WebGL2 时展示兼容性提示，不提供 Canvas2D 星空回退。
 
-- 持有 OffscreenCanvas、Three.js Renderer 和 WebGL2 上下文。
-- 使用 Worker `requestAnimationFrame` 独立提交渲染帧。
-- 消费主线程发送的最新输入快照，不处理 DOM。
-- 将少量标签屏幕锚点和性能统计回传主线程。
-- 通过 MessageChannel 与计算 Worker 交换星历采样。
+运行时检测：
 
-运行时必须依次检测：
-
-1. 主线程支持 `transferControlToOffscreen`。
-2. Worker 内可创建 WebGL2 上下文。
-3. Worker 内支持 `requestAnimationFrame`。
-
-回退顺序：
-
-1. OffscreenCanvas 渲染 Worker + WebGL2 + 计算 Worker。
-2. 主线程 WebGL2 + 计算 Worker。
-3. 精简 Canvas2D：限制亮星数量、30 FPS 和辅助线。
-4. 明确兼容性提示，不允许长期白屏。
-
-OffscreenCanvas 不是功能正确性的依赖；两条 WebGL2 路径必须共用相同帧快照、Shader、数据格式和验收用例。
+1. 主线程可创建 WebGL2 上下文。
+2. 可创建 ES Module Worker。
+3. 生产环境可注册 Service Worker（安全上下文）。
 
 ## 8. 数据源方案
 
@@ -1059,20 +1044,21 @@ simulationUtc += fixedStepPerFrame
 
 ### 11.2 帧快照
 
-每帧开始生成不可变快照：
+热路径通过 `simulationRef` 共享同一可变状态（`SkySimulation`），不另建不可变 FrameSnapshot：
 
 ```ts
-type FrameSnapshot = {
+type SkySimulation = {
   utcMillis: number
   observer: Observer
-  view: ViewState
-  layers: LayerState
   magnitudeLimit: number
-  quality: QualityLevel
+  layers: LayerState
+  azimuth: number
+  altitude: number
+  fov: number
 }
 ```
 
-本帧所有模块使用同一快照：
+本帧所有模块读取同一引用：
 
 - 恒星矩阵。
 - 行星插值。
@@ -1463,78 +1449,70 @@ type WorkerResponse =
 
 ## 15. 目录设计
 
+当前仓库按 feature-first UI + layer-first engine 组织：无路由、无全局 store、无渲染 Worker。星空绘制只在主线程 WebGL2。
+
 ```text
 src/
+  main.tsx
   app/
     App.tsx
-    routes.tsx
+    components/
+    hooks/
   features/
-    location/
-    time-control/
-    layer-control/
+    sky-viewer/
+    location-controls/
+    layer-controls/
+    time-controls/
     object-details/
   engine/
     astronomy/
-      AstronomyService.ts
-      coordinates.ts
-      time.ts
-      accuracy.ts
+    catalog/
     clock/
-      SimulationClock.ts
-      PlaybackState.ts
+    coordinates/
     interaction/
-      CameraController.ts
-      PickingService.ts
-      TimeScrubber.ts
-    render/
-      SkyRenderer.ts
-      StarLayer.ts
-      SolarSystemLayer.ts
-      ConstellationLayer.ts
-      GridLayer.ts
-      LabelLayer.ts
-      shaders/
-    data/
-      CatalogService.ts
-      binary-schema.ts
-      manifest.ts
     performance/
-      FrameMonitor.ts
-      QualityController.ts
-  store/
-    app-store.ts
+    render/
+      layers/
+      materials/
   workers/
     astronomy.worker.ts
-    render.worker.ts
-  types/
+  shared/
+    ui/
+    types/
+    errors/
+  config/
+  data/
+  styles/
 scripts/
   catalog/
-    download.ts
-    normalize.ts
-    license-filter.ts
-    pack.ts
-    verify.ts
+    build-catalog.mjs
+    check-release-gate.mjs
+  astronomy/
+    check-golden.mjs
+  pwa/
+    service-worker.template.js
 public/
   data/
 docs/
   prd
   product-design.md
   technical-design.md
+  data-release-gate.md
 data/
-  sources.lock.json
   licenses/
+    catalog-sources.json
 ```
 
 ## 16. 核心接口
+
+以下类型与 `src/shared/types`、`src/engine/catalog/catalogService.ts` 对齐。地点时区属于城市配置，不属于核心 `Observer`。
 
 ### 16.1 观测者
 
 ```ts
 type Observer = {
-  latitudeDeg: number
-  longitudeDeg: number
-  elevationMeters: number
-  timeZone: string
+  latitude: number
+  longitude: number
 }
 ```
 
@@ -1543,28 +1521,29 @@ type Observer = {
 ```ts
 type LayerState = {
   stars: boolean
-  starNames: boolean
   constellationLines: boolean
   constellationNames: boolean
-  solarSystem: boolean
+  bodies: boolean
   horizon: boolean
-  cardinalDirections: boolean
+  showBelowHorizon: boolean
   ecliptic: boolean
   celestialEquator: boolean
   equatorialGrid: boolean
   horizontalGrid: boolean
-  belowHorizon: boolean
+  milkyWay: boolean
   daylightEffect: boolean
 }
 ```
 
+方位标记始终绘制，不进入图层开关。星座名称当前随 `constellationLines` 显隐，没有独立 UI 开关。
+
 ### 16.3 视角
 
 ```ts
-type ViewState = {
-  azimuthDeg: number
-  altitudeDeg: number
-  fieldOfViewDeg: number
+type SkyView = {
+  azimuth: number
+  altitude: number
+  fov: number
 }
 ```
 
@@ -1573,34 +1552,22 @@ type ViewState = {
 ```ts
 type DataManifest = {
   schemaVersion: number
-  dataVersion: string
-  createdAt: string
-  epoch: number
+  catalogVersion: string
+  generatedAt: string
+  production: boolean
+  source: string
   files: Array<{
-    path: string
-    bytes: number
-    sha256: string
-    sourceIds: string[]
-  }>
-  sources: Array<{
-    id: string
     name: string
-    version: string
-    url: string
-    licenseId: string
-    commercialUseReviewed: boolean
-    reviewedAt?: string
+    indexName: string
+    byteLength: number
+    sha256: string
+    count: number
+    layout: { type: 'float32-soa'; fields: string[]; floatsPerRecord: number }
   }>
 }
 ```
 
-生产构建断言：
-
-```text
-every source.commercialUseReviewed === true
-```
-
-否则构建失败。
+生产发布门禁见 `docs/data-release-gate.md`。`npm run catalog:production` 读取 `data/licenses/catalog-sources.json`；`productionAllowed` 为 `false` 时构建失败。
 
 ## 17. 错误处理
 
@@ -1994,15 +1961,15 @@ license check
 - 运行时不能与某个外部目录格式绑定。
 - 便于替换数据源而不改渲染和交互。
 
-### ADR-005：优先使用 OffscreenCanvas 渲染 Worker
+### ADR-005：主线程 WebGL2 渲染，计算放入 Worker
 
-状态：接受。
+状态：接受（取代 OffscreenCanvas 渲染 Worker 优先方案）。
 
 原因：
 
-- 将 React、DOM 和输入长任务与 WebGL 提交隔离。
-- 目标浏览器近两个版本具备可用基础，但仍必须运行时检测。
-- 主线程 WebGL2 保留为等价回退路径。
+- 当前热路径需要同一帧更新 horizon 矩阵、相机、overlay DOM 和 `renderer.render`。
+- OffscreenCanvas 渲染 Worker 尚未实现，能力检测不应暴露未使用的 `offscreen-worker` 分支。
+- 天体计算已在独立 ES Module Worker 中完成，足以隔离 Astronomy Engine 成本。
 
 ### ADR-006：星表按视星等排序
 

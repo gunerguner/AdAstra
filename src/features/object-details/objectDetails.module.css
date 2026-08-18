@@ -17,8 +17,8 @@
   position: absolute;
   right: 10px;
   top: 10px;
+  aspect-ratio: 1;
   width: 25px;
-  height: 25px;
 }
 
 .eyebrow {

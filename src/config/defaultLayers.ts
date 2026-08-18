@@ -1,6 +1,6 @@
 import type { LayerState } from '@/shared/types/sky'
 
-export const defaultLayers: LayerState = {
+export const defaultLayers = {
   stars: true,
   constellationLines: true,
   constellationNames: true,
@@ -13,4 +13,4 @@ export const defaultLayers: LayerState = {
   horizontalGrid: false,
   milkyWay: true,
   daylightEffect: true,
-}
+} satisfies LayerState

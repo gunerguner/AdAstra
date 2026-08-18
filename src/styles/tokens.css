@@ -13,6 +13,14 @@
   --color-gold-border: rgba(245, 207, 136, 0.5);
   --color-gold-fill: rgba(182, 128, 52, 0.18);
   --color-cyan: #81c8df;
+  --color-view: #c8a56e;
+  --color-ecliptic: #ffd9a0;
+  --color-ecliptic-border: rgba(240, 160, 58, 0.7);
+  --color-ecliptic-fill: rgba(240, 160, 58, 0.14);
+  --color-equator: #c8f0ff;
+  --color-equator-border: rgba(76, 196, 232, 0.7);
+  --color-equator-fill: rgba(76, 196, 232, 0.14);
+  --color-option: #0d1833;
   --color-border: rgba(141, 187, 226, 0.2);
   --color-border-muted: rgba(125, 165, 202, 0.18);
   --color-border-strong: rgba(173, 218, 255, 0.5);

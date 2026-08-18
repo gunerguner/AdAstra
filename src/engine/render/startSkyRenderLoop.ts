@@ -1,4 +1,4 @@
-import type { MutableRefObject, RefObject } from 'react'
+import type { RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { ConstellationAnchor } from '@/engine/astronomy/constellationData'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/astronomyService'
@@ -18,15 +18,15 @@ import { cardinals } from '@/config/cardinals'
 export function startSkyRenderLoop(options: {
   ctx: SkySceneContext
   catalog: RuntimeCatalog
-  simulationRef: MutableRefObject<SkySimulation>
-  selectedRef: MutableRefObject<SelectedSkyObject | null>
+  simulationRef: RefObject<SkySimulation>
+  selectedRef: RefObject<SelectedSkyObject | null>
   objectCardRef?: RefObject<HTMLElement | null>
   constellationAnchors: ConstellationAnchor[]
-  cardinalRefs: MutableRefObject<Record<string, HTMLDivElement | null>>
-  constellationNameRefs: MutableRefObject<Record<string, HTMLDivElement | null>>
+  cardinalRefs: RefObject<Record<string, HTMLDivElement | null>>
+  constellationNameRefs: RefObject<Record<string, HTMLDivElement | null>>
   hoverRef: RefObject<HTMLDivElement | null>
-  hoverTargetRef: MutableRefObject<{ id: string; name: string; type: 'star' | 'body' } | null>
-  bodySnapshotRef: MutableRefObject<BodySnapshotWindow | null>
+  hoverTargetRef: RefObject<{ id: string; name: string; type: 'star' | 'body' } | null>
+  bodySnapshotRef: RefObject<BodySnapshotWindow | null>
   requestBodySnapshot: (now: number, utcMillis: number, observer: SkySimulation['observer']) => void
   onSelect: (item: SelectedSkyObject | null) => void
 }) {

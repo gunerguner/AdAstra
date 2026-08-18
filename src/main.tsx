@@ -25,15 +25,7 @@ if ('serviceWorker' in navigator) {
   if (import.meta.env.PROD) {
     window.addEventListener('load', async () => {
       try {
-        const registration = await navigator.serviceWorker.register('/service-worker.js')
-        registration.addEventListener('updatefound', () => {
-          const installing = registration.installing
-          installing?.addEventListener('statechange', () => {
-            if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-              window.dispatchEvent(new CustomEvent('ad-astra-update-ready'))
-            }
-          })
-        })
+        await navigator.serviceWorker.register('/service-worker.js')
       } catch (error) {
         logAppError(toAppError(error, 'service-worker'), '离线缓存注册失败，将继续使用在线模式')
       }

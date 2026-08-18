@@ -18,6 +18,8 @@
     },
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "allowImportingTsExtensions": true,
     "noEmit": true,

@@ -15,7 +15,7 @@
 }
 
 .control option {
-  background: #0d1833;
+  background: var(--color-option);
 }
 
 .coordinates {

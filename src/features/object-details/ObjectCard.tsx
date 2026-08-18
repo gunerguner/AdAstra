@@ -7,12 +7,12 @@ import styles from './objectDetails.module.css'
 type Props = {
   selected: SelectedSkyObject
   onClose: () => void
-  cardRef: Ref<HTMLElement>
+  ref?: Ref<HTMLElement>
 }
 
-export default function ObjectCard({ selected, onClose, cardRef }: Props) {
+export default function ObjectCard({ selected, onClose, ref }: Props) {
   return (
-    <aside className={styles.card} ref={cardRef}>
+    <aside className={styles.card} ref={ref}>
       <IconButton className={styles.close} onClick={onClose} aria-label="关闭详情"><X size={15} /></IconButton>
       <span className={styles.eyebrow}>{selected.type === 'star' ? '恒星' : '行星'}</span>
       <h2>{selected.name}</h2>

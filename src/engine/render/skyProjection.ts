@@ -1,4 +1,4 @@
-import type { Camera, IUniform, Material } from 'three'
+import type { Camera } from 'three'
 import { Vector3 } from 'three'
 
 export const SKY_FOV_DEG = 100
@@ -21,18 +21,6 @@ export const skyProjectionUniformDeclsGlsl = /* glsl */ `
 uniform float uFov;
 uniform float uAspect;
 `
-
-export function shaderDeclaresSkyProjectionUniforms(source: string) {
-  return source.includes('uniform float uFov') && source.includes('uniform float uAspect')
-}
-
-export function shaderUsesSkyProjection(source: string) {
-  return source.includes('projectSkyDir') || source.includes('projectSky(')
-}
-
-export function fragmentDeclaresUnusedSkyProjectionUniforms(fragmentShader: string) {
-  return shaderDeclaresSkyProjectionUniforms(fragmentShader) && !shaderUsesSkyProjection(fragmentShader)
-}
 
 export const skyProjectionGlsl = /* glsl */ `
 vec3 skyViewDir(vec3 worldPos) {
@@ -63,42 +51,6 @@ export function createSkyProjectionUniforms(fovDeg = SKY_FOV_DEG) {
   return {
     uFov: { value: (fovDeg * Math.PI) / 180 },
     uAspect: { value: 1 },
-  }
-}
-
-export function patchSkyProjection(
-  material: Material,
-  uniforms: { uFov: IUniform<number>; uAspect: IUniform<number> },
-) {
-  material.customProgramCacheKey = () => 'sky-stereographic-v3'
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.uFov = uniforms.uFov
-    shader.uniforms.uAspect = uniforms.uAspect
-    shader.vertexShader = `
-      varying vec3 vSkyViewDir;
-      ${skyProjectionUniformDeclsGlsl}
-      ${skyProjectionGlsl}
-    ` + shader.vertexShader.replace(
-      '#include <project_vertex>',
-      `
-      vec4 mvPosition = vec4(transformed, 1.0);
-      #ifdef USE_INSTANCING
-        mvPosition = instanceMatrix * mvPosition;
-      #endif
-      mvPosition = modelViewMatrix * mvPosition;
-      vSkyViewDir = skyViewDir(transformed);
-      gl_Position = projectSkyDir(vSkyViewDir);
-      `,
-    )
-    shader.fragmentShader = `
-      varying vec3 vSkyViewDir;
-      ${skyOutsideViewGlsl}
-    ` + shader.fragmentShader.replace(
-      'void main() {',
-      `void main() {
-        if (skyOutsideView(vSkyViewDir) > 0.5) discard;
-      `,
-    )
   }
 }
 

@@ -38,3 +38,12 @@
   color: var(--color-gold-soft);
   border-color: var(--color-gold-border);
 }
+
+.swatch {
+  display: inline-block;
+  aspect-ratio: 1;
+  width: 7px;
+  margin-inline-end: 5px;
+  border-radius: 50%;
+  vertical-align: 0;
+}

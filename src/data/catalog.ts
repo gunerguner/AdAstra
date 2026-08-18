@@ -2,9 +2,6 @@ import { AppError } from '@/shared/errors/appError'
 import constellationCatalog from './constellations.yaml'
 import type { ConstellationLine } from '@/shared/types/star'
 
-export type { Star, ConstellationLine } from '@/shared/types/star'
-export { countStarsThroughMagnitude } from '@/shared/types/star'
-
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
 

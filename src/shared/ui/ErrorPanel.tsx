@@ -1,4 +1,5 @@
 import { errorTitle, type AppError } from '@/shared/errors/appError'
+import panelStyles from './StatusPanel.module.css'
 import styles from './ErrorPanel.module.css'
 
 type Props = {
@@ -8,7 +9,7 @@ type Props = {
 
 export function ErrorPanel({ error, onRetry }: Props) {
   return (
-    <div className={styles.panel} role="alert">
+    <div className={`${panelStyles.panel} ${styles.content}`} role="alert">
       <span className={styles.eyebrow}>{error.code}</span>
       <h2>{errorTitle(error)}</h2>
       <p>{error.message}</p>

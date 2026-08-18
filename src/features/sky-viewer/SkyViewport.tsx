@@ -1,32 +1,26 @@
-import { useEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type RefObject } from 'react'
+import { useEffect, useEffectEvent, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/astronomyService'
 import { buildConstellationAnchors, buildConstellationStars } from '@/engine/astronomy/constellationData'
 import { attachAstroWorker } from '@/engine/astronomy/attachAstroWorker'
-import { detectRenderCapabilities } from '@/engine/render/renderCapabilities'
 import { createSkyScene, disposeSkyScene } from '@/engine/render/createSkyScene'
 import { disposeBodiesLayer } from '@/engine/render/layers/bodyLayer'
 import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
 import { SkyViewController } from '@/engine/interaction/SkyViewController'
-import { poseOfSkyObject } from '@/engine/interaction/skyPose'
-import { projectSkyToNdc } from '@/engine/render/skyProjection'
-import { horizontalVector } from '@/engine/coordinates/skyGeometry'
-import { applyOverlayPlacement, overlayScreenPosition } from '@/engine/interaction/overlayProjection'
 import { ErrorPanel } from '@/shared/ui'
 import { cardinals } from '@/config/cardinals'
 import styles from './skyViewer.module.css'
 
 type Props = {
   catalog: RuntimeCatalog
-  simulationRef: MutableRefObject<SkySimulation>
+  simulationRef: RefObject<SkySimulation>
   onViewChange: (view: { azimuth: number; altitude: number; fov: number }) => void
   onSelect: (item: SelectedSkyObject | null) => void
   selected?: SelectedSkyObject | null
   objectCardRef?: RefObject<HTMLElement | null>
   children?: ReactNode
-  onWebglReady?: (mode: 'webgl2' | 'canvas') => void
 }
 
 export default function SkyViewport({
@@ -37,7 +31,6 @@ export default function SkyViewport({
   selected,
   objectCardRef,
   children,
-  onWebglReady,
 }: Props) {
   const mountRef = useRef<HTMLDivElement>(null)
   const hoverRef = useRef<HTMLDivElement>(null)
@@ -47,9 +40,9 @@ export default function SkyViewport({
   const hoverTargetRef = useRef<{ id: string; name: string; type: 'star' | 'body' } | null>(null)
   const selectedRef = useRef<SelectedSkyObject | null>(selected ?? null)
   selectedRef.current = selected ?? null
-  const callbacksRef = useRef({ onSelect, onViewChange, onWebglReady })
-  callbacksRef.current = { onSelect, onViewChange, onWebglReady }
   const [viewportError, setViewportError] = useState<AppError | null>(null)
+  const selectObject = useEffectEvent(onSelect)
+  const changeView = useEffectEvent(onViewChange)
 
   const constellationStars = useMemo(() => buildConstellationStars(catalog), [catalog])
   const constellationAnchors = useMemo(() => buildConstellationAnchors(constellationStars), [constellationStars])
@@ -74,9 +67,8 @@ export default function SkyViewport({
       setViewportError(appError)
     }
 
-    if (detectRenderCapabilities().activeFallback !== 'main-thread-webgl2') {
+    if (!document.createElement('canvas').getContext('webgl2')) {
       reportError(new AppError('webgl', '当前浏览器不支持 WebGL2 星空渲染。'), 'webgl')
-      callbacksRef.current.onWebglReady?.('canvas')
       worker.terminate()
       return
     }
@@ -86,12 +78,10 @@ export default function SkyViewport({
       ctx = createSkyScene({ mount, stars, constellationStars })
     } catch (error) {
       reportError(error, 'webgl')
-      callbacksRef.current.onWebglReady?.('canvas')
       worker.terminate()
       return
     }
 
-    callbacksRef.current.onWebglReady?.(ctx.renderer.capabilities.isWebGL2 ? 'webgl2' : 'canvas')
     const resizeObserver = new ResizeObserver(ctx.resize)
     resizeObserver.observe(mount)
 
@@ -104,7 +94,7 @@ export default function SkyViewport({
     const controller = new SkyViewController(
       ctx,
       simulationRef,
-      callbacksRef,
+      { onSelect: selectObject, onViewChange: changeView },
       bodiesAt,
       stars,
       countStarsThroughMagnitude,
@@ -114,24 +104,6 @@ export default function SkyViewport({
           hoverTargetRef.current = { id: hit.id, name: hit.name, type: hit.type }
           hoverNode.textContent = hit.name
           ctx.renderer.domElement.style.cursor = 'pointer'
-          const pose = poseOfSkyObject(hit, {
-            bodies: bodiesAt(),
-            starById: catalog.starById,
-            horizonMat: ctx.uniforms.horizonMat,
-            horizonScratch: ctx.scratch.horizon,
-          })
-          if (pose) {
-            const ndc = projectSkyToNdc(
-              horizontalVector(pose.altitude, pose.azimuth),
-              ctx.camera,
-              simulationRef.current.fov,
-              ctx.camera.aspect,
-            )
-            applyOverlayPlacement(
-              hoverNode,
-              overlayScreenPosition(ndc, ctx.renderer.domElement.clientWidth, ctx.renderer.domElement.clientHeight, 14, -18),
-            )
-          }
         } else hideHover()
       },
       hideHover,
@@ -150,7 +122,7 @@ export default function SkyViewport({
       hoverTargetRef,
       bodySnapshotRef,
       requestBodySnapshot: worker.requestSnapshot,
-      onSelect: (item) => callbacksRef.current.onSelect(item),
+      onSelect: selectObject,
     })
 
     return () => {
