@@ -6,7 +6,7 @@ describe('render resource lifecycle', () => {
   it('disposes body atlas with the rest of the sky scene', () => {
     const source = readFileSync(resolve(import.meta.dirname, '../src/engine/render/createSkyScene.ts'), 'utf8')
     expect(source).toContain('disposeBodiesLayer(ctx.layers.bodyPoints)')
-    expect(source).toContain('disposeSkyDomeLayer(ctx.layers.skyDome)')
+    expect(source).toContain('disposeMesh(ctx.layers.skyDome)')
   })
 
   it('stops the render loop, observers, worker and scene together', () => {
@@ -20,6 +20,6 @@ describe('render resource lifecycle', () => {
 
   it('keeps astronomy-engine out of the interpolation module', () => {
     const source = readFileSync(resolve(import.meta.dirname, '../src/engine/astronomy/bodyInterpolation.ts'), 'utf8')
-    expect(source).not.toContain('astronomy-engine')
+    expect(source).not.toMatch(/from ['"]astronomy-engine['"]/)
   })
 })

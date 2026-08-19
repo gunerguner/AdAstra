@@ -132,7 +132,7 @@ flowchart LR
 | --- | --- |
 | `engine/clock` | 模拟时钟：UTC 推进、播放倍率，不碰 UI、不碰星历 |
 | `engine/astronomy` | 太阳系快照、Worker 协议、采样窗口插值、星座锚点装配 |
-| `engine/coordinates` | 赤道/地平变换、地方恒星时、民用地方时 ↔ UTC |
+| `engine/coordinates` | 坐标与地方时；天文常数（黄赤交角、儒略日、曙暮光阈值）在 `astroConstants.ts` |
 | `engine/catalog` | 运行时加载并校验二进制星表 |
 | `engine/render` | Three.js 场景、图层、材质、帧循环 |
 | `engine/interaction` | 指针/滚轮、视角约束、拾取、DOM overlay 投影 |
@@ -298,7 +298,7 @@ type SkySimulation = {
 }
 ```
 
-图层开关包括恒星、星座连线与名称、太阳系天体、地平线、地表与云层、地平线下对象、黄道、天赤道、赤道网、地平网、银河、昼夜效果。方位标记始终绘制。星座名称当前随星座连线显隐。
+图层开关包括恒星、星座连线（名称随连线显隐）、太阳系天体、地平线、地表与云层、地平线下对象、黄道、天赤道、赤道网、地平网、银河、昼夜效果。方位标记始终绘制。
 
 ## 9. 数据源方案
 

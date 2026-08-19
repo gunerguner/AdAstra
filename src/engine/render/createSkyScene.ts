@@ -1,9 +1,9 @@
+/** 创建 WebGL 场景：相机、共享 uniforms、各图层几何。不推进时间、不请求星历。 */
 import {
   Line,
   Matrix3,
   PerspectiveCamera,
   Scene,
-  ShaderMaterial,
   Vector2,
   Vector3,
   WebGLRenderer,
@@ -11,13 +11,15 @@ import {
 import type { Star } from '@/shared/types/star'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
 import { SKY_FOV_DEG, SKY_VOID_HEX, createSkyProjectionUniforms } from './skyProjection'
+import { PIXEL_RATIO_CAP } from '@/engine/performance/pixelRatio'
 import { createStarLayer } from './layers/starLayer'
 import { createMilkyWayLayer } from './layers/milkyWayLayer'
 import { createGridLayer } from './layers/gridLayer'
 import { createHelperLayer } from './layers/helperLayer'
-import { createSkyDomeLayer, disposeSkyDomeLayer } from './layers/skyDomeLayer'
-import { createSkyLimbLayer, disposeSkyLimbLayer } from './layers/skyLimbLayer'
+import { createFullscreenLayer, disposeMesh } from './layers/fullscreenLayer'
 import { createBodiesLayer, disposeBodiesLayer } from './layers/bodyLayer'
+import { makeSkyDomeMaterial } from './materials/skyDomeMaterial'
+import { makeSkyLimbMaterial } from './materials/skyLimbMaterial'
 import type { SkySceneContext } from './skyContext'
 
 export function createSkyScene(options: {
@@ -41,8 +43,7 @@ export function createSkyScene(options: {
   const viewToHorizon = { value: new Matrix3() }
   const sharedUniforms = { horizonMat, sky, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon }
 
-  let qualityPixelRatio = Math.min(window.devicePixelRatio, 1.5)
-  renderer.setPixelRatio(qualityPixelRatio)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, PIXEL_RATIO_CAP))
   renderer.setClearColor(SKY_VOID_HEX, 1)
   renderer.setAnimationLoop(null)
   renderer.domElement.tabIndex = 0
@@ -53,7 +54,7 @@ export function createSkyScene(options: {
   )
   mount.appendChild(renderer.domElement)
 
-  const skyDome = createSkyDomeLayer(sharedUniforms)
+  const skyDome = createFullscreenLayer(makeSkyDomeMaterial(sharedUniforms), -1)
   scene.add(skyDome.mesh)
   const milkyWay = createMilkyWayLayer(sharedUniforms)
   scene.add(milkyWay.mesh)
@@ -65,7 +66,7 @@ export function createSkyScene(options: {
   scene.add(bodies.points)
   const helpers = createHelperLayer(sharedUniforms)
   scene.add(helpers.group)
-  const skyLimb = createSkyLimbLayer(sharedUniforms)
+  const skyLimb = createFullscreenLayer(makeSkyLimbMaterial(sharedUniforms), 20)
   scene.add(skyLimb.mesh)
 
   const resize = () => {
@@ -119,26 +120,20 @@ export function createSkyScene(options: {
 export function disposeSkyScene(ctx: SkySceneContext) {
   ctx.layers.starGeometry.dispose()
   ctx.layers.starMaterial.dispose()
-  disposeSkyDomeLayer(ctx.layers.skyDome)
-  ctx.layers.milkyWay.geometry.dispose()
-  ;(ctx.layers.milkyWay.material as ShaderMaterial).dispose()
+  disposeMesh(ctx.layers.skyDome)
+  disposeMesh(ctx.layers.milkyWay)
   ctx.layers.linesGroup.children.forEach((child) => {
     ;(child as Line).geometry.dispose()
   })
   ctx.materials.constellationLine.dispose()
   ctx.materials.equatorialGrid.dispose()
   ctx.materials.horizontalGrid.dispose()
-  ctx.layers.ecliptic.geometry.dispose()
-  ;(ctx.layers.ecliptic.material as ShaderMaterial).dispose()
-  ctx.layers.equator.geometry.dispose()
-  ;(ctx.layers.equator.material as ShaderMaterial).dispose()
-  ctx.layers.horizon.geometry.dispose()
-  ;(ctx.layers.horizon.material as ShaderMaterial).dispose()
-  ctx.layers.horizonGlow.geometry.dispose()
-  ;(ctx.layers.horizonGlow.material as ShaderMaterial).dispose()
-  ctx.layers.ground.geometry.dispose()
-  ctx.materials.ground.dispose()
-  disposeSkyLimbLayer(ctx.layers.skyLimb)
+  disposeMesh(ctx.layers.ecliptic)
+  disposeMesh(ctx.layers.equator)
+  disposeMesh(ctx.layers.horizon)
+  disposeMesh(ctx.layers.horizonGlow)
+  disposeMesh(ctx.layers.ground)
+  disposeMesh(ctx.layers.skyLimb)
   disposeBodiesLayer(ctx.layers.bodyPoints)
   ctx.renderer.dispose()
   ctx.renderer.domElement.remove()

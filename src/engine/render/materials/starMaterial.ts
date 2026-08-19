@@ -1,5 +1,6 @@
+/** 恒星点着色：地平矩阵可见性、视星等大小、衍射尖刺。 */
 import { AdditiveBlending, ShaderMaterial } from 'three'
-import { skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
+import { applyHorizonGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
 export function makeStarMaterial(uniforms: {
@@ -25,20 +26,16 @@ export function makeStarMaterial(uniforms: {
       attribute float size;
       attribute float brightness;
       attribute vec3 color;
-      uniform float uHorizon[9];
       uniform float uPixelRatio;
       uniform float uShowBelow;
       uniform float uDaylight;
+      ${applyHorizonGlsl}
       ${skyProjectionUniformDeclsGlsl}
       varying vec3 vColor;
       varying float vBright;
       ${skyProjectionGlsl}
       void main() {
-        vec3 h = vec3(
-          uHorizon[0] * position.x + uHorizon[1] * position.y + uHorizon[2] * position.z,
-          uHorizon[3] * position.x + uHorizon[4] * position.y + uHorizon[5] * position.z,
-          uHorizon[6] * position.x + uHorizon[7] * position.y + uHorizon[8] * position.z
-        );
+        vec3 h = applyHorizon(position);
         vec3 viewDir = skyViewDir(h);
         float visible = max(step(0.0, h.y), uShowBelow) * (1.0 - skyOutsideView(viewDir));
         float extinction = mix(1.0, clamp((h.y + 0.05) * 3.6, 0.12, 1.0), 0.82);

@@ -1,7 +1,18 @@
+/**
+ * 太阳系天体怎么画：点大小、图集格、拾取半径。
+ * 后半是昼夜：用太阳高度算出 daylight/twilight/warmth，喂给天空和 UI。
+ */
+import {
+  ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG,
+  CIVIL_TWILIGHT_ALTITUDE_DEG,
+  DAYLIGHT_FULL_ALTITUDE_DEG,
+  NAUTICAL_TWILIGHT_ALTITUDE_DEG,
+} from '@/engine/coordinates/astroConstants'
+
 export const SATURN_RING_SCALE = 1.9
-/** Night-time sprite padding around the photosphere disc. */
+/** 夜间太阳精灵比光球略大，用来画光晕。 */
 export const SUN_GLOW_SCALE = 1.7
-/** Daytime sprite padding for sky halo; pick radius still uses the disc. */
+/** 白天光晕更大；拾取仍按光球半径。 */
 export const SUN_DAY_GLOW_SCALE = 2.45
 
 export const bodyRenderOrder = [
@@ -105,9 +116,9 @@ function smoothstep(edge0: number, edge1: number, value: number) {
 }
 
 export function atmospherePhase(sunAltitude: number, enabled: boolean): AtmospherePhase {
-  if (!enabled || sunAltitude < -18) return 'night'
-  if (sunAltitude < -12) return 'astronomical'
-  if (sunAltitude < -6) return 'nautical'
+  if (!enabled || sunAltitude < ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG) return 'night'
+  if (sunAltitude < NAUTICAL_TWILIGHT_ALTITUDE_DEG) return 'astronomical'
+  if (sunAltitude < CIVIL_TWILIGHT_ALTITUDE_DEG) return 'nautical'
   if (sunAltitude < 0) return 'civil'
   return 'day'
 }
@@ -120,6 +131,7 @@ export function atmospherePhaseLabel(phase: AtmospherePhase) {
   return '夜晚'
 }
 
+/** 由太阳高度得到昼夜混合系数。天文曙暮光以下全夜，DAYLIGHT_FULL 左右白天。 */
 export function atmosphereState(sunAltitude: number, sunAzimuth: number, enabled: boolean): AtmosphereState {
   if (!enabled) {
     return {
@@ -130,15 +142,19 @@ export function atmosphereState(sunAltitude: number, sunAzimuth: number, enabled
   }
   const altitude = sunAltitude * Math.PI / 180
   const azimuth = sunAzimuth * Math.PI / 180
-  const daylight = saturate((sunAltitude + 12) / 18)
-  const twilight = smoothstep(-18, -8, sunAltitude) * (1 - smoothstep(2, 14, sunAltitude))
-  const night = 1 - smoothstep(-18, -6, sunAltitude)
+  const daylight = saturate(
+    (sunAltitude - NAUTICAL_TWILIGHT_ALTITUDE_DEG)
+      / (DAYLIGHT_FULL_ALTITUDE_DEG - NAUTICAL_TWILIGHT_ALTITUDE_DEG),
+  )
+  const twilight = smoothstep(ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG, -8, sunAltitude)
+    * (1 - smoothstep(2, 14, sunAltitude))
+  const night = 1 - smoothstep(ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG, CIVIL_TWILIGHT_ALTITUDE_DEG, sunAltitude)
   return {
     daylight,
     twilight,
     night,
     warmth: twilight * (0.28 + 0.72 * (1 - saturate(Math.abs(sunAltitude) / 10))),
-    groundLight: smoothstep(-12, 8, sunAltitude),
+    groundLight: smoothstep(NAUTICAL_TWILIGHT_ALTITUDE_DEG, 8, sunAltitude),
     sunElevation: sunAltitude,
     sunAzimuth,
     sunDirX: Math.cos(altitude) * Math.sin(azimuth),
@@ -146,8 +162,4 @@ export function atmosphereState(sunAltitude: number, sunAzimuth: number, enabled
     sunDirZ: Math.cos(altitude) * Math.cos(azimuth),
     phase: atmospherePhase(sunAltitude, true),
   }
-}
-
-export function daylightFactor(sunAltitude: number, enabled: boolean) {
-  return atmosphereState(sunAltitude, 0, enabled).daylight
 }

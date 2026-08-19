@@ -1,5 +1,6 @@
+/** 地平剪影：沿方位角用噪声做出山脊，再按昼夜上色。 */
 import { ShaderMaterial } from 'three'
-import { skyOutsideMaskGlsl, skyProjectionUniformDeclsGlsl, skyViewDirFromNdcGlsl } from '@/engine/render/skyProjection'
+import { skyFullscreenVertexGlsl, skyOutsideMaskGlsl, skyProjectionUniformDeclsGlsl, skyViewDirFromNdcGlsl } from '@/engine/render/skyProjection'
 import type { SharedSkyUniforms } from '@/engine/render/skyContext'
 
 export function makeGroundMaterial(uniforms: SharedSkyUniforms) {
@@ -17,13 +18,7 @@ export function makeGroundMaterial(uniforms: SharedSkyUniforms) {
       uSunDir: uniforms.sunDir,
       uViewToHorizon: uniforms.viewToHorizon,
     },
-    vertexShader: `
-      varying vec2 vNdc;
-      void main() {
-        vNdc = position.xy;
-        gl_Position = vec4(position.xy, 0.0, 1.0);
-      }
-    `,
+    vertexShader: skyFullscreenVertexGlsl,
     fragmentShader: `
       ${skyProjectionUniformDeclsGlsl}
       uniform float uDaylight;

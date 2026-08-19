@@ -1,5 +1,6 @@
+/** 辅助折线（星座/网格/黄道）：同一套投影，昼夜各一套颜色。 */
 import { Color, ShaderMaterial } from 'three'
-import { skyOutsideViewGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
+import { applyHorizonGlsl, skyOutsideViewGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
 export function makeSkyLineMaterial(
@@ -34,21 +35,14 @@ export function makeSkyLineMaterial(
       uDaylight: uniforms.daylight ?? { value: 0 },
     },
     vertexShader: `
-      uniform float uHorizon[9];
+      ${applyHorizonGlsl}
       ${skyProjectionUniformDeclsGlsl}
       uniform float uUseHorizon;
       varying float vAlt;
       varying vec3 vViewDir;
       ${skyProjectionGlsl}
       void main() {
-        vec3 h = position;
-        if (uUseHorizon > 0.5) {
-          h = vec3(
-            uHorizon[0] * position.x + uHorizon[1] * position.y + uHorizon[2] * position.z,
-            uHorizon[3] * position.x + uHorizon[4] * position.y + uHorizon[5] * position.z,
-            uHorizon[6] * position.x + uHorizon[7] * position.y + uHorizon[8] * position.z
-          );
-        }
+        vec3 h = uUseHorizon > 0.5 ? applyHorizon(position) : position;
         vAlt = h.y;
         vViewDir = skyViewDir(h);
         gl_Position = projectSkyDir(vViewDir);

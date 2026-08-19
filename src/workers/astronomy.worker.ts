@@ -1,4 +1,5 @@
 /// <reference lib="webworker" />
+/** 天文 Worker 入口：只算太阳系快照窗口，不做渲染。 */
 import { astronomyService } from '@/engine/astronomy/astronomyService'
 import {
   type AstroWorkerRequest,

@@ -1,6 +1,8 @@
+/** 天球圆盘边缘的一圈光晕，把球外裁切藏进装饰线。 */
 import { ShaderMaterial } from 'three'
 import {
   SKY_OUTSIDE_Z,
+  skyFullscreenVertexGlsl,
   skyOutsideMaskGlsl,
   skyProjectionUniformDeclsGlsl,
   skyViewDirFromNdcGlsl,
@@ -20,13 +22,7 @@ export function makeSkyLimbMaterial(uniforms: SharedSkyUniforms) {
       uTwilight: uniforms.twilight,
       uWarmth: uniforms.warmth,
     },
-    vertexShader: `
-      varying vec2 vNdc;
-      void main() {
-        vNdc = position.xy;
-        gl_Position = vec4(position.xy, 0.0, 1.0);
-      }
-    `,
+    vertexShader: skyFullscreenVertexGlsl,
     fragmentShader: `
       ${skyProjectionUniformDeclsGlsl}
       uniform float uDaylight;

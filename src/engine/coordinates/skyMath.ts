@@ -1,24 +1,41 @@
+/**
+ * 赤道 ↔ 地平：星表给赤经/赤纬，画面要方位/高度。
+ * 向量约定：赤道 x=春分点、z=北天极；地平 x=东、y=天顶、z=北。
+ */
 import type { Observer } from '@/shared/types/observer'
+import {
+  DEG_PER_HOUR,
+  GMST_HOURS_AT_J2000,
+  HOURS_PER_DAY,
+  JULIAN_J2000,
+  JULIAN_UNIX_EPOCH,
+  MS_PER_DAY,
+  OBLIQUITY_DEG,
+  SIDEREAL_HOURS_PER_SOLAR_DAY,
+} from './astroConstants'
 
 const degToRad = (value: number) => (value * Math.PI) / 180
 const radToDeg = (value: number) => (value * 180) / Math.PI
 
 const utcMillisOf = (time: number | Date) => (typeof time === 'number' ? time : time.getTime())
 
-const julianDate = (utcMillis: number) => utcMillis / 86400000 + 2440587.5
+/** Unix 毫秒 → 儒略日。 */
+const julianDate = (utcMillis: number) => utcMillis / MS_PER_DAY + JULIAN_UNIX_EPOCH
 
+/** 当地恒星时（小时）：春分点相对观测者子午圈转了多少。 */
 export function localSiderealHours(time: number | Date, longitude: number) {
   const jd = julianDate(utcMillisOf(time))
-  const d = jd - 2451545.0
-  return ((18.697374558 + 24.06570982441908 * d + longitude / 15) % 24 + 24) % 24
+  const d = jd - JULIAN_J2000
+  return ((GMST_HOURS_AT_J2000 + SIDEREAL_HOURS_PER_SOLAR_DAY * d + longitude / DEG_PER_HOUR) % HOURS_PER_DAY + HOURS_PER_DAY) % HOURS_PER_DAY
 }
 
+/** 赤经（时）赤纬（度）→ 天球单位向量。 */
 export function equatorialUnitInto(
   raHours: number,
   decDeg: number,
   out: { x: number; y: number; z: number },
 ) {
-  const ra = degToRad(raHours * 15)
+  const ra = degToRad(raHours * DEG_PER_HOUR)
   const dec = degToRad(decDeg)
   const cosDec = Math.cos(dec)
   out.x = cosDec * Math.cos(ra)
@@ -31,13 +48,13 @@ export function equatorialUnit(raHours: number, decDeg: number) {
   return equatorialUnitInto(raHours, decDeg, { x: 0, y: 0, z: 0 })
 }
 
-/** Equatorial (x=春分点, z=北天极) → 地平 (x=东, y=天顶, z=北) */
+/** 写出 3×3 行主序矩阵：赤道向量 × 此阵 = 地平向量。由地方恒星时和纬度决定。 */
 export function fillHorizonMatrix(
   time: number | Date,
   observer: Observer,
   out: number[] | Float32Array,
 ) {
-  const lst = degToRad(localSiderealHours(time, observer.longitude) * 15)
+  const lst = degToRad(localSiderealHours(time, observer.longitude) * DEG_PER_HOUR)
   const lat = degToRad(observer.latitude)
   const sinLst = Math.sin(lst)
   const cosLst = Math.cos(lst)
@@ -55,6 +72,7 @@ export function fillHorizonMatrix(
   return out
 }
 
+/** 用上面的 3×3 把一个赤道方向转到地平。 */
 export function applyHorizonMatrixInto(
   vector: { x: number; y: number; z: number },
   matrix: ArrayLike<number>,
@@ -66,14 +84,16 @@ export function applyHorizonMatrixInto(
   return out
 }
 
+/** 黄道上某黄经对应的赤道方向。 */
 export function eclipticEquatorialUnit(longitudeDeg: number) {
-  const obliquity = degToRad(23.439)
+  const obliquity = degToRad(OBLIQUITY_DEG)
   const lon = degToRad(longitudeDeg)
   const ra = Math.atan2(Math.sin(lon) * Math.cos(obliquity), Math.cos(lon))
   const dec = Math.asin(Math.sin(obliquity) * Math.sin(lon))
-  return equatorialUnit(((ra < 0 ? ra + Math.PI * 2 : ra) / (Math.PI * 2)) * 24, radToDeg(dec))
+  return equatorialUnit(((ra < 0 ? ra + Math.PI * 2 : ra) / (Math.PI * 2)) * HOURS_PER_DAY, radToDeg(dec))
 }
 
+/** 地平单位向量 → 高度角、方位角（度）。y 是天顶分量。 */
 export function horizonAnglesFromVector(vector: { x: number; y: number; z: number }) {
   return {
     altitude: Math.asin(Math.max(-1, Math.min(1, vector.y))) * 180 / Math.PI,

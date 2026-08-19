@@ -1,3 +1,4 @@
+/** 恒星拾取网格：按 NDC 分格，避免每帧扫全部亮星。 */
 export const STAR_PICK_GRID_COLS = 16
 export const STAR_PICK_GRID_ROWS = 16
 

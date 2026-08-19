@@ -1,3 +1,4 @@
+/** 空闲降到约 4fps，拖拽/时间变化后短时满帧。 */
 export const IDLE_FRAME_MS = 250
 export const INTERACTION_HOLD_MS = 450
 

@@ -1,8 +1,14 @@
+/**
+ * 地平角度 ↔ Three 向量，以及网格用的大圆弧细分。
+ * 相机始终对着天球，look 是视线，up 尽量朝天顶。
+ */
 import { Vector3 } from 'three'
+import { GREAT_CIRCLE_STEP_RAD } from './astroConstants'
 
 export const toVector3 = (point: { x: number; y: number; z: number }) =>
   new Vector3(point.x, point.y, point.z)
 
+/** 高度角/方位角（度）→ 地平单位向量。0° 方位为正北，90° 为正东。 */
 export function horizontalVectorInto(altitude: number, azimuth: number, out: Vector3) {
   const alt = altitude * Math.PI / 180
   const az = azimuth * Math.PI / 180
@@ -17,8 +23,8 @@ export function horizontalVector(altitude: number, azimuth: number) {
   return horizontalVectorInto(altitude, azimuth, new Vector3())
 }
 
-/** Screen-up for a zenith-locked camera. Near the zenith, falls back to north along the current azimuth. */
-export function skyCameraUpInto(altitudeDeg: number, azimuthDeg: number, look: Vector3, out: Vector3) {
+/** 屏幕「上」：尽量朝天顶；仰望天顶时改朝北，避免相机翻滚。 */
+export function skyCameraUpInto(_altitudeDeg: number, azimuthDeg: number, look: Vector3, out: Vector3) {
   out.set(0, 1, 0).addScaledVector(look, -look.y)
   if (out.lengthSq() < 1e-8) {
     const azimuth = azimuthDeg * Math.PI / 180
@@ -27,7 +33,8 @@ export function skyCameraUpInto(altitudeDeg: number, azimuthDeg: number, look: V
   return out.normalize()
 }
 
-export function densifyGreatCircle(points: Vector3[], maxStepRad = Math.PI / 90) {
+/** 在天球大圆弧上加密顶点，避免黄道/网格画成折线。默认约每 2° 一点。 */
+export function densifyGreatCircle(points: Vector3[], maxStepRad = GREAT_CIRCLE_STEP_RAD) {
   if (points.length < 2) return points
   const out: Vector3[] = [points[0].clone().normalize()]
   for (let index = 0; index < points.length - 1; index += 1) {

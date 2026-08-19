@@ -1,3 +1,4 @@
+/** 指针/滚轮/键盘：改方位仰角视场，并调用拾取。高频视角不进 React state。 */
 import type { RefObject } from 'react'
 import type { SkySimulation, SkyView } from '@/shared/types/sky'
 import { clampSkyFov } from '@/engine/render/skyProjection'

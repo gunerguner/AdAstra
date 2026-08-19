@@ -1,3 +1,4 @@
+/** 选中对象此刻的方位/高度：恒星走地平矩阵，行星直接用快照角度。 */
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 import { applyHorizonMatrixInto, equatorialUnitInto, horizonAnglesFromVector } from '@/engine/coordinates/skyMath'
 import type { Star } from '@/shared/types/star'

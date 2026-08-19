@@ -1,3 +1,7 @@
+/** 天球 NDC → DOM 像素，给方位字/星座名/信息卡定位。 */
+import type { Camera, Vector3 } from 'three'
+import { projectSkyToNdc } from '@/engine/render/skyProjection'
+
 export function ndcRadiusForPixels(pixels: number, minScreenSize: number) {
   return pixels * 2 / Math.max(1, minScreenSize)
 }
@@ -44,4 +48,32 @@ export function applyOverlayPlacement(node: HTMLElement, placement: OverlayPlace
   if (node.style.display !== 'block') node.style.display = 'block'
   if (node.style.transform !== transform) node.style.transform = transform
   return true
+}
+
+export function placeSkyOverlay(
+  node: HTMLElement,
+  world: Vector3,
+  camera: Camera,
+  fovDeg: number,
+  aspect: number,
+  width: number,
+  height: number,
+  overlayNdc: { x: number; y: number; z: number },
+  offsetX = 0,
+  offsetY = 0,
+  edge = 1,
+  size?: OverlaySize,
+) {
+  return applyOverlayPlacement(
+    node,
+    overlayScreenPosition(
+      projectSkyToNdc(world, camera, fovDeg, aspect, overlayNdc),
+      width,
+      height,
+      offsetX,
+      offsetY,
+      edge,
+      size,
+    ),
+  )
 }

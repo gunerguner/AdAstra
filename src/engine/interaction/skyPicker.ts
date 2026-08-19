@@ -1,3 +1,4 @@
+/** 点击拾取：天体按屏幕半径，恒星走网格再线性精修。 */
 import type { Camera, Vector3 } from 'three'
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 import { applyHorizonMatrixInto, equatorialUnitInto, horizonAnglesFromVector } from '@/engine/coordinates/skyMath'

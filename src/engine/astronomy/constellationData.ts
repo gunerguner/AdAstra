@@ -1,3 +1,4 @@
+/** 把 YAML 星座连线接到运行时星表：线段几何 + 名称锚点（所用恒星方向的平均）。 */
 import { equatorialUnit } from '@/engine/coordinates/skyMath'
 import { constellationLines } from '@/data/catalog'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'

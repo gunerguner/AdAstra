@@ -1,5 +1,6 @@
+/** 银河带：银道坐标 + fbm 噪声，加性混合，白天压暗。 */
 import { AdditiveBlending, DoubleSide, ShaderMaterial, Vector3 } from 'three'
-import { skyOutsideViewGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
+import { applyHorizonGlsl, skyOutsideViewGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
 export function makeMilkyWayMaterial(
@@ -30,21 +31,17 @@ export function makeMilkyWayMaterial(
       uAspect: uniforms.sky.uAspect,
     },
     vertexShader: `
-      uniform float uHorizon[9];
       uniform vec3 uGalX;
       uniform vec3 uGalY;
       uniform vec3 uGalZ;
+      ${applyHorizonGlsl}
       ${skyProjectionUniformDeclsGlsl}
       varying vec3 vGal;
       varying float vAlt;
       varying vec3 vViewDir;
       ${skyProjectionGlsl}
       void main() {
-        vec3 h = vec3(
-          uHorizon[0] * position.x + uHorizon[1] * position.y + uHorizon[2] * position.z,
-          uHorizon[3] * position.x + uHorizon[4] * position.y + uHorizon[5] * position.z,
-          uHorizon[6] * position.x + uHorizon[7] * position.y + uHorizon[8] * position.z
-        );
+        vec3 h = applyHorizon(position);
         vGal = vec3(dot(position, uGalX), dot(position, uGalY), dot(position, uGalZ));
         vAlt = h.y;
         vViewDir = skyViewDir(h);

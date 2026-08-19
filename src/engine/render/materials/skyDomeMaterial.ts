@@ -1,5 +1,7 @@
+/** 天空颜色：按视线方向和太阳位置混合夜空/曙暮/白昼。 */
 import { ShaderMaterial } from 'three'
 import {
+  skyFullscreenVertexGlsl,
   skyOutsideMaskGlsl,
   skyProjectionUniformDeclsGlsl,
   skyViewDirFromNdcGlsl,
@@ -20,13 +22,7 @@ export function makeSkyDomeMaterial(uniforms: SharedSkyUniforms) {
       uSunDir: uniforms.sunDir,
       uViewToHorizon: uniforms.viewToHorizon,
     },
-    vertexShader: `
-      varying vec2 vNdc;
-      void main() {
-        vNdc = position.xy;
-        gl_Position = vec4(position.xy, 0.0, 1.0);
-      }
-    `,
+    vertexShader: skyFullscreenVertexGlsl,
     fragmentShader: `
       ${skyProjectionUniformDeclsGlsl}
       uniform float uDaylight;

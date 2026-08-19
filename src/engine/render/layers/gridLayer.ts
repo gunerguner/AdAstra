@@ -1,5 +1,7 @@
+/** 星座连线 + 赤道网 + 地平网的折线几何。 */
 import { BufferGeometry, Group, Line, type ShaderMaterial, Vector3 } from 'three'
 import { equatorialUnit } from '@/engine/coordinates/skyMath'
+import { DEG_PER_HOUR, HOURS_PER_DAY } from '@/engine/coordinates/astroConstants'
 import { densifyGreatCircle, horizontalVector, toVector3 } from '@/engine/coordinates/skyGeometry'
 import { makeSkyLineMaterial } from '@/engine/render/materials/skyLineMaterial'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
@@ -53,13 +55,13 @@ export function createGridLayer(
     for (let start = 0; start < 360; start += 90) {
       addSkyLine(
         group,
-        Array.from({ length: 19 }, (_, index) => toVector3(equatorialUnit((start + index * 5) / 15, dec))),
+        Array.from({ length: 19 }, (_, index) => toVector3(equatorialUnit((start + index * 5) / DEG_PER_HOUR, dec))),
         'equatorialGrid',
         equatorialGrid,
       )
     }
   })
-  for (let raHours = 0; raHours < 24; raHours += 2) {
+  for (let raHours = 0; raHours < HOURS_PER_DAY; raHours += 2) {
     addSkyLine(
       group,
       [-90, -80, -70, -60, -45, -30, -15, 0, 15, 30, 45, 60, 70, 80, 90].map((dec) => toVector3(equatorialUnit(raHours, dec))),

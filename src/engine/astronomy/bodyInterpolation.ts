@@ -1,4 +1,9 @@
+/**
+ * 在 Worker 给出的两个采样时刻之间插值太阳系天体。
+ * 主线程每帧只做球面/角度插值，不直接调用第三方星历库。
+ */
 import { lerpDegrees } from './moonPhaseName'
+import { DEG_PER_HOUR, HOURS_PER_DAY } from '@/engine/coordinates/astroConstants'
 
 export type BodySnapshot = {
   id: string
@@ -63,8 +68,8 @@ function copySnapshot(from: BodySnapshot, out: BodySnapshot) {
 }
 
 function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: BodySnapshot) {
-  const fromRa = from.raHours * Math.PI / 12
-  const toRa = to.raHours * Math.PI / 12
+  const fromRa = from.raHours * DEG_PER_HOUR * Math.PI / 180
+  const toRa = to.raHours * DEG_PER_HOUR * Math.PI / 180
   const fromDec = from.decDeg * Math.PI / 180
   const toDec = to.decDeg * Math.PI / 180
   const ax = Math.cos(fromDec) * Math.cos(fromRa)
@@ -82,7 +87,7 @@ function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: B
   const y = ay * left + by * right
   const z = az * left + bz * right
   copySnapshot(from, out)
-  out.raHours = ((Math.atan2(y, x) * 12 / Math.PI) + 24) % 24
+  out.raHours = ((Math.atan2(y, x) * 180 / Math.PI / DEG_PER_HOUR) + HOURS_PER_DAY) % HOURS_PER_DAY
   out.decDeg = Math.atan2(z, Math.hypot(x, y)) * 180 / Math.PI
   out.altitude = from.altitude + (to.altitude - from.altitude) * t
   out.azimuth = from.azimuth + ((((to.azimuth - from.azimuth + 540) % 360) - 180) * t)
@@ -98,6 +103,7 @@ function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: B
   return out
 }
 
+/** t∈[0,1] 在两个采样时刻之间插值。方位走劣弧，位置走球面，避免穿越地心。 */
 export function interpolateBodySnapshots(window: BodySnapshotWindow | null, utcMillis: number): BodySnapshot[] {
   if (!window) return EMPTY
   if (window === cachedWindow && utcMillis === cachedUtcMillis) return result

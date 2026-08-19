@@ -3,7 +3,6 @@ import type { LayerState } from '@/shared/types/sky'
 export const defaultLayers = {
   stars: true,
   constellationLines: true,
-  constellationNames: true,
   bodies: true,
   horizon: true,
   landscape: true,

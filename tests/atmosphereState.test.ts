@@ -3,23 +3,27 @@ import {
   atmospherePhase,
   atmospherePhaseLabel,
   atmosphereState,
-  daylightFactor,
 } from '../src/engine/render/bodyAppearance'
+import {
+  ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG,
+  CIVIL_TWILIGHT_ALTITUDE_DEG,
+  NAUTICAL_TWILIGHT_ALTITUDE_DEG,
+} from '../src/engine/coordinates/astroConstants'
 
 describe('atmosphere state', () => {
   it('maps solar altitude into continuous twilight phases', () => {
-    expect(atmospherePhase(-20, true)).toBe('night')
-    expect(atmospherePhase(-15, true)).toBe('astronomical')
-    expect(atmospherePhase(-9, true)).toBe('nautical')
+    expect(atmospherePhase(ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG - 2, true)).toBe('night')
+    expect(atmospherePhase(NAUTICAL_TWILIGHT_ALTITUDE_DEG - 3, true)).toBe('astronomical')
+    expect(atmospherePhase(CIVIL_TWILIGHT_ALTITUDE_DEG - 3, true)).toBe('nautical')
     expect(atmospherePhase(-3, true)).toBe('civil')
     expect(atmospherePhase(12, true)).toBe('day')
     expect(atmospherePhase(12, false)).toBe('night')
   })
 
   it('keeps daylight continuous across one-degree steps', () => {
-    let previous = daylightFactor(-18, true)
+    let previous = atmosphereState(ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG, 0, true).daylight
     for (let altitude = -17; altitude <= 8; altitude += 1) {
-      const next = daylightFactor(altitude, true)
+      const next = atmosphereState(altitude, 0, true).daylight
       expect(Math.abs(next - previous)).toBeLessThan(0.07)
       previous = next
     }

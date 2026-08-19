@@ -1,3 +1,4 @@
+/** 恒星记录。raHours 是赤经（时），decDeg 是赤纬（度），magnitude 越小越亮。 */
 export type Star = {
   id: string
   name: string

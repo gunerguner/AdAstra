@@ -1,3 +1,4 @@
+/** 运行时核心状态：选中对象、图层开关、每帧共享的 SkySimulation。 */
 import type { Observer } from './observer'
 
 export type SelectedSkyObject = {
@@ -15,7 +16,6 @@ export type SelectedSkyObject = {
 export type LayerState = {
   stars: boolean
   constellationLines: boolean
-  constellationNames: boolean
   bodies: boolean
   horizon: boolean
   landscape: boolean

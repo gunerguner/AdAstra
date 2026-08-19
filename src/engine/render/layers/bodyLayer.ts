@@ -1,3 +1,4 @@
+/** 太阳系天体点精灵：每帧把插值后的方位写进 buffer，并带月相/亮边。 */
 import { BufferAttribute, BufferGeometry, Points, type Camera, type ShaderMaterial, type Texture, Vector3 } from 'three'
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 import { applyHorizonMatrixInto, equatorialUnitInto } from '@/engine/coordinates/skyMath'

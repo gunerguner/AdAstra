@@ -24,7 +24,7 @@ export default function App() {
   const { layers, toggleLayer } = useLayerState()
   const { view, setView, onViewChange, resetView } = useSkyView()
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
-  const [isSettingsOpen, setIsSettingsOpen] = useState(true)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(true)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
   const [atmospherePhase, setAtmospherePhase] = useState<AtmospherePhase>('night')

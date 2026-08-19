@@ -1,3 +1,4 @@
+/** 模拟时钟：pausedAt + (performance.now - startedAt) * rate。按墙钟倍率推进 UTC，不按帧累加。 */
 export class SimulationClock {
   private pausedAt = Date.now()
   private startedAt = performance.now()

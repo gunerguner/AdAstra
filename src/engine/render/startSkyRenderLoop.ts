@@ -1,16 +1,20 @@
+/**
+ * 每帧编排：地平矩阵、大气、恒星 drawRange、相机、DOM 标签、太阳系点、render。
+ * 时间由 SimulationClock 推进；太阳系位置来自 Worker 窗口插值。
+ */
 import type { RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { ConstellationAnchor } from '@/engine/astronomy/constellationData'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { applyHorizonMatrixInto, equatorialUnitInto, fillHorizonMatrix } from '@/engine/coordinates/skyMath'
+import { ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG } from '@/engine/coordinates/astroConstants'
 import { horizontalVectorInto, skyCameraUpInto } from '@/engine/coordinates/skyGeometry'
-import { projectSkyToNdc } from './skyProjection'
 import { atmosphereState, type AtmosphereState } from './bodyAppearance'
 import { updateBodiesLayer } from './layers/bodyLayer'
 import { decidePixelRatio } from '@/engine/performance/pixelRatio'
 import { createFrameStats, publishFrameStats } from '@/engine/performance/frameStats'
 import { isFullRateFrame, nextFrameDelayMs } from '@/engine/performance/renderScheduler'
-import { applyOverlayPlacement, overlayScreenPosition } from '@/engine/interaction/overlayProjection'
+import { applyOverlayPlacement, placeSkyOverlay } from '@/engine/interaction/overlayProjection'
 import { poseOfSkyObject } from '@/engine/interaction/skyPose'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import type { ShaderMaterial } from 'three'
@@ -83,7 +87,7 @@ export function startSkyRenderLoop(options: {
 
   const layersKeyOf = (latest: SkySimulation) => {
     const layersState = latest.layers
-    return `${layersState.stars}:${layersState.constellationLines}:${layersState.constellationNames}:${layersState.bodies}:${layersState.horizon}:${layersState.landscape}:${layersState.showBelowHorizon}:${layersState.ecliptic}:${layersState.celestialEquator}:${layersState.equatorialGrid}:${layersState.horizontalGrid}:${layersState.milkyWay}:${layersState.daylightEffect}`
+    return `${layersState.stars}:${layersState.constellationLines}:${layersState.bodies}:${layersState.horizon}:${layersState.landscape}:${layersState.showBelowHorizon}:${layersState.ecliptic}:${layersState.celestialEquator}:${layersState.equatorialGrid}:${layersState.horizontalGrid}:${layersState.milkyWay}:${layersState.daylightEffect}`
   }
 
   const cancelScheduled = () => {
@@ -148,7 +152,7 @@ export function startSkyRenderLoop(options: {
     const sun = bodySnapshots[0]?.id === 'sun'
       ? bodySnapshots[0]
       : bodySnapshots.find((body) => body.id === 'sun')
-    const sunAltitude = sun?.altitude ?? -18
+    const sunAltitude = sun?.altitude ?? ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG
     const sunAzimuth = sun?.azimuth ?? 0
     if (sun) {
       applyHorizonMatrixInto(
@@ -222,49 +226,57 @@ export function startSkyRenderLoop(options: {
     const sizeChanged = width !== lastWidth || height !== lastHeight
     lastWidth = width
     lastHeight = height
+    const placeOverlay = (
+      node: HTMLElement,
+      world: typeof scratch.projected,
+      offsetX = 0,
+      offsetY = 0,
+      edge = 1,
+      size?: { width: number; height: number },
+    ) => placeSkyOverlay(
+      node,
+      world,
+      camera,
+      latest.fov,
+      camera.aspect,
+      width,
+      height,
+      overlayNdc,
+      offsetX,
+      offsetY,
+      edge,
+      size,
+    )
+    const hideOverlay = (node: HTMLElement) => applyOverlayPlacement(node, { visible: false, x: 0, y: 0 })
+
     if (viewChanged || sizeChanged) {
       cardinals.forEach((cardinal) => {
         const node = cardinalRefs.current[cardinal.id]
         if (!node) return
-        const ndc = projectSkyToNdc(
-          horizontalVectorInto(3.5, cardinal.azimuth, scratch.projected),
-          camera,
-          latest.fov,
-          camera.aspect,
-          overlayNdc,
-        )
-        applyOverlayPlacement(node, overlayScreenPosition(ndc, width, height, 0, 0, 1.2))
+        placeOverlay(node, horizontalVectorInto(3.5, cardinal.azimuth, scratch.projected), 0, 0, 1.2)
       })
     }
 
     constellationAnchors.forEach((anchor) => {
       const node = constellationNameRefs.current[anchor.name]
       if (!node) return
-      const show = latest.layers.constellationNames && latest.layers.constellationLines
-      if (!show) {
-        if (node.style.display !== 'none') node.style.display = 'none'
+      if (!latest.layers.constellationLines) {
+        hideOverlay(node)
         return
       }
       applyHorizonMatrixInto(anchor, uniforms.horizonMat, scratch.horizon)
       if (scratch.horizon.y < 0.07) {
-        if (node.style.display !== 'none') node.style.display = 'none'
+        hideOverlay(node)
         return
       }
-      const ndc = projectSkyToNdc(
-        scratch.projected.set(scratch.horizon.x, scratch.horizon.y, scratch.horizon.z),
-        camera,
-        latest.fov,
-        camera.aspect,
-        overlayNdc,
-      )
-      applyOverlayPlacement(node, overlayScreenPosition(ndc, width, height, 0, 0, 1.05))
+      placeOverlay(node, scratch.projected.set(scratch.horizon.x, scratch.horizon.y, scratch.horizon.z), 0, 0, 1.05)
     })
 
     const hoverNode = hoverRef.current
     const hoverTarget = hoverTargetRef.current
     if (hoverNode && hoverTarget) {
       if (selectedRef.current?.id === hoverTarget.id) {
-        if (hoverNode.style.display !== 'none') hoverNode.style.display = 'none'
+        hideOverlay(hoverNode)
       } else {
         const pose = poseOfSkyObject(hoverTarget, {
           bodies: bodySnapshots,
@@ -273,14 +285,12 @@ export function startSkyRenderLoop(options: {
           horizonScratch: scratch.horizon,
         })
         if (pose) {
-          const ndc = projectSkyToNdc(
+          const visible = placeOverlay(
+            hoverNode,
             horizontalVectorInto(pose.altitude, pose.azimuth, scratch.projected),
-            camera,
-            latest.fov,
-            camera.aspect,
-            overlayNdc,
+            14,
+            -18,
           )
-          const visible = applyOverlayPlacement(hoverNode, overlayScreenPosition(ndc, width, height, 14, -18))
           if (!visible) hoverTargetRef.current = null
         } else hoverTargetRef.current = null
       }
@@ -297,7 +307,7 @@ export function startSkyRenderLoop(options: {
         cardHeight = 0
       }
       if (!currentSelected) {
-        if (card.style.display !== 'none') card.style.display = 'none'
+        hideOverlay(card)
       } else {
         const pose = poseOfSkyObject(currentSelected, {
           bodies: bodySnapshots,
@@ -310,23 +320,20 @@ export function startSkyRenderLoop(options: {
             cardWidth = card.offsetWidth
             cardHeight = card.offsetHeight
           }
-          const ndc = projectSkyToNdc(
+          const visible = placeOverlay(
+            card,
             horizontalVectorInto(pose.altitude, pose.azimuth, scratch.projected),
-            camera,
-            latest.fov,
-            camera.aspect,
-            overlayNdc,
+            18,
+            -36,
+            1,
+            { width: cardWidth, height: cardHeight },
           )
-          const visible = applyOverlayPlacement(card, overlayScreenPosition(ndc, width, height, 18, -36, 1, {
-            width: cardWidth,
-            height: cardHeight,
-          }))
           if (visible) {
             if (altitudeStatNode) altitudeStatNode.textContent = `${pose.altitude.toFixed(1)}°`
             if (azimuthStatNode) azimuthStatNode.textContent = `${pose.azimuth.toFixed(1)}°`
           } else onSelect(null)
         } else {
-          if (card.style.display !== 'none') card.style.display = 'none'
+          hideOverlay(card)
           onSelect(null)
         }
       }

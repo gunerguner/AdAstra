@@ -1,3 +1,4 @@
+/** 恒星点精灵批次：把星表写成 GPU buffer（位置/颜色/大小/亮度）。 */
 import { BufferAttribute, BufferGeometry, Color, Points } from 'three'
 import { equatorialUnit } from '@/engine/coordinates/skyMath'
 import { starBrightness, starPointSize } from '@/engine/render/bodyAppearance'

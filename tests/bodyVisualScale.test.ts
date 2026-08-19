@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bodyPickSize, bodyPointSize, bodyVisualScale, daylightFactor, starBrightness, SUN_DAY_GLOW_SCALE, SUN_GLOW_SCALE } from '../src/engine/render/bodyAppearance'
+import { atmosphereState, bodyPickSize, bodyPointSize, bodyVisualScale, starBrightness, SUN_DAY_GLOW_SCALE, SUN_GLOW_SCALE } from '../src/engine/render/bodyAppearance'
 
 describe('body appearance', () => {
   it('preserves the Sun and Moon visual scale', () => {
@@ -11,8 +11,8 @@ describe('body appearance', () => {
     expect(bodyVisualScale('mars', 20)).toBe(0.7)
     expect(bodyPointSize('mars', 1)).toBeGreaterThan(0)
     expect(starBrightness(20)).toBe(0)
-    expect(daylightFactor(-20, true)).toBe(0)
-    expect(daylightFactor(20, true)).toBe(1)
+    expect(atmosphereState(-20, 0, true).daylight).toBe(0)
+    expect(atmosphereState(20, 0, true).daylight).toBe(1)
   })
 
   it('keeps planets smaller than the Moon and Sun disc', () => {

@@ -1,3 +1,4 @@
+/** 滑动窗口帧时；开发环境写到 canvas dataset 方便看 GPU 压力。 */
 export type FrameStatsSnapshot = {
   count: number
   lastMs: number

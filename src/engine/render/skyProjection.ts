@@ -1,14 +1,19 @@
+/**
+ * 天球方向 → 屏幕 NDC，以及对应 GLSL。
+ * 用球面立体投影把朝前半球摊到平面；SKY_HORIZON_LIFT 把地平往下挪，平视时多看到天空。
+ * 圆盘外（view.z 太大）裁成虚空色，所以画面是「球」而不是透视盒子。
+ */
 import type { Camera } from 'three'
 import { Vector3 } from 'three'
 
 export const SKY_FOV_DEG = 100
 export const SKY_FOV_MIN = 38
 export const SKY_FOV_MAX = 128
-/** Shift the projected horizon down in NDC so a level look shows more sky. */
+/** 把地平往屏幕下方挪一点，平视时多露出天空。 */
 export const SKY_HORIZON_LIFT = 0.52
-/** View-space z above this is behind the stereographic disk and must be cropped. */
+/** view.z 大于此值表示已转到球的背面，必须裁掉。 */
 export const SKY_OUTSIDE_Z = 0.08
-/** Canvas/page color used to crop pixels outside the celestial sphere. */
+/** 球外填充色，与页面背景一致。 */
 export const SKY_VOID_HEX = 0x050817
 export const SKY_VOID_RGB = [5 / 255, 8 / 255, 23 / 255] as const
 
@@ -36,6 +41,25 @@ float skyOutsideMask(float z) {
 export const skyProjectionUniformDeclsGlsl = /* glsl */ `
 uniform float uFov;
 uniform float uAspect;
+`
+
+export const skyFullscreenVertexGlsl = /* glsl */ `
+varying vec2 vNdc;
+void main() {
+  vNdc = position.xy;
+  gl_Position = vec4(position.xy, 0.0, 1.0);
+}
+`
+
+export const applyHorizonGlsl = /* glsl */ `
+uniform float uHorizon[9];
+vec3 applyHorizon(vec3 p) {
+  return vec3(
+    uHorizon[0] * p.x + uHorizon[1] * p.y + uHorizon[2] * p.z,
+    uHorizon[3] * p.x + uHorizon[4] * p.y + uHorizon[5] * p.z,
+    uHorizon[6] * p.x + uHorizon[7] * p.y + uHorizon[8] * p.z
+  );
+}
 `
 
 export const skyProjectionGlsl = /* glsl */ `
@@ -88,6 +112,7 @@ export function createSkyProjectionUniforms(fovDeg = SKY_FOV_DEG) {
 const viewScratch = new Vector3()
 const ndcScratch = { x: 0, y: 0, z: 0 }
 
+/** 屏幕点 → 视线方向（立体投影的逆变换），给全屏天空着色器用。 */
 export function viewDirectionFromNdc(ndcX: number, ndcY: number, fovDeg: number, aspect: number, out = new Vector3()) {
   const tanQ = Math.tan((fovDeg * Math.PI) / 180 * 0.25)
   const sx = ndcX * aspect * tanQ
@@ -97,6 +122,7 @@ export function viewDirectionFromNdc(ndcX: number, ndcY: number, fovDeg: number,
   return out.set(2 * sx * inv, 2 * sy * inv, (r2 - 1) * inv)
 }
 
+/** 天球上一点 → 屏幕 NDC。在圆盘外返回 null（看不见）。 */
 export function projectSkyToNdc(
   world: Vector3,
   camera: Camera,

@@ -1,3 +1,4 @@
+/** Three.js 场景句柄：renderer / layers / 每帧共享的投影与大气 uniforms。 */
 import type {
   BufferGeometry,
   Group,

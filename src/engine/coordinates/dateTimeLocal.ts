@@ -1,3 +1,4 @@
+/** datetime-local 字符串（观测地民用时）↔ UTC 毫秒。用 Intl 读 IANA 时区，并处理夏令时折叠/跳跃。 */
 type LocalDateParts = {
   year: number
   month: number
@@ -47,9 +48,8 @@ export function formatDateTimeLocal(utcMillis: number, timeZone: string) {
 }
 
 /**
- * Converts a datetime-local value interpreted in an IANA time zone to UTC.
- * For repeated DST minutes, this selects the earlier UTC instant. Nonexistent
- * local minutes are rejected instead of silently shifting the user's input.
+ * datetime-local 按 IANA 时区理解成 UTC。
+ * 夏令时重复的那一分钟取较早瞬间；不存在的本地分钟直接拒绝，不悄悄改用户输入。
  */
 export function parseDateTimeLocal(value: string, timeZone: string): number | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value)

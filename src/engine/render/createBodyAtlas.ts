@@ -1,3 +1,4 @@
+/** 运行时画出 3×3 天体贴图（日、月、行星），避免带外部贴图授权。 */
 import { ClampToEdgeWrapping, DataTexture, LinearFilter, RGBAFormat, UnsignedByteType } from 'three'
 
 const CELL = 128

@@ -1,3 +1,4 @@
+/** 创建天文计算 Worker：节流发 snapshot、只接受最新 generation、页面隐藏时不请求。 */
 import type { Observer } from '@/shared/types/observer'
 import { AppError } from '@/shared/errors/appError'
 import type { BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
@@ -5,7 +6,7 @@ import {
   type AstroWorkerRequest,
   type AstroWorkerResponse,
 } from '@/engine/astronomy/astroWorkerProtocol'
-import { shouldRequestBodySnapshot, type BodySnapshotRequestState } from '@/engine/astronomy/bodySnapshotRequest'
+import { shouldRequestBodySnapshot, BODY_SNAPSHOT_LOOKAHEAD_MS, type BodySnapshotRequestState } from '@/engine/astronomy/bodySnapshotRequest'
 
 export function attachAstroWorker(handlers: {
   onSnapshot: (window: BodySnapshotWindow) => void
@@ -42,7 +43,7 @@ export function attachAstroWorker(handlers: {
         type: 'snapshot',
         generation: bodyGeneration,
         utcMillis,
-        lookAheadMillis: 6 * 60 * 60 * 1000,
+        lookAheadMillis: BODY_SNAPSHOT_LOOKAHEAD_MS,
         observer,
       }
       worker.postMessage(request)

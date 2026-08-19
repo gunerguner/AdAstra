@@ -1,8 +1,11 @@
+/** 视角钳制：方位 0–360、仰角约 -30°–89°、视场夹在投影允许范围内。 */
 import { clampSkyFov } from '@/engine/render/skyProjection'
 import type { SkyView } from '@/shared/types/sky'
 
 export const VIEW_ALTITUDE_MIN = -30
 export const VIEW_ALTITUDE_MAX = 89
+export const VIEW_DEFAULT_AZIMUTH = 180
+export const VIEW_DEFAULT_ALTITUDE = 0
 
 export function clampViewAltitude(altitude: number) {
   return Math.max(VIEW_ALTITUDE_MIN, Math.min(VIEW_ALTITUDE_MAX, altitude))

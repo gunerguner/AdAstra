@@ -1,3 +1,4 @@
+/** 唯一允许 import astronomy-engine 的模块。输入时刻与地点，输出太阳/月亮/行星快照。 */
 import { Body, Equator, Horizon, Illumination, MoonPhase, Observer as AstronomyObserver } from 'astronomy-engine'
 import type { Observer } from '@/shared/types/observer'
 import type { BodySnapshot } from './bodyInterpolation'

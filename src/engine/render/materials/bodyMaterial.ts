@@ -1,3 +1,4 @@
+/** 太阳系天体着色：图集采样、太阳光晕、月相、土星环。 */
 import { ShaderMaterial, type Texture } from 'three'
 import { SATURN_RING_SCALE, SUN_DAY_GLOW_SCALE, SUN_GLOW_SCALE } from '@/engine/render/bodyAppearance'
 import { skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'

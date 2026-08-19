@@ -1,3 +1,4 @@
+/** 加载 manifest + 二进制星表：校验长度/SHA-256/条数，解析为按视星等排序的运行时目录。 */
 import type { Star } from '@/shared/types/star'
 import { countStarsThroughMagnitude } from '@/shared/types/star'
 import { AppError, isAbortError, isAppError, toAppError } from '@/shared/errors/appError'
