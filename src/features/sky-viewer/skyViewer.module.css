@@ -18,7 +18,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.2;
+  opacity: var(--overlay-grain);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
   mix-blend-mode: soft-light;
 }
@@ -28,7 +28,7 @@
   z-index: 3;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at center, transparent 42%, rgba(0, 1, 9, 0.54) 100%);
+  background: radial-gradient(circle at center, transparent 42%, var(--overlay-vignette) 100%);
 }
 
 .cardinal {
@@ -37,17 +37,17 @@
   top: 0;
   left: 0;
   pointer-events: none;
-  color: var(--color-cardinal);
+  color: var(--overlay-label);
   font: 12px var(--font-mono);
   letter-spacing: 0.16em;
   transform: translate3d(-999px, -999px, 0);
   will-change: transform;
-  text-shadow: 0 0 12px rgba(5, 10, 24, 0.9);
+  text-shadow: var(--overlay-label-shadow);
   margin: -8px 0 0 -10px;
 }
 
 .cardinalNorth {
-  color: var(--color-gold-soft);
+  color: var(--overlay-north);
 }
 
 .constellationName {
@@ -57,11 +57,12 @@
   left: 0;
   pointer-events: none;
   display: none;
-  color: var(--color-constellation);
+  color: var(--overlay-constellation);
   font: 11px var(--font-sans);
   letter-spacing: 0.18em;
-  text-shadow: 0 0 12px rgba(5, 10, 24, 0.95);
+  text-shadow: var(--overlay-label-shadow);
   transform: translate3d(-999px, -999px, 0);
+  will-change: transform;
   margin: -6px 0 0 -18px;
 }
 
@@ -73,13 +74,15 @@
   pointer-events: none;
   display: none;
   padding: 3px 8px;
-  color: var(--color-text);
+  color: var(--overlay-hover-fg);
   font: 12px var(--font-sans);
-  background: var(--color-tooltip);
-  border: 1px solid var(--color-border-strong);
+  background: var(--overlay-hover-bg);
+  border: 1px solid var(--overlay-hover-border);
   border-radius: var(--radius-sm);
   white-space: nowrap;
-  text-shadow: 0 0 10px rgba(5, 10, 24, 0.9);
+  text-shadow: none;
+  box-shadow: var(--overlay-hover-shadow);
+  will-change: transform;
 }
 
 .fallback {

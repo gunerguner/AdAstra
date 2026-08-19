@@ -13,6 +13,7 @@ export const layerToggles = [
   { key: 'constellationLines', label: '星座' },
   { key: 'bodies', label: '行星' },
   { key: 'horizon', label: '地平' },
+  { key: 'landscape', label: '地平景观' },
   { key: 'showBelowHorizon', label: '地平以下' },
   { key: 'daylightEffect', label: '昼夜影响' },
   { key: 'ecliptic', label: '黄道', swatch: '#f0a03a', variant: 'ecliptic' },

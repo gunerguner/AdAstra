@@ -12,7 +12,7 @@
   height: 28%;
   z-index: 4;
   pointer-events: none;
-  background: linear-gradient(transparent, rgba(3, 5, 14, 0.5));
+  background: linear-gradient(transparent, var(--overlay-atmosphere));
 }
 
 .skyFallback {

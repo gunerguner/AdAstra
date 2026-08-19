@@ -1,6 +1,7 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
+import type { AtmosphereState } from '@/engine/render/bodyAppearance'
 import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { buildConstellationAnchors, buildConstellationStars } from '@/engine/astronomy/constellationData'
@@ -19,6 +20,7 @@ type Props = {
   onSelect: (item: SelectedSkyObject | null) => void
   selected?: SelectedSkyObject | null
   objectCardRef?: RefObject<HTMLElement | null>
+  onAtmosphereChange?: (state: AtmosphereState) => void
   children?: ReactNode
 }
 
@@ -29,6 +31,7 @@ export default function SkyViewport({
   onSelect,
   selected,
   objectCardRef,
+  onAtmosphereChange,
   children,
 }: Props) {
   const mountRef = useRef<HTMLDivElement>(null)
@@ -42,6 +45,7 @@ export default function SkyViewport({
   const [viewportError, setViewportError] = useState<AppError | null>(null)
   const selectObject = useEffectEvent(onSelect)
   const changeView = useEffectEvent(onViewChange)
+  const changeAtmosphere = useEffectEvent(onAtmosphereChange ?? (() => {}))
 
   const constellationStars = useMemo(() => buildConstellationStars(catalog), [catalog])
   const constellationAnchors = useMemo(() => buildConstellationAnchors(constellationStars), [constellationStars])
@@ -124,6 +128,7 @@ export default function SkyViewport({
       bodySnapshotRef,
       requestBodySnapshot: worker.requestSnapshot,
       onSelect: selectObject,
+      onAtmosphereChange: changeAtmosphere,
     })
     scheduler.wake = loop.wake
 

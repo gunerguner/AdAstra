@@ -7,10 +7,12 @@
   padding: 17px;
   background: var(--color-card);
   border: 1px solid var(--color-gold-border);
+  box-shadow: 0 0 28px rgba(245, 207, 136, 0.14);
   backdrop-filter: blur(18px);
   pointer-events: auto;
   display: none;
   transform: translate3d(-999px, -999px, 0);
+  will-change: transform;
 }
 
 .close {
@@ -22,10 +24,36 @@
 }
 
 .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: var(--color-label);
   font: 9px var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.12em;
+}
+
+.swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-gold-soft);
+}
+
+.card[data-kind='star'] .swatch {
+  background: #9ec4ff;
+}
+
+.card[data-kind='sun'] .swatch {
+  background: #ffe69a;
+}
+
+.card[data-kind='moon'] .swatch {
+  background: #edf4ff;
+}
+
+.card[data-kind='planet'] .swatch {
+  background: #ffb38a;
 }
 
 .card h2 {

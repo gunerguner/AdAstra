@@ -20,12 +20,22 @@ export function createGridLayer(
     horizonMat: Float32Array
     sky: SkyProjectionUniforms
     showBelow: { value: number }
+    daylight?: { value: number }
   },
 ) {
   const group = new Group()
-  const constellationLine = makeSkyLineMaterial('#9da7e7', 0.5, true, uniforms)
-  const equatorialGrid = makeSkyLineMaterial('#8eb4d8', 0.55, true, uniforms)
-  const horizontalGrid = makeSkyLineMaterial('#6f9a7a', 0.5, false, uniforms)
+  const constellationLine = makeSkyLineMaterial('#9da7e7', 0.5, true, uniforms, {
+    color: '#1a3348',
+    opacity: 0.16,
+  })
+  const equatorialGrid = makeSkyLineMaterial('#8eb4d8', 0.55, true, uniforms, {
+    color: '#2a4d63',
+    opacity: 0.18,
+  })
+  const horizontalGrid = makeSkyLineMaterial('#6f9a7a', 0.5, false, uniforms, {
+    color: '#35564f',
+    opacity: 0.16,
+  })
 
   constellationStars.forEach((line) => {
     line.segments.forEach((segment) => {

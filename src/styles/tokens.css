@@ -28,6 +28,9 @@
   --color-panel: rgba(7, 14, 34, 0.78);
   --color-topbar: rgba(4, 8, 23, 0.44);
   --color-deck: rgba(5, 12, 29, 0.82);
+  --ui-daylight: 0;
+  --ui-twilight: 0;
+  --ui-warmth: 0;
   --color-card: rgba(8, 16, 37, 0.86);
   --color-control: rgba(14, 25, 53, 0.58);
   --color-control-hover: rgba(76, 121, 168, 0.42);
@@ -38,6 +41,17 @@
   --color-error-panel: rgba(12, 19, 39, 0.92);
   --color-cardinal: rgba(210, 230, 245, 0.82);
   --color-constellation: rgba(186, 198, 232, 0.72);
+  --overlay-label: rgba(210, 230, 245, 0.9);
+  --overlay-label-shadow: 0 0 12px rgba(5, 10, 24, 0.92);
+  --overlay-constellation: rgba(186, 198, 232, 0.78);
+  --overlay-north: #f5cf88;
+  --overlay-hover-fg: #ecf5ff;
+  --overlay-hover-bg: rgba(8, 16, 36, 0.78);
+  --overlay-hover-border: rgba(173, 218, 255, 0.5);
+  --overlay-hover-shadow: 0 6px 16px rgba(4, 8, 20, 0.28);
+  --overlay-grain: 0.2;
+  --overlay-vignette: rgba(0, 1, 9, 0.54);
+  --overlay-atmosphere: rgba(3, 5, 14, 0.5);
   --blur-panel: 24px;
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -50,4 +64,18 @@
   background: var(--color-page);
   font-family: var(--font-sans);
   font-synthesis: none;
+}
+
+:root[data-sky-phase='day'] {
+  --overlay-label: #16344f;
+  --overlay-label-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  --overlay-constellation: #1a3a56;
+  --overlay-north: #8a5414;
+  --overlay-hover-fg: #173047;
+  --overlay-hover-bg: rgba(255, 255, 255, 0.8);
+  --overlay-hover-border: rgba(28, 62, 92, 0.2);
+  --overlay-hover-shadow: 0 4px 14px rgba(24, 48, 78, 0.12);
+  --overlay-grain: 0.04;
+  --overlay-vignette: rgba(118, 156, 196, 0.16);
+  --overlay-atmosphere: rgba(176, 202, 224, 0.22);
 }

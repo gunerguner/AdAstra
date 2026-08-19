@@ -3,45 +3,38 @@ import { DataTexture, Vector3 } from 'three'
 import { makeBodyMaterial } from '../src/engine/render/materials/bodyMaterial'
 import { makeGroundMaterial } from '../src/engine/render/materials/groundMaterial'
 import { makeMilkyWayMaterial } from '../src/engine/render/materials/milkyWayMaterial'
+import { makeSkyDomeMaterial } from '../src/engine/render/materials/skyDomeMaterial'
 import { makeSkyLineMaterial } from '../src/engine/render/materials/skyLineMaterial'
 import { makeSkyLimbMaterial } from '../src/engine/render/materials/skyLimbMaterial'
 import { makeStarMaterial } from '../src/engine/render/materials/starMaterial'
-import { createSkyProjectionUniforms } from '../src/engine/render/skyProjection'
+import { testSkyUniforms } from './testSkyUniforms'
 
-const sky = createSkyProjectionUniforms()
-const horizonMat = new Float32Array(9)
-const showBelow = { value: 1 }
-const daylight = { value: 1 }
+const uniforms = testSkyUniforms()
 const atlas = new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1)
 
 describe('shader sky projection uniforms', () => {
   const materials = [
-    makeBodyMaterial({ sky, pixelRatio: 1, atlas }),
-    makeStarMaterial({ horizonMat, sky, showBelow, daylight, pixelRatio: 1 }),
-    makeSkyLineMaterial('#fff', 1, true, { horizonMat, sky, showBelow }),
-    makeGroundMaterial(sky),
-    makeSkyLimbMaterial(sky),
-    makeMilkyWayMaterial(new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1), {
-      horizonMat,
-      sky,
-      showBelow,
-      daylight,
-    }),
+    makeBodyMaterial({ sky: uniforms.sky, pixelRatio: 1, atlas, daylight: uniforms.daylight, twilight: uniforms.twilight }),
+    makeStarMaterial({ ...uniforms, pixelRatio: 1 }),
+    makeSkyLineMaterial('#fff', 1, true, uniforms),
+    makeGroundMaterial(uniforms),
+    makeSkyLimbMaterial(uniforms),
+    makeMilkyWayMaterial(new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0, 1), uniforms),
+    makeSkyDomeMaterial(uniforms),
   ]
 
   it('shares the same uFov and uAspect objects from skyProjection', () => {
     for (const material of materials) {
-      expect(material.uniforms.uFov).toBe(sky.uFov)
-      expect(material.uniforms.uAspect).toBe(sky.uAspect)
+      expect(material.uniforms.uFov).toBe(uniforms.sky.uFov)
+      expect(material.uniforms.uAspect).toBe(uniforms.sky.uAspect)
     }
   })
 
   it('declares and uses projection uniforms only in vertex shaders', () => {
     for (const material of materials) {
-      if (material === materials[4]) {
+      if (material.fragmentShader.includes('skyViewDirFromNdc')) {
         expect(material.fragmentShader).toContain('uniform float uFov')
         expect(material.fragmentShader).toContain('uniform float uAspect')
-        expect(material.fragmentShader).toContain('skyViewDirFromNdc')
         expect(material.vertexShader).not.toContain('projectSkyDir')
         continue
       }
@@ -60,6 +53,20 @@ describe('shader sky projection uniforms', () => {
     expect(materials[0].fragmentShader).toContain('smoothstep')
     expect(materials[0].fragmentShader).toContain('isSun')
     expect(materials[0].fragmentShader).toContain('vec3 halo')
+    expect(materials[0].fragmentShader).toContain('dayMoon')
     expect(materials[4].fragmentShader).toContain('rim')
+  })
+
+  it('sky lines keep separate day and night colors', () => {
+    expect(materials[2].uniforms.uDayColor).toBeDefined()
+    expect(materials[2].fragmentShader).toContain('uDayColor')
+    expect(materials[2].fragmentShader).toContain('uDayOpacity')
+  })
+
+  it('skydome and ground consume sun direction and twilight lighting', () => {
+    expect(materials[6].fragmentShader).toContain('uSunDir')
+    expect(materials[6].fragmentShader).toContain('uTwilight')
+    expect(materials[3].fragmentShader).toContain('uSunDir')
+    expect(materials[3].fragmentShader).toContain('ridge')
   })
 })

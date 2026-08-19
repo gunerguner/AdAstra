@@ -92,7 +92,8 @@ export function makeMilkyWayMaterial(
       void main() {
         if (skyOutsideView(vViewDir) > 0.5) discard;
         float visible = max(step(-0.02, vAlt), uShowBelow);
-        float fade = mix(1.0, clamp((vAlt + 0.06) * 4.4, 0.0, 1.0), uDaylight);
+        float extinction = mix(1.0, clamp((vAlt + 0.04) * 3.2, 0.08, 1.0), 0.78);
+        float fade = mix(1.0, clamp((vAlt + 0.06) * 4.4, 0.0, 1.0), uDaylight) * extinction;
         if (visible * fade < 0.01) discard;
 
         vec3 g = normalize(vGal);

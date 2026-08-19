@@ -10,7 +10,12 @@ export function makeSkyLineMaterial(
     horizonMat: Float32Array
     sky: SkyProjectionUniforms
     showBelow: { value: number }
+    daylight?: { value: number }
   },
+  dayStyle: {
+    color?: string
+    opacity?: number
+  } = {},
 ) {
   return new ShaderMaterial({
     transparent: true,
@@ -23,7 +28,10 @@ export function makeSkyLineMaterial(
       uUseHorizon: { value: useHorizon ? 1 : 0 },
       uShowBelow: uniforms.showBelow,
       uColor: { value: new Color(color) },
+      uDayColor: { value: new Color(dayStyle.color ?? color) },
       uOpacity: { value: opacity },
+      uDayOpacity: { value: dayStyle.opacity ?? opacity },
+      uDaylight: uniforms.daylight ?? { value: 0 },
     },
     vertexShader: `
       uniform float uHorizon[9];
@@ -48,8 +56,11 @@ export function makeSkyLineMaterial(
     `,
     fragmentShader: `
       uniform vec3 uColor;
+      uniform vec3 uDayColor;
       uniform float uOpacity;
+      uniform float uDayOpacity;
       uniform float uShowBelow;
+      uniform float uDaylight;
       varying float vAlt;
       varying vec3 vViewDir;
       ${skyOutsideViewGlsl}
@@ -57,7 +68,11 @@ export function makeSkyLineMaterial(
         if (skyOutsideView(vViewDir) > 0.5) discard;
         float visible = max(step(-0.08, vAlt), uShowBelow);
         if (visible < 0.5) discard;
-        gl_FragColor = vec4(uColor, uOpacity);
+        float dayMix = smoothstep(0.22, 0.68, uDaylight);
+        float lowAltitude = mix(1.0, clamp((vAlt + 0.06) * 4.0, 0.55, 1.0), dayMix);
+        vec3 color = mix(uColor, uDayColor, dayMix);
+        float opacity = mix(uOpacity, uDayOpacity, dayMix) * lowAltitude;
+        gl_FragColor = vec4(color, opacity);
       }
     `,
   })

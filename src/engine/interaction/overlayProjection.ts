@@ -38,8 +38,8 @@ export function applyOverlayPlacement(node: HTMLElement, placement: OverlayPlace
     if (node.style.display !== 'none') node.style.display = 'none'
     return false
   }
-  const x = Math.round(placement.x)
-  const y = Math.round(placement.y)
+  const x = Math.round(placement.x * 10) / 10
+  const y = Math.round(placement.y * 10) / 10
   const transform = `translate3d(${x}px, ${y}px, 0)`
   if (node.style.display !== 'block') node.style.display = 'block'
   if (node.style.transform !== transform) node.style.transform = transform

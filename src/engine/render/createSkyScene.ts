@@ -1,5 +1,6 @@
 import {
   Line,
+  Matrix3,
   PerspectiveCamera,
   Scene,
   ShaderMaterial,
@@ -14,6 +15,7 @@ import { createStarLayer } from './layers/starLayer'
 import { createMilkyWayLayer } from './layers/milkyWayLayer'
 import { createGridLayer } from './layers/gridLayer'
 import { createHelperLayer } from './layers/helperLayer'
+import { createSkyDomeLayer, disposeSkyDomeLayer } from './layers/skyDomeLayer'
 import { createSkyLimbLayer, disposeSkyLimbLayer } from './layers/skyLimbLayer'
 import { createBodiesLayer, disposeBodiesLayer } from './layers/bodyLayer'
 import type { SkySceneContext } from './skyContext'
@@ -31,12 +33,17 @@ export function createSkyScene(options: {
   const sky = createSkyProjectionUniforms(SKY_FOV_DEG)
   const horizonMat = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1])
   const showBelow = { value: 1 }
-  const daylight = { value: 1 }
-  const sharedUniforms = { horizonMat, sky, showBelow, daylight }
+  const daylight = { value: 0 }
+  const twilight = { value: 0 }
+  const warmth = { value: 0 }
+  const groundLight = { value: 0.06 }
+  const sunDir = { value: new Vector3(0, -1, 0) }
+  const viewToHorizon = { value: new Matrix3() }
+  const sharedUniforms = { horizonMat, sky, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon }
 
   let qualityPixelRatio = Math.min(window.devicePixelRatio, 1.5)
   renderer.setPixelRatio(qualityPixelRatio)
-  renderer.setClearColor(0x000309, 1)
+  renderer.setClearColor(0x01040c, 1)
   renderer.setAnimationLoop(null)
   renderer.domElement.tabIndex = 0
   renderer.domElement.setAttribute('role', 'application')
@@ -46,17 +53,19 @@ export function createSkyScene(options: {
   )
   mount.appendChild(renderer.domElement)
 
-  const starLayer = createStarLayer(stars, { ...sharedUniforms, pixelRatio: renderer.getPixelRatio() })
-  scene.add(starLayer.points)
+  const skyDome = createSkyDomeLayer(sharedUniforms)
+  scene.add(skyDome.mesh)
   const milkyWay = createMilkyWayLayer(sharedUniforms)
   scene.add(milkyWay.mesh)
+  const starLayer = createStarLayer(stars, { ...sharedUniforms, pixelRatio: renderer.getPixelRatio() })
+  scene.add(starLayer.points)
   const grids = createGridLayer(constellationStars, sharedUniforms)
   scene.add(grids.group)
-  const bodies = createBodiesLayer(sky, renderer.getPixelRatio())
+  const bodies = createBodiesLayer(sky, renderer.getPixelRatio(), { daylight, twilight })
   scene.add(bodies.points)
   const helpers = createHelperLayer(sharedUniforms)
   scene.add(helpers.group)
-  const skyLimb = createSkyLimbLayer(sky)
+  const skyLimb = createSkyLimbLayer(sharedUniforms)
   scene.add(skyLimb.mesh)
 
   const resize = () => {
@@ -72,7 +81,7 @@ export function createSkyScene(options: {
     renderer,
     scene,
     camera,
-    uniforms: { sky, horizonMat, showBelow, daylight },
+    uniforms: { sky, horizonMat, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon },
     scratch: {
       horizon: { x: 0, y: 0, z: 0 },
       lookTarget: new Vector3(),
@@ -87,6 +96,7 @@ export function createSkyScene(options: {
       linesGroup: grids.group,
       bodyPoints: bodies.points,
       helperGroup: helpers.group,
+      skyDome: skyDome.mesh,
       ground: helpers.ground,
       horizon: helpers.horizon,
       horizonGlow: helpers.horizonGlow,
@@ -98,6 +108,7 @@ export function createSkyScene(options: {
       constellationLine: grids.constellationLine,
       equatorialGrid: grids.equatorialGrid,
       horizontalGrid: grids.horizontalGrid,
+      skyDome: skyDome.material,
       ground: helpers.groundMaterial,
       skyLimb: skyLimb.material,
     },
@@ -108,6 +119,7 @@ export function createSkyScene(options: {
 export function disposeSkyScene(ctx: SkySceneContext) {
   ctx.layers.starGeometry.dispose()
   ctx.layers.starMaterial.dispose()
+  disposeSkyDomeLayer(ctx.layers.skyDome)
   ctx.layers.milkyWay.geometry.dispose()
   ;(ctx.layers.milkyWay.material as ShaderMaterial).dispose()
   ctx.layers.linesGroup.children.forEach((child) => {

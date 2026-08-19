@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { createSkyLimbLayer } from '../src/engine/render/layers/skyLimbLayer'
 import { decidePixelRatio } from '../src/engine/performance/pixelRatio'
-import { createSkyProjectionUniforms } from '../src/engine/render/skyProjection'
+import { testSkyUniforms } from './testSkyUniforms'
 
 describe('gpu quality', () => {
   it('draws the sky limb with a clip-space quad instead of a dense sphere', () => {
-    const limb = createSkyLimbLayer(createSkyProjectionUniforms())
+    const limb = createSkyLimbLayer(testSkyUniforms())
     expect(limb.mesh.geometry.getAttribute('position').count).toBeLessThanOrEqual(4)
     expect(limb.material.fragmentShader).toContain('skyViewDirFromNdc')
     limb.mesh.geometry.dispose()

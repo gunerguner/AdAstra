@@ -1,6 +1,7 @@
-import { lazy, Suspense, useRef, useState } from 'react'
+import { lazy, Suspense, useMemo, useRef, useState } from 'react'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
+import { atmospherePhaseLabel, type AtmospherePhase } from '@/engine/render/bodyAppearance'
 import { ErrorPanel, LoadingPanel } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
 import LayerSection from '@/features/layer-controls/LayerSection'
@@ -26,7 +27,16 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(true)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(false)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
+  const [atmospherePhase, setAtmospherePhase] = useState<AtmospherePhase>('night')
   const objectCardRef = useRef<HTMLElement>(null)
+  const datetimeInputRef = useRef<HTMLInputElement>(null)
+  const yearLabelRef = useRef<HTMLElement>(null)
+  const formattedTimeRef = useRef<HTMLElement>(null)
+  const clockRefs = useMemo(() => ({
+    datetimeInput: datetimeInputRef,
+    yearLabel: yearLabelRef,
+    formattedTime: formattedTimeRef,
+  }), [])
   const simulationRef = useRef<SkySimulation>({
     utcMillis: Date.now(),
     observer: { latitude: observer.latitude, longitude: observer.longitude },
@@ -43,7 +53,7 @@ export default function App() {
   simulationRef.current.altitude = view.altitude
   simulationRef.current.fov = view.fov
 
-  const playback = usePlayback(observer.timeZone, simulationRef)
+  const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
 
   const resetNow = () => {
     playback.pausePlayback()
@@ -53,7 +63,10 @@ export default function App() {
   }
 
   return (
-    <main className={styles.shell}>
+    <main
+      className={styles.shell}
+      data-sky-phase={atmospherePhase}
+    >
       <Suspense fallback={<div className={styles.skyFallback} aria-busy="true" />}>
         {catalog ? (
           <SkyViewport
@@ -63,6 +76,14 @@ export default function App() {
             onSelect={setSelected}
             selected={selected}
             objectCardRef={objectCardRef}
+            onAtmosphereChange={(state) => {
+              const root = document.documentElement
+              root.dataset.skyPhase = state.phase
+              root.style.setProperty('--ui-daylight', state.daylight.toFixed(3))
+              root.style.setProperty('--ui-twilight', state.twilight.toFixed(3))
+              root.style.setProperty('--ui-warmth', state.warmth.toFixed(3))
+              setAtmospherePhase((current) => current === state.phase ? current : state.phase)
+            }}
           >
             {selected && (
               <ObjectCard selected={selected} onClose={() => setSelected(null)} ref={objectCardRef} />
@@ -81,6 +102,7 @@ export default function App() {
         activeCityIndex={activeCityIndex}
         observer={observer}
         datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
+        datetimeInputRef={datetimeInputRef}
         azimuth={view.azimuth}
         altitude={view.altitude}
         settingsOpen={isSettingsOpen}
@@ -110,6 +132,8 @@ export default function App() {
         speed={playback.speed}
         formattedTime={playback.formattedTime}
         timelineOffset={playback.timelineOffset}
+        phaseLabel={atmospherePhaseLabel(atmospherePhase)}
+        phase={atmospherePhase}
         onToggleOpen={() => setIsTimeDeckOpen((value) => !value)}
         onPlayPause={() => {
           if (playback.isPlaying) playback.pausePlayback()
@@ -117,17 +141,11 @@ export default function App() {
         }}
         onAdjustTime={playback.adjustTime}
         onSpeedChange={playback.setSpeed}
-        onTimelineChange={(nextOffset) => {
-          playback.pausePlayback()
-          playback.setTimelineOffset(nextOffset)
-          playback.commitTime(playback.timelineAnchor.current + nextOffset, false)
-        }}
-        onTimelineAnchor={() => {
-          playback.pausePlayback()
-          playback.timelineAnchor.current = simulationRef.current.utcMillis
-          playback.setTimelineOffset(0)
-        }}
-        onResetNow={resetNow}
+        onTimelineChange={playback.scrubTimeline}
+        onTimelineAnchor={playback.beginTimelineScrub}
+        onTimelineCommit={playback.endTimelineScrub}
+        yearLabelRef={yearLabelRef}
+        formattedTimeRef={formattedTimeRef}
       />
     </main>
   )

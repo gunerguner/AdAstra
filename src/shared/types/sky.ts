@@ -18,6 +18,7 @@ export type LayerState = {
   constellationNames: boolean
   bodies: boolean
   horizon: boolean
+  landscape: boolean
   showBelowHorizon: boolean
   ecliptic: boolean
   celestialEquator: boolean
@@ -35,6 +36,8 @@ export type SkySimulation = {
   azimuth: number
   altitude: number
   fov: number
+  scrubbing?: boolean
+  wake?: () => void
 }
 
 export type SkyView = {

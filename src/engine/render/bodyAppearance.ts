@@ -1,5 +1,5 @@
 export const SATURN_RING_SCALE = 1.9
-export const SUN_GLOW_SCALE = 1.55
+export const SUN_GLOW_SCALE = 1.28
 
 export const bodyRenderOrder = [
   'sun',
@@ -62,7 +62,89 @@ export function starPointSize(magnitude: number) {
   return 9 + starBrightness(magnitude) * 44
 }
 
+export type AtmospherePhase = 'night' | 'astronomical' | 'nautical' | 'civil' | 'day'
+
+export type AtmosphereState = {
+  daylight: number
+  twilight: number
+  night: number
+  warmth: number
+  groundLight: number
+  sunElevation: number
+  sunAzimuth: number
+  sunDirX: number
+  sunDirY: number
+  sunDirZ: number
+  phase: AtmospherePhase
+}
+
+const NIGHT_ATMOSPHERE: AtmosphereState = {
+  daylight: 0,
+  twilight: 0,
+  night: 1,
+  warmth: 0,
+  groundLight: 0.06,
+  sunElevation: -90,
+  sunAzimuth: 0,
+  sunDirX: 0,
+  sunDirY: -1,
+  sunDirZ: 0,
+  phase: 'night',
+}
+
+function saturate(value: number) {
+  return Math.min(1, Math.max(0, value))
+}
+
+function smoothstep(edge0: number, edge1: number, value: number) {
+  const t = saturate((value - edge0) / (edge1 - edge0))
+  return t * t * (3 - 2 * t)
+}
+
+export function atmospherePhase(sunAltitude: number, enabled: boolean): AtmospherePhase {
+  if (!enabled || sunAltitude < -18) return 'night'
+  if (sunAltitude < -12) return 'astronomical'
+  if (sunAltitude < -6) return 'nautical'
+  if (sunAltitude < 0) return 'civil'
+  return 'day'
+}
+
+export function atmospherePhaseLabel(phase: AtmospherePhase) {
+  if (phase === 'astronomical') return '天文曙暮光'
+  if (phase === 'nautical') return '航海曙暮光'
+  if (phase === 'civil') return '民用曙暮光'
+  if (phase === 'day') return '白昼'
+  return '夜晚'
+}
+
+export function atmosphereState(sunAltitude: number, sunAzimuth: number, enabled: boolean): AtmosphereState {
+  if (!enabled) {
+    return {
+      ...NIGHT_ATMOSPHERE,
+      sunElevation: sunAltitude,
+      sunAzimuth,
+    }
+  }
+  const altitude = sunAltitude * Math.PI / 180
+  const azimuth = sunAzimuth * Math.PI / 180
+  const daylight = saturate((sunAltitude + 12) / 18)
+  const twilight = smoothstep(-18, -8, sunAltitude) * (1 - smoothstep(2, 14, sunAltitude))
+  const night = 1 - smoothstep(-18, -6, sunAltitude)
+  return {
+    daylight,
+    twilight,
+    night,
+    warmth: twilight * (0.28 + 0.72 * (1 - saturate(Math.abs(sunAltitude) / 10))),
+    groundLight: smoothstep(-12, 8, sunAltitude),
+    sunElevation: sunAltitude,
+    sunAzimuth,
+    sunDirX: Math.cos(altitude) * Math.sin(azimuth),
+    sunDirY: Math.sin(altitude),
+    sunDirZ: Math.cos(altitude) * Math.cos(azimuth),
+    phase: atmospherePhase(sunAltitude, true),
+  }
+}
+
 export function daylightFactor(sunAltitude: number, enabled: boolean) {
-  if (!enabled) return 0
-  return Math.min(1, Math.max(0, (sunAltitude + 12) / 18))
+  return atmosphereState(sunAltitude, 0, enabled).daylight
 }

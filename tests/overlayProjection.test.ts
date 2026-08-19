@@ -42,6 +42,8 @@ describe('overlayScreenPosition', () => {
     applyOverlayPlacement(node, placement)
     applyOverlayPlacement(node, placement)
     expect(writes.filter((entry) => entry.startsWith('transform:')).length).toBe(1)
+    applyOverlayPlacement(node, { visible: true, x: 10.16, y: 20.24 })
+    expect(style.transform).toBe('translate3d(10.2px, 20.2px, 0)')
     applyOverlayPlacement(node, { visible: false, x: 0, y: 0 })
     applyOverlayPlacement(node, { visible: false, x: 0, y: 0 })
     expect(writes.filter((entry) => entry === 'display:none').length).toBe(1)

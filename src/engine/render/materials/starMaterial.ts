@@ -41,9 +41,10 @@ export function makeStarMaterial(uniforms: {
         );
         vec3 viewDir = skyViewDir(h);
         float visible = max(step(0.0, h.y), uShowBelow) * (1.0 - skyOutsideView(viewDir));
+        float extinction = mix(1.0, clamp((h.y + 0.05) * 3.6, 0.12, 1.0), 0.82);
         float fade = mix(1.0, clamp((h.y + 0.08) * 5.2, 0.08, 1.0), uDaylight);
-        vColor = color;
-        vBright = brightness * visible * fade;
+        vColor = mix(color, vec3(1.0, 0.78, 0.55), (1.0 - extinction) * 0.55);
+        vBright = brightness * visible * fade * extinction;
         gl_Position = projectSkyDir(viewDir);
         gl_PointSize = size * uPixelRatio * visible * step(gl_Position.z, 1.2) * clamp(1.22 / uFov, 0.52, 1.9);
       }

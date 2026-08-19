@@ -9,7 +9,7 @@
 - 目标用户：普通天文爱好者、科普用户
 - 产品阶段：MVP 及后续演进设计
 - 上游需求：`docs/prd`
-- 下游文档：`docs/technical-design.md`（含 §18 测试方案）、`docs/data-release-gate.md`
+- 下游文档：`docs/technical.md`、`docs/astronomy.md`、`docs/data-release-gate.md`
 
 ## 2. 产品概述
 
@@ -619,7 +619,7 @@ MVP 默认提供地面观察者视角。其他投影或太阳系视角作为后�
 
 ## 14. 性能与体验指标
 
-以下为产品验收目标，具体测量环境在 `docs/technical-design.md` §18 中定义：
+以下为产品验收目标，具体测量环境在 `docs/technical.md` 第 16 节中定义：
 
 ### 14.1 加载性能
 
@@ -747,7 +747,7 @@ MVP 不提供账号和云端数据留存。
 
 ## 19. 后续技术设计输入
 
-技术设计文档需基于本产品设计进一步明确：
+下列事项已分别写入 `docs/technical.md`（工程）与 `docs/astronomy.md`（天文原理），此处保留为产品侧核对清单：
 
 1. 支持的浏览器、设备基线和性能测试机型。
 2. 星空渲染技术、投影模型和坐标系统。

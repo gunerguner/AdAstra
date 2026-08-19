@@ -16,7 +16,11 @@ const unitScratch = { x: 0, y: 0, z: 0 }
 const ndcScratch = { x: 0, y: 0, z: 0 }
 const snapshotById: Record<string, BodySnapshot | undefined> = Object.create(null)
 
-export function createBodiesLayer(sky: SkyProjectionUniforms, pixelRatio: number) {
+export function createBodiesLayer(
+  sky: SkyProjectionUniforms,
+  pixelRatio: number,
+  atmosphere?: { daylight: { value: number }; twilight: { value: number } },
+) {
   const geometry = new BufferGeometry()
   const count = bodyIds.length
   geometry.setAttribute('position', new BufferAttribute(new Float32Array(count * 3), 3))
@@ -24,7 +28,13 @@ export function createBodiesLayer(sky: SkyProjectionUniforms, pixelRatio: number
   geometry.setAttribute('opacity', new BufferAttribute(new Float32Array(count), 1))
   geometry.setAttribute('color', new BufferAttribute(new Float32Array(count * 3), 3))
   const atlas = createBodyAtlasTexture()
-  const material = makeBodyMaterial({ sky, pixelRatio, atlas })
+  const material = makeBodyMaterial({
+    sky,
+    pixelRatio,
+    atlas,
+    daylight: atmosphere?.daylight,
+    twilight: atmosphere?.twilight,
+  })
   const points = new Points(geometry, material)
   points.frustumCulled = false
   points.renderOrder = 10

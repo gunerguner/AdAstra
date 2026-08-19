@@ -3,6 +3,7 @@ import type {
   Group,
   Line,
   LineLoop,
+  Matrix3,
   Mesh,
   PerspectiveCamera,
   Points,
@@ -18,16 +19,23 @@ export type SkyProjectionUniforms = ReturnType<typeof createSkyProjectionUniform
 
 export type Vec3 = { x: number; y: number; z: number }
 
+export type SharedSkyUniforms = {
+  sky: SkyProjectionUniforms
+  horizonMat: Float32Array
+  showBelow: { value: number }
+  daylight: { value: number }
+  twilight: { value: number }
+  warmth: { value: number }
+  groundLight: { value: number }
+  sunDir: { value: Vector3 }
+  viewToHorizon: { value: Matrix3 }
+}
+
 export type SkySceneContext = {
   renderer: WebGLRenderer
   scene: Scene
   camera: PerspectiveCamera
-  uniforms: {
-    sky: SkyProjectionUniforms
-    horizonMat: Float32Array
-    showBelow: { value: number }
-    daylight: { value: number }
-  }
+  uniforms: SharedSkyUniforms
   scratch: {
     horizon: Vec3
     lookTarget: Vector3
@@ -42,6 +50,7 @@ export type SkySceneContext = {
     linesGroup: Group
     bodyPoints: Points
     helperGroup: Group
+    skyDome: Mesh
     ground: Mesh
     horizon: LineLoop
     horizonGlow: LineLoop
@@ -53,6 +62,7 @@ export type SkySceneContext = {
     constellationLine: ShaderMaterial
     equatorialGrid: ShaderMaterial
     horizontalGrid: ShaderMaterial
+    skyDome: ShaderMaterial
     ground: ShaderMaterial
     skyLimb: ShaderMaterial
   }

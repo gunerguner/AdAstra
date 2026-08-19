@@ -1,4 +1,5 @@
 import { CircleDot, Compass, MapPin, RotateCcw, Settings2, Sparkles } from 'lucide-react'
+import type { RefObject } from 'react'
 import { IconButton } from '@/shared/ui'
 import styles from './TopBar.module.css'
 
@@ -14,6 +15,7 @@ type Props = {
   activeCityIndex: number
   observer: Observer
   datetimeValue: string
+  datetimeInputRef: RefObject<HTMLInputElement | null>
   azimuth: number
   altitude: number
   settingsOpen: boolean
@@ -30,6 +32,7 @@ export default function TopBar({
   activeCityIndex,
   observer,
   datetimeValue,
+  datetimeInputRef,
   azimuth,
   altitude,
   settingsOpen,
@@ -90,6 +93,7 @@ export default function TopBar({
           <CircleDot size={13} />
           <span>{observer.timeZone}</span>
           <input
+            ref={datetimeInputRef}
             aria-label="时刻"
             type="datetime-local"
             value={datetimeValue}

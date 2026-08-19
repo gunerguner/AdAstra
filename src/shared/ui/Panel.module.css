@@ -1,6 +1,7 @@
 .panel {
   background: var(--color-panel);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   backdrop-filter: blur(var(--blur-panel));
 }
 

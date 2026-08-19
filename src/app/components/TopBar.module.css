@@ -10,7 +10,7 @@
   gap: 18px;
   padding: 0 22px;
   border-bottom: 1px solid var(--color-divider);
-  background: var(--color-topbar);
+  background: color-mix(in srgb, var(--color-topbar) 90%, rgba(236, 195, 120, calc(var(--ui-warmth, 0) * 0.14)));
   backdrop-filter: blur(18px);
 }
 

@@ -3,11 +3,16 @@ import {
   ChevronRight,
   ChevronsDownUp,
   ChevronsUpDown,
-  LocateFixed,
+  Moon,
   Pause,
   Play,
+  Sun,
+  Sunset,
 } from 'lucide-react'
+import { useEffect, useRef, type RefObject } from 'react'
 import { playbackSpeeds } from '@/config/playbackSpeeds'
+import { TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config/timeline'
+import type { AtmospherePhase } from '@/engine/render/bodyAppearance'
 import { IconButton } from '@/shared/ui'
 import styles from './timeControls.module.css'
 
@@ -18,13 +23,23 @@ type Props = {
   speed: number
   formattedTime: string
   timelineOffset: number
+  phaseLabel: string
+  phase: AtmospherePhase
   onToggleOpen: () => void
   onPlayPause: () => void
   onAdjustTime: (milliseconds: number) => void
   onSpeedChange: (speed: number) => void
   onTimelineChange: (offset: number) => void
-  onTimelineAnchor: () => void
-  onResetNow: () => void
+  onTimelineAnchor: (offset: number) => void
+  onTimelineCommit: () => void
+  yearLabelRef: RefObject<HTMLElement | null>
+  formattedTimeRef: RefObject<HTMLElement | null>
+}
+
+function PhaseIcon({ phase }: { phase: AtmospherePhase }) {
+  if (phase === 'day') return <Sun size={13} />
+  if (phase === 'night') return <Moon size={13} />
+  return <Sunset size={13} />
 }
 
 export default function TimeDeck({
@@ -34,32 +49,52 @@ export default function TimeDeck({
   speed,
   formattedTime,
   timelineOffset,
+  phaseLabel,
+  phase,
   onToggleOpen,
   onPlayPause,
   onAdjustTime,
   onSpeedChange,
   onTimelineChange,
   onTimelineAnchor,
-  onResetNow,
+  onTimelineCommit,
+  yearLabelRef,
+  formattedTimeRef,
 }: Props) {
+  const sliderRef = useRef<HTMLInputElement>(null)
+  const draggingRef = useRef(false)
+
+  useEffect(() => {
+    if (draggingRef.current) return
+    const slider = sliderRef.current
+    if (slider && slider.value !== String(timelineOffset)) slider.value = String(timelineOffset)
+  }, [timelineOffset])
+
   return (
     <footer className={`${styles.deck} ${open ? '' : styles.collapsed}`}>
       <div className={styles.top}>
-        <div className={styles.label}><strong>{year}</strong></div>
+        <div className={styles.label}>
+          <strong ref={yearLabelRef}>{year}</strong>
+          <span className={styles.phase}>
+            <PhaseIcon phase={phase} />
+            {phaseLabel}
+          </span>
+        </div>
         <div className={styles.actions}>
-          {open && (
-            <button type="button" className={styles.step} onClick={() => onAdjustTime(-3600000)} aria-label="后退一小时">
-              <ChevronLeft size={18} />
-            </button>
-          )}
-          <button type="button" className={styles.play} onClick={onPlayPause} aria-label={isPlaying ? '暂停' : '播放'}>
+          <button type="button" className={styles.step} onClick={() => onAdjustTime(-3600000)} aria-label="后退一小时" hidden={!open}>
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            type="button"
+            className={`${styles.play} ${isPlaying ? styles.playing : ''}`}
+            onClick={onPlayPause}
+            aria-label={isPlaying ? '暂停' : '播放'}
+          >
             {isPlaying ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}
           </button>
-          {open && (
-            <button type="button" className={styles.step} onClick={() => onAdjustTime(3600000)} aria-label="前进一小时">
-              <ChevronRight size={18} />
-            </button>
-          )}
+          <button type="button" className={styles.step} onClick={() => onAdjustTime(3600000)} aria-label="前进一小时" hidden={!open}>
+            <ChevronRight size={18} />
+          </button>
         </div>
         {open ? (
           <label className={styles.speed}>速度
@@ -70,7 +105,7 @@ export default function TimeDeck({
             </select>
           </label>
         ) : (
-          <span className={styles.speed}>{formattedTime}</span>
+          <span className={styles.clock} ref={formattedTimeRef}>{formattedTime}</span>
         )}
         <IconButton
           className={styles.toggle}
@@ -81,26 +116,39 @@ export default function TimeDeck({
           {open ? <ChevronsDownUp size={16} /> : <ChevronsUpDown size={16} />}
         </IconButton>
       </div>
-      {open && (
-        <>
+      <div className={styles.timelineWrap}>
+        <div className={styles.timelineInner}>
           <div className={styles.timeline}>
-            <span>−6h</span>
-            <input
-              aria-label="拖动调整时间"
-              type="range"
-              min="-21600000"
-              max="21600000"
-              value={timelineOffset}
-              onChange={(event) => onTimelineChange(Number(event.target.value))}
-              onPointerDown={onTimelineAnchor}
-            />
-            <span>+6h</span>
+            <span>−{TIMELINE_RANGE_HOURS}h</span>
+            <div className={styles.track}>
+              <input
+                ref={sliderRef}
+                aria-label="拖动调整时间"
+                type="range"
+                min={-TIMELINE_RANGE_MS}
+                max={TIMELINE_RANGE_MS}
+                defaultValue={0}
+                onChange={(event) => onTimelineChange(Number(event.target.value))}
+                onPointerDown={(event) => {
+                  draggingRef.current = true
+                  event.currentTarget.setPointerCapture(event.pointerId)
+                  onTimelineAnchor(Number(event.currentTarget.value))
+                }}
+                onPointerUp={() => {
+                  draggingRef.current = false
+                  onTimelineCommit()
+                }}
+                onPointerCancel={() => {
+                  draggingRef.current = false
+                  onTimelineCommit()
+                }}
+                onKeyUp={onTimelineCommit}
+              />
+            </div>
+            <span>+{TIMELINE_RANGE_HOURS}h</span>
           </div>
-          <div className={styles.bottom}>
-            <button type="button" onClick={onResetNow}><LocateFixed size={14} /> 此时此地</button>
-          </div>
-        </>
-      )}
+        </div>
+      </div>
     </footer>
   )
 }

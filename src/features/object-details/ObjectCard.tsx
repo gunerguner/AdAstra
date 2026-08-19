@@ -17,10 +17,11 @@ function eyebrow(selected: SelectedSkyObject) {
 }
 
 export default function ObjectCard({ selected, onClose, ref }: Props) {
+  const kind = selected.type === 'star' ? 'star' : selected.id === 'sun' || selected.id === 'moon' ? selected.id : 'planet'
   return (
-    <aside className={styles.card} ref={ref}>
+    <aside className={styles.card} data-kind={kind} ref={ref}>
       <IconButton className={styles.close} onClick={onClose} aria-label="关闭详情"><X size={15} /></IconButton>
-      <span className={styles.eyebrow}>{eyebrow(selected)}</span>
+      <span className={styles.eyebrow}><i className={styles.swatch} aria-hidden="true" />{eyebrow(selected)}</span>
       <h2>{selected.name}</h2>
       <div className={styles.stats}>
         {selected.constellation && <span><small>星座</small>{selected.constellation}</span>}

@@ -27,7 +27,7 @@
     right: 15px;
     left: 15px;
     width: auto;
-    bottom: calc(96px + var(--safe-bottom));
+    bottom: calc(118px + var(--safe-bottom));
     max-height: none;
   }
 

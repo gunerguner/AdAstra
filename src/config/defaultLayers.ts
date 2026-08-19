@@ -6,6 +6,7 @@ export const defaultLayers = {
   constellationNames: true,
   bodies: true,
   horizon: true,
+  landscape: true,
   showBelowHorizon: false,
   ecliptic: true,
   celestialEquator: true,

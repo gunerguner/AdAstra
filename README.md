@@ -74,7 +74,8 @@ flowchart TB
 更完整的设计说明见：
 
 - [产品设计](docs/product-design.md)
-- [技术设计](docs/technical-design.md)
+- [技术文档](docs/technical.md)
+- [天文知识](docs/astronomy.md)
 - [数据发布门禁](docs/data-release-gate.md)
 
 
@@ -201,7 +202,7 @@ scripts/
   pwa/          Service Worker 模板
 public/data/    构建生成的运行时星表
 tests/          单元与回归测试
-docs/           产品、技术与数据发布文档
+docs/           产品、技术、天文知识与数据发布文档
 ```
 
 
