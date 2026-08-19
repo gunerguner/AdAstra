@@ -95,4 +95,29 @@ describe('skyPicker', () => {
     })
     expect(hit?.id).toBe('venus')
   })
+
+  it('点击太阳本体时仍能选中太阳', () => {
+    const sun: BodySnapshot = {
+      id: 'sun',
+      name: '太阳',
+      altitude: 20,
+      azimuth: 0,
+      raHours: 12,
+      decDeg: -82,
+      magnitude: -26,
+      phaseAngle: 0,
+      phaseFraction: 1,
+    }
+    const venus: BodySnapshot = {
+      ...body,
+      id: 'venus',
+      name: '金星',
+    }
+    const hit = pick({
+      ndcX: -0.215,
+      ndcY: -0.52,
+      bodies: [sun, venus],
+    })
+    expect(hit?.id).toBe('sun')
+  })
 })

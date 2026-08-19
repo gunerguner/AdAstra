@@ -61,17 +61,17 @@ export function makeSkyLineMaterial(
       uniform float uDayOpacity;
       uniform float uShowBelow;
       uniform float uDaylight;
+      uniform float uUseHorizon;
       varying float vAlt;
       varying vec3 vViewDir;
       ${skyOutsideViewGlsl}
       void main() {
         if (skyOutsideView(vViewDir) > 0.5) discard;
-        float visible = max(step(-0.08, vAlt), uShowBelow);
-        if (visible < 0.5) discard;
+        float aboveHorizon = mix(1.0, smoothstep(-0.002, 0.016, vAlt), uUseHorizon);
+        if (uShowBelow < 0.5 && aboveHorizon < 0.02) discard;
         float dayMix = smoothstep(0.22, 0.68, uDaylight);
-        float lowAltitude = mix(1.0, clamp((vAlt + 0.06) * 4.0, 0.55, 1.0), dayMix);
         vec3 color = mix(uColor, uDayColor, dayMix);
-        float opacity = mix(uOpacity, uDayOpacity, dayMix) * lowAltitude;
+        float opacity = mix(uOpacity, uDayOpacity, dayMix) * mix(aboveHorizon, 1.0, uShowBelow);
         gl_FragColor = vec4(color, opacity);
       }
     `,

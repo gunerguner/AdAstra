@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { buildConstellationAnchors, buildConstellationStars } from '../src/engine/astronomy/constellationData'
+import { constellationLines } from '../src/data/catalog'
+import starCatalog from '../src/data/stars.yaml'
 import type { RuntimeCatalog } from '../src/engine/catalog/catalogService'
+
+const starIds = new Set(
+  (starCatalog as { stars: Array<{ id: string }> }).stars.map((star) => star.id),
+)
 
 describe('constellation data', () => {
   it('drops constellation references that are absent from the catalog', () => {
@@ -19,5 +25,17 @@ describe('constellation data', () => {
       ]],
     }])
     expect(Math.hypot(anchors[0].x, anchors[0].y, anchors[0].z)).toBeCloseTo(1, 6)
+  })
+
+  it('covers the planned constellation set with drawable segments', () => {
+    expect(constellationLines).toHaveLength(44)
+    const missing = constellationLines.flatMap((line) =>
+      line.segments.flatMap((segment) => segment.filter((id) => !starIds.has(id)).map((id) => `${line.name}:${id}`)),
+    )
+    expect(missing).toEqual([])
+    const undrawable = constellationLines.filter((line) =>
+      line.segments.every((segment) => segment.length < 2),
+    ).map((line) => line.name)
+    expect(undrawable).toEqual([])
   })
 })

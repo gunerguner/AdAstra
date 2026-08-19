@@ -3,7 +3,7 @@ import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { ConstellationAnchor } from '@/engine/astronomy/constellationData'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { applyHorizonMatrixInto, equatorialUnitInto, fillHorizonMatrix } from '@/engine/coordinates/skyMath'
-import { horizontalVectorInto } from '@/engine/coordinates/skyGeometry'
+import { horizontalVectorInto, skyCameraUpInto } from '@/engine/coordinates/skyGeometry'
 import { projectSkyToNdc } from './skyProjection'
 import { atmosphereState, type AtmosphereState } from './bodyAppearance'
 import { updateBodiesLayer } from './layers/bodyLayer'
@@ -211,6 +211,8 @@ export function startSkyRenderLoop(options: {
       Math.sin(viewAltitude),
       Math.cos(viewAltitude) * Math.cos(viewAzimuth),
     )
+    skyCameraUpInto(latest.altitude, latest.azimuth, scratch.lookTarget, scratch.projected)
+    camera.up.copy(scratch.projected)
     camera.lookAt(scratch.lookTarget)
     camera.updateMatrixWorld()
     uniforms.viewToHorizon.value.setFromMatrix4(camera.matrixWorld)

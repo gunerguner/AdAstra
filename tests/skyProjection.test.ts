@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Camera, Vector3 } from 'three'
-import { SKY_HORIZON_LIFT, projectSkyToNdc, skyProjectionGlsl, skyViewDirFromNdcGlsl, viewDirectionFromNdc } from '../src/engine/render/skyProjection'
+import { SKY_HORIZON_LIFT, SKY_OUTSIDE_Z, projectSkyToNdc, skyOutsideMaskGlsl, skyProjectionGlsl, skyViewDirFromNdcGlsl, viewDirectionFromNdc } from '../src/engine/render/skyProjection'
 
 const identityCamera = {
   matrixWorldInverse: { elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },
@@ -42,10 +42,17 @@ describe('skyProjection', () => {
   it('does not fling off-sky vertices to huge NDC', () => {
     expect(skyProjectionGlsl).not.toContain('away * 8.0')
     expect(skyProjectionGlsl).toContain('projected.z')
+    expect(skyProjectionGlsl).toContain(SKY_OUTSIDE_Z.toFixed(3))
+    expect(skyProjectionGlsl).not.toContain('step(0.02, dir.z)')
   })
 
   it('reconstructs view direction from NDC with the same horizon lift', () => {
     expect(skyViewDirFromNdcGlsl).toContain('skyViewDirFromNdc')
     expect(skyViewDirFromNdcGlsl).toContain(SKY_HORIZON_LIFT.toFixed(3))
+  })
+
+  it('crops the stereographic disk at a shared outside threshold', () => {
+    expect(skyOutsideMaskGlsl).toContain(SKY_OUTSIDE_Z.toFixed(3))
+    expect(skyOutsideMaskGlsl).toContain('fwidth')
   })
 })

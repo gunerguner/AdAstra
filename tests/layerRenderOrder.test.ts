@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createBodiesLayer } from '../src/engine/render/layers/bodyLayer'
 import { createHelperLayer } from '../src/engine/render/layers/helperLayer'
 import { createSkyDomeLayer } from '../src/engine/render/layers/skyDomeLayer'
+import { createSkyLimbLayer } from '../src/engine/render/layers/skyLimbLayer'
 import { testSkyUniforms } from './testSkyUniforms'
 
 describe('layer render order', () => {
@@ -22,6 +23,17 @@ describe('layer render order', () => {
     const helpers = createHelperLayer(uniforms)
     const bodies = createBodiesLayer(uniforms.sky, 1)
     expect(dome.mesh.renderOrder).toBeLessThan(helpers.ground.renderOrder)
+    expect(helpers.ecliptic.renderOrder).toBeLessThan(helpers.ground.renderOrder)
+    expect(helpers.equator.renderOrder).toBeLessThan(helpers.ground.renderOrder)
     expect(helpers.ground.renderOrder).toBeLessThan(bodies.points.renderOrder)
+  })
+
+  it('crops the celestial sphere after all sky content', () => {
+    const uniforms = testSkyUniforms()
+    const helpers = createHelperLayer(uniforms)
+    const bodies = createBodiesLayer(uniforms.sky, 1)
+    const limb = createSkyLimbLayer(uniforms)
+    expect(limb.mesh.renderOrder).toBeGreaterThan(bodies.points.renderOrder)
+    expect(limb.mesh.renderOrder).toBeGreaterThan(helpers.ground.renderOrder)
   })
 })

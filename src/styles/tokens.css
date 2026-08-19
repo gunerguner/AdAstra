@@ -77,5 +77,5 @@
   --overlay-hover-shadow: 0 4px 14px rgba(24, 48, 78, 0.12);
   --overlay-grain: 0.04;
   --overlay-vignette: rgba(118, 156, 196, 0.16);
-  --overlay-atmosphere: rgba(176, 202, 224, 0.22);
+  --overlay-atmosphere: rgba(176, 202, 224, 0.06);
 }

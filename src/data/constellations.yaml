@@ -143,3 +143,49 @@ constellations:
     segments:
       - [ rasalhague, cebrai, sabik ]
       - [ yedPrior, zetaOph, sabik ]
+  - name: 船底座
+    segments:
+      - [ canopus, avior, aspidiske, thetaCar, miaplacidus ]
+  - name: 波江座
+    segments:
+      - [ cursa, zaurak, acamar, achernar ]
+  - name: 鲸鱼座
+    segments:
+      - [ menkar, kaffaljidhma, mira, batenKaitos, denebKaitos ]
+  - name: 南鱼座
+    segments:
+      - [ epsilonPsA, fomalhaut, deltaPsA, betaPsA, epsilonPsA ]
+  - name: 南三角座
+    segments:
+      - [ atria, betaTra, gammaTra, atria ]
+  - name: 孔雀座
+    segments:
+      - [ peacock, betaPav, deltaPav, epsilonPav, peacock ]
+  - name: 仙王座
+    segments:
+      - [ alderamin, alfirk, errai, zetaCep, deltaCep, alderamin ]
+  - name: 天秤座
+    segments:
+      - [ zubenelgenubi, zubeneschamali, sigmaLib, zubenelgenubi ]
+  - name: 摩羯座
+    segments:
+      - [ algedi, dabih, denebAlgedi, nashira, algedi ]
+  - name: 宝瓶座
+    segments:
+      - [ sadalsuud, sadalmelik, sadachbia, skat ]
+  - name: 双鱼座
+    segments:
+      - [ gammaPsc, thetaPsc, iotaPsc, lambdaPsc, gammaPsc ]
+      - [ alpherg, alrescha ]
+  - name: 海豚座
+    segments:
+      - [ sualocin, rotanev, deltaDel, gammaDel, sualocin ]
+  - name: 天兔座
+    segments:
+      - [ arneb, nihal, epsilonLep, arneb ]
+  - name: 乌鸦座
+    segments:
+      - [ gienahCrv, minkar, kraz, algorab, gienahCrv ]
+  - name: 猎犬座
+    segments:
+      - [ corCaroli, chara ]

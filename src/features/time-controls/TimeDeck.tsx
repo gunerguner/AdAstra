@@ -37,9 +37,9 @@ type Props = {
 }
 
 function PhaseIcon({ phase }: { phase: AtmospherePhase }) {
-  if (phase === 'day') return <Sun size={13} />
-  if (phase === 'night') return <Moon size={13} />
-  return <Sunset size={13} />
+  if (phase === 'day') return <Sun size={11} />
+  if (phase === 'night') return <Moon size={11} />
+  return <Sunset size={11} />
 }
 
 export default function TimeDeck({
@@ -81,8 +81,8 @@ export default function TimeDeck({
           </span>
         </div>
         <div className={styles.actions}>
-          <button type="button" className={styles.step} onClick={() => onAdjustTime(-3600000)} aria-label="后退一小时" hidden={!open}>
-            <ChevronLeft size={18} />
+          <button type="button" className={styles.step} onClick={() => onAdjustTime(-3600000)} aria-label="后退一小时" aria-hidden={!open} tabIndex={open ? 0 : -1}>
+            <ChevronLeft size={16} />
           </button>
           <button
             type="button"
@@ -90,31 +90,33 @@ export default function TimeDeck({
             onClick={onPlayPause}
             aria-label={isPlaying ? '暂停' : '播放'}
           >
-            {isPlaying ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}
+            {isPlaying ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
           </button>
-          <button type="button" className={styles.step} onClick={() => onAdjustTime(3600000)} aria-label="前进一小时" hidden={!open}>
-            <ChevronRight size={18} />
+          <button type="button" className={styles.step} onClick={() => onAdjustTime(3600000)} aria-label="前进一小时" aria-hidden={!open} tabIndex={open ? 0 : -1}>
+            <ChevronRight size={16} />
           </button>
         </div>
-        {open ? (
-          <label className={styles.speed}>速度
-            <select value={speed} onChange={(event) => onSpeedChange(Number(event.target.value))}>
-              {playbackSpeeds.map((item) => (
-                <option value={item.value} key={item.value}>{item.label}</option>
-              ))}
-            </select>
-          </label>
-        ) : (
-          <span className={styles.clock} ref={formattedTimeRef}>{formattedTime}</span>
-        )}
-        <IconButton
-          className={styles.toggle}
-          onClick={onToggleOpen}
-          aria-label={open ? '收起时空序列' : '展开时空序列'}
-          aria-pressed={open}
-        >
-          {open ? <ChevronsDownUp size={16} /> : <ChevronsUpDown size={16} />}
-        </IconButton>
+        <div className={styles.side}>
+          {open ? (
+            <label className={styles.speed}>速度
+              <select value={speed} onChange={(event) => onSpeedChange(Number(event.target.value))}>
+                {playbackSpeeds.map((item) => (
+                  <option value={item.value} key={item.value}>{item.label}</option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <span className={styles.clock} ref={formattedTimeRef}>{formattedTime}</span>
+          )}
+          <IconButton
+            className={styles.toggle}
+            onClick={onToggleOpen}
+            aria-label={open ? '收起时空序列' : '展开时空序列'}
+            aria-pressed={open}
+          >
+            {open ? <ChevronsDownUp size={15} /> : <ChevronsUpDown size={15} />}
+          </IconButton>
+        </div>
       </div>
       <div className={styles.timelineWrap}>
         <div className={styles.timelineInner}>

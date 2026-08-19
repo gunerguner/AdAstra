@@ -2,62 +2,77 @@
   position: absolute;
   z-index: 10;
   left: 50%;
-  bottom: calc(22px + var(--safe-bottom));
+  bottom: calc(16px + var(--safe-bottom));
   transform: translateX(-50%);
-  width: min(688px, calc(100vw - 360px));
-  padding: 14px 18px 11px;
+  width: min(560px, calc(100vw - 360px));
+  padding: 7px 12px 6px;
   background: color-mix(in srgb, var(--color-deck) 88%, rgba(236, 195, 120, calc(var(--ui-warmth, 0) * 0.18)));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   backdrop-filter: blur(20px);
-  box-shadow: 0 10px 28px rgba(2, 6, 18, 0.28);
+  box-shadow: 0 8px 22px rgba(2, 6, 18, 0.26);
 }
 
 .collapsed {
-  width: min(520px, calc(100vw - 360px));
-  padding: 8px 12px;
+  width: min(420px, calc(100vw - 360px));
+  padding: 5px 10px 4px;
 }
 
-.collapsed .timelineWrap {
-  grid-template-rows: 0fr;
-  margin-top: 0;
+.collapsed .step {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .top {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.toggle {
-  flex: none;
+  column-gap: 8px;
 }
 
 .label {
   display: grid;
-  gap: 2px;
+  gap: 0;
   min-width: 0;
+  justify-self: start;
 }
 
 .label strong {
-  font: 14px var(--font-serif);
+  font: 13px var(--font-serif);
   font-weight: 500;
+  line-height: 1.15;
 }
 
 .phase {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   color: var(--color-cyan);
-  font: 10px var(--font-mono);
+  font: 9px var(--font-mono);
   letter-spacing: 0.04em;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 7px;
+  justify-self: center;
+  gap: 5px;
+}
+
+.side {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+
+.toggle {
+  flex: none;
+  width: 26px;
+  min-width: 26px;
+  min-height: 26px;
 }
 
 .step,
@@ -68,17 +83,14 @@
   display: grid;
   place-items: center;
   aspect-ratio: 1;
-  width: 31px;
-  min-width: 31px;
+  width: 26px;
+  min-width: 26px;
   border-radius: 50%;
 }
 
-.step[hidden] {
-  display: none;
-}
-
 .play {
-  width: 39px;
+  width: 32px;
+  min-width: 32px;
   color: #171a23;
   border-color: var(--color-gold);
   background: var(--color-gold);
@@ -91,21 +103,27 @@
 .speed {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font: 10px var(--font-mono);
+  gap: 6px;
+  font: 9px var(--font-mono);
   color: var(--color-label);
 }
 
 .clock {
+  overflow: hidden;
+  min-width: 11ch;
   color: var(--color-cyan);
-  font: 12px var(--font-mono);
+  font: 11px var(--font-mono);
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .speed select {
-  width: 100px;
-  padding: 6px 7px;
-  font: 10px var(--font-mono);
+  width: 84px;
+  padding: 3px 5px;
+  font: 9px var(--font-mono);
   background: var(--color-field);
   border: 1px solid var(--color-border);
   color: var(--color-text);
@@ -113,29 +131,25 @@
 }
 
 .timelineWrap {
-  display: grid;
-  grid-template-rows: 1fr;
-  margin-top: 10px;
-  transition: grid-template-rows 0.22s ease, margin-top 0.22s ease;
+  margin-top: 4px;
 }
 
 .timelineInner {
-  overflow: hidden;
   min-height: 0;
 }
 
 .timeline {
   display: grid;
-  grid-template-columns: 35px 1fr 35px;
+  grid-template-columns: 28px 1fr 28px;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   color: var(--color-label);
-  font: 9px var(--font-mono);
+  font: 8px var(--font-mono);
 }
 
 .track {
   position: relative;
-  height: 18px;
+  height: 12px;
   display: grid;
   align-items: center;
 }
@@ -143,8 +157,8 @@
 .track::before {
   content: '';
   position: absolute;
-  inset: 6px 0 auto;
-  height: 6px;
+  inset: 4px 0 auto;
+  height: 4px;
   border-radius: 99px;
   pointer-events: none;
   background:
@@ -163,8 +177,8 @@
   content: '';
   position: absolute;
   left: 50%;
-  top: 3px;
-  bottom: 3px;
+  top: 2px;
+  bottom: 2px;
   width: 1px;
   background: var(--color-gold);
   opacity: 0.72;
@@ -175,27 +189,29 @@
   position: relative;
   z-index: 1;
   width: 100%;
+  height: 12px;
   accent-color: var(--color-gold);
 }
 
 @keyframes playPulse {
   50% {
-    box-shadow: 0 0 0 7px rgba(236, 195, 120, 0.16);
+    box-shadow: 0 0 0 5px rgba(236, 195, 120, 0.16);
   }
 }
 
 @media (max-width: 940px) {
   .deck,
   .collapsed {
-    width: min(590px, calc(100vw - 28px));
+    width: min(480px, calc(100vw - 28px));
   }
 }
 
 @media (max-width: 680px) {
-  .deck {
-    width: min(100% - 24px, 590px);
-    bottom: calc(10px + var(--safe-bottom));
-    padding: 10px 12px;
+  .deck,
+  .collapsed {
+    width: min(100% - 24px, 480px);
+    bottom: calc(8px + var(--safe-bottom));
+    padding: 6px 10px 5px;
   }
 }
 

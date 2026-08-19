@@ -56,11 +56,11 @@ flowchart TB
 ### 数据来源
 
 - **太阳、月亮和主要行星**：使用 MIT 许可的 [Astronomy Engine](https://github.com/cosinekitty/astronomy) 在浏览器 Worker 中实时计算。
-- **恒星目录**：当前仓库默认使用项目自有的 `fixture-bright-stars` 开发夹具，共 175 颗亮星，位于 `public/data/v1/`。
+- **恒星目录**：当前仓库默认使用项目自有的 `fixture-bright-stars` 开发夹具，约 226 颗亮星（含星座连线锚点），位于 `public/data/v1/`。
 - **星座连线**：由项目维护的 YAML 数据生成，不直接复制授权不明确的第三方连线文件。
 - **城市与时区**：当前内置上海、北京、伦敦、纽约和悉尼等少量预设，时区使用 IANA 标识并由浏览器 `Intl` API 处理。
 
-当前默认数据适用于开发、测试和性能验证，并非完整生产星表。项目已为 BSC5P、SAO 等候选目录设置授权门禁；在来源、再分发和商业使用权限完成书面核验前，生产数据构建会被阻止。详情见 [数据发布门禁](docs/data-release-gate.md)。
+当前默认数据适用于开发、测试和 `npm run build`，并非完整生产星表。画面星星少是因为打进去的是夹具，不是渲染上限。有授权也不等于自动拉取全天目录：生产构建门禁通过后，仍需把 BSC5P/SAO 等候选源接入构建期适配器，目标是大约 `+5.5` / `+8.0` 的科普星表，不是银河系全部恒星。详情见 [数据发布门禁](docs/data-release-gate.md)。
 
 ### 主要技术与工具
 
@@ -190,12 +190,13 @@ npm run build:release
 
 ```text
 src/
-  app/          应用入口、组件与状态 hooks
-  features/     星空视图、图层、时间和对象详情
-  engine/       天文、时钟、坐标、交互、性能与渲染引擎
-  workers/      天文计算 Worker
-  data/         星座等随源码维护的数据
-  shared/       通用类型、错误和 UI
+  app/          应用壳：页面装配与 React 状态
+  features/     功能 UI（星空视口、图层、时间、详情）
+  engine/       引擎，按能力分子目录（clock / astronomy / render 等）
+  workers/      天文计算 Worker 入口
+  data/         随源码维护的静态数据
+  config/       产品常量
+  shared/       跨目录类型、错误和 UI 零件
 scripts/
   astronomy/    天文黄金样例校验
   catalog/      星表构建与授权门禁

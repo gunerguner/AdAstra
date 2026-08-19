@@ -1,5 +1,5 @@
 import { ShaderMaterial, type Texture } from 'three'
-import { SATURN_RING_SCALE, SUN_GLOW_SCALE } from '@/engine/render/bodyAppearance'
+import { SATURN_RING_SCALE, SUN_DAY_GLOW_SCALE, SUN_GLOW_SCALE } from '@/engine/render/bodyAppearance'
 import { skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
@@ -47,9 +47,9 @@ export function makeBodyMaterial(uniforms: {
         vPhase = color.y;
         vLimb = color.z;
         vAlt = position.y;
-        float dayMix = smoothstep(0.28, 0.78, uDaylight);
+        float dayMix = smoothstep(0.22, 0.72, uDaylight);
         vSpriteScale = vAtlasIndex < 0.5
-          ? mix(${SUN_GLOW_SCALE.toFixed(2)}, 1.12, dayMix)
+          ? mix(${SUN_GLOW_SCALE.toFixed(2)}, ${SUN_DAY_GLOW_SCALE.toFixed(2)}, dayMix)
           : (vAtlasIndex > 5.5 && vAtlasIndex < 6.5 ? ${SATURN_RING_SCALE.toFixed(2)} : 1.0);
         gl_Position = projectSkyDir(viewDir);
         gl_PointSize = size * vSpriteScale * uPixelRatio * visible * step(gl_Position.z, 1.2) * clamp(1.22 / uFov, 0.52, 1.9);
@@ -79,21 +79,21 @@ export function makeBodyMaterial(uniforms: {
         float alpha = 0.0;
 
         if (isSun) {
-          float r = sqrt(rr);
-          float dayMix = smoothstep(0.28, 0.78, uDaylight);
-          float core = exp(-r * r * mix(16.0, 22.0, dayMix));
-          float mid = exp(-r * r * mix(6.4, 9.5, dayMix));
-          float glow = exp(-r * r * mix(2.2, 4.8, dayMix));
-          vec3 nightColor = vec3(1.0, 0.97, 0.78) * core * 1.35
-            + vec3(1.0, 0.78, 0.28) * mid * 0.72
-            + vec3(1.0, 0.52, 0.12) * glow * 0.28;
-          vec3 dayColor = vec3(1.0, 0.99, 0.94) * core * 1.4
-            + vec3(1.0, 0.95, 0.78) * mid * 0.22
-            + vec3(1.0, 0.97, 0.88) * glow * 0.08;
-          color = mix(nightColor, dayColor, dayMix);
-          vec3 halo = vec3(1.0, 0.54, 0.12) * glow * 0.18 * (1.0 - dayMix);
-          color += halo;
-          alpha = vOpacity * clamp(core + mid * mix(0.55, 0.22, dayMix) + glow * mix(0.22, 0.06, dayMix), 0.0, 1.0);
+          float qLen = sqrt(rr);
+          float dayMix = smoothstep(0.22, 0.72, uDaylight);
+          float discR = coreScale;
+          float r = qLen / max(discR, 1.0e-4);
+          float z = sqrt(max(0.0, 1.0 - min(r * r, 1.0)));
+          vec3 nightDisc = vec3(1.0, 0.94, 0.58) * mix(0.92, 1.08, z);
+          vec3 dayDisc = vec3(1.0, 0.995, 0.94);
+          vec3 discColor = mix(nightDisc, dayDisc, dayMix);
+          vec3 glowColor = mix(vec3(1.0, 0.78, 0.32), vec3(1.0, 0.98, 0.94), dayMix);
+          float core = 1.0 - smoothstep(0.72, 1.18, r);
+          color = mix(glowColor, discColor, core);
+          float t = clamp((qLen - discR * 0.78) / max(1.0 - discR * 0.78, 1.0e-3), 0.0, 1.0);
+          float glow = pow(1.0 - t, mix(1.7, 2.25, dayMix));
+          glow *= 1.0 - smoothstep(0.78, 0.995, qLen);
+          alpha = vOpacity * max(core, glow);
         } else if (sr <= 1.0) {
           vec2 local = clamp(s * 0.5 + 0.5, 0.0, 1.0);
           float col = floor(vAtlasIndex + 0.01);

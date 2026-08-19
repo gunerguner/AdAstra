@@ -1,5 +1,8 @@
 export const SATURN_RING_SCALE = 1.9
-export const SUN_GLOW_SCALE = 1.28
+/** Night-time sprite padding around the photosphere disc. */
+export const SUN_GLOW_SCALE = 1.7
+/** Daytime sprite padding for sky halo; pick radius still uses the disc. */
+export const SUN_DAY_GLOW_SCALE = 2.45
 
 export const bodyRenderOrder = [
   'sun',
@@ -20,7 +23,7 @@ export const bodyAppearance: Record<string, {
   atlasIndex: number
   spriteScale: number
 }> = {
-  sun: { color: '#ffe69a', size: 72, priority: 100, atlasIndex: 0, spriteScale: SUN_GLOW_SCALE },
+  sun: { color: '#ffe69a', size: 46, priority: 100, atlasIndex: 0, spriteScale: SUN_GLOW_SCALE },
   moon: { color: '#edf4ff', size: 32, priority: 80, atlasIndex: 1, spriteScale: 1 },
   mercury: { color: '#c6b49d', size: 8, priority: 20, atlasIndex: 2, spriteScale: 1 },
   venus: { color: '#ffe8bb', size: 11, priority: 40, atlasIndex: 3, spriteScale: 1 },
@@ -49,9 +52,9 @@ export function bodyPointSize(id: string, magnitude: number) {
 
 export function bodyPickSize(id: string, magnitude: number) {
   const appearance = bodyAppearance[id]
-  const size = bodyPointSize(id, magnitude)
-  if (id === 'sun') return size * 0.52
-  return size * (appearance?.spriteScale ?? 1)
+  const diameter = bodyPointSize(id, magnitude)
+  if (id === 'sun') return diameter * 0.5 + 4
+  return diameter * 0.5 * (appearance?.spriteScale ?? 1) + 8
 }
 
 export function starBrightness(magnitude: number) {

@@ -10,7 +10,7 @@ import {
 } from 'three'
 import type { Star } from '@/shared/types/star'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
-import { SKY_FOV_DEG, createSkyProjectionUniforms } from './skyProjection'
+import { SKY_FOV_DEG, SKY_VOID_HEX, createSkyProjectionUniforms } from './skyProjection'
 import { createStarLayer } from './layers/starLayer'
 import { createMilkyWayLayer } from './layers/milkyWayLayer'
 import { createGridLayer } from './layers/gridLayer'
@@ -43,7 +43,7 @@ export function createSkyScene(options: {
 
   let qualityPixelRatio = Math.min(window.devicePixelRatio, 1.5)
   renderer.setPixelRatio(qualityPixelRatio)
-  renderer.setClearColor(0x01040c, 1)
+  renderer.setClearColor(SKY_VOID_HEX, 1)
   renderer.setAnimationLoop(null)
   renderer.domElement.tabIndex = 0
   renderer.domElement.setAttribute('role', 'application')

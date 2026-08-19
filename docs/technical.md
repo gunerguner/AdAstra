@@ -20,8 +20,8 @@
 
 采用自研轻量星空引擎，不引入运行时后端：
 
-- 应用层：React 19 + TypeScript + Vite 8。
-- 渲染层：Three.js `WebGLRenderer` + 主线程 WebGL2。不支持 WebGL2 时展示明确错误，不进入 OffscreenCanvas 或 Canvas2D 星空渲染。
+- 界面：React 19 + TypeScript + Vite 8（`src/app`、`src/features`）。
+- 渲染：Three.js `WebGLRenderer` + 主线程 WebGL2（`src/engine/render`）。不支持 WebGL2 时展示明确错误，不进入 OffscreenCanvas 或 Canvas2D 星空渲染。
 - 天文计算：`astronomy-engine`，放入独立 ES Module Worker。
 - 恒星渲染：批次 GPU 点精灵，自定义 ShaderMaterial。
 - 时间动画：统一模拟时钟 + Worker 精确采样 + 主线程插值。
@@ -100,21 +100,77 @@ flowchart LR
 
 热路径通过 `simulationRef` 共享同一可变 `SkySimulation`，避免同一帧内时间、地点、图层不一致。高频视角和时间不写入 React state。
 
-## 6. 分层与模块边界
+## 6. 代码分层
 
-### 6.1 分层
+逻辑分层与目录一一对应：一个顶层目录（以及 `engine/` 下的一个子目录）只承担一类职责。不再另设「领域层 / 数据层 / 离线层」去横切这些文件夹。
 
-| 层 | 职责 | 主要位置 |
-| --- | --- | --- |
-| 应用层 | 布局、地点/时间/图层、错误与加载 | `src/app`、`src/features` |
-| 领域层 | 模拟时钟、观测者、播放、质量相关调度 | `src/engine/clock`、`src/app/hooks` |
-| 天文计算层 | 封装 Astronomy Engine、插值、星座几何 | `src/engine/astronomy`、`src/engine/coordinates` |
-| 渲染层 | 场景、图层、材质、投影、DOM overlay | `src/engine/render` |
-| 交互层 | 指针、滚轮、拾取、视角约束 | `src/engine/interaction` |
-| 数据层 | 星表、星座连线、城市、manifest | `src/engine/catalog`、`src/data`、`public/data` |
-| 离线层 | Service Worker 注册与缓存 | `src/main.tsx`、`scripts/pwa` |
+组织方式是 **feature-first UI + capability-first engine**：界面按功能切到 `features/`，引擎按能力切到 `engine/` 子目录。
 
-### 6.2 `SimulationClock`
+### 6.1 顶层目录
+
+| 目录 | 职责 |
+| --- | --- |
+| `src/app` | 应用壳：页面装配、低频 React 状态（地点、图层、视星等、视角）、加载与错误入口 |
+| `src/features` | 功能 UI：每个子目录一个界面功能，只渲染和转发事件 |
+| `src/engine` | 星空引擎，按能力再分子目录，见 6.2 |
+| `src/workers` | 计算线程入口。目前只有 `astronomy.worker.ts` |
+| `src/data` | 随源码维护的静态数据（星座连线 YAML、城市列表） |
+| `src/config` | 产品常量（默认图层、方位、播放倍率、时间轴窗口） |
+| `src/shared` | 跨目录共用的类型、错误、无业务 UI 零件 |
+| `src/styles` | 全局样式 |
+| `src/main.tsx` | 启动：挂载 React、生产环境注册 Service Worker |
+| `public/data` | 构建生成的运行时星表，不是源码层 |
+| `scripts/` | 星表构建、黄金样例、PWA 模板，不参与运行时分层 |
+
+`src/app/hooks` 属于应用壳，不是单独一层。例如 `usePlayback` 把 `engine/clock` 接到 React 和时间控件上，时钟规则仍在 `engine/clock`。
+
+### 6.2 引擎子目录
+
+`src/engine` 不是「一层」，而是引擎包。子目录才是引擎内部的层，互不混放：
+
+| 目录 | 职责 |
+| --- | --- |
+| `engine/clock` | 模拟时钟：UTC 推进、播放倍率，不碰 UI、不碰星历 |
+| `engine/astronomy` | 太阳系快照、Worker 协议、采样窗口插值、星座锚点装配 |
+| `engine/coordinates` | 赤道/地平变换、地方恒星时、民用地方时 ↔ UTC |
+| `engine/catalog` | 运行时加载并校验二进制星表 |
+| `engine/render` | Three.js 场景、图层、材质、帧循环 |
+| `engine/interaction` | 指针/滚轮、视角约束、拾取、DOM overlay 投影 |
+| `engine/performance` | 帧统计、DPR、rAF 降频 |
+
+星座连线的**源数据**在 `src/data`，**加载星表**在 `engine/catalog`，**把连线解析成几何**在 `engine/astronomy/constellationData.ts`。三者目录不同，不要再归成一个「数据层」。
+
+### 6.3 依赖方向
+
+```text
+src/app、src/features
+    → src/engine/*（按需引用子目录）
+    → src/shared、src/config、src/data
+
+src/workers/astronomy.worker.ts
+    → src/engine/astronomy
+
+src/engine/render、src/engine/interaction
+    → src/engine/coordinates、src/engine/astronomy（读快照/方向）
+    → src/engine/catalog（读运行时星表类型与顶点）
+
+src/engine/astronomy、src/engine/clock、src/engine/catalog
+    ↛ src/engine/render、src/engine/interaction、src/app
+```
+
+规则：
+
+- `shared`、`config`、`data` 不反向依赖 `engine` 或 `app`。
+- 只有 `engine/astronomy` 和 Worker 可以 `import 'astronomy-engine'`。`app`、`features`、`engine/render` 不得直接调用第三方天文 API。
+- `engine/render` 不推进时间、不发起除注入回调以外的星历请求。
+- PWA 缓存是构建产物（`scripts/pwa`）加启动注册（`main.tsx`），不是 `src/` 里的一层。
+
+已知耦合（有意留在现目录，不另拆层）：
+
+- `engine/coordinates/skyGeometry.ts` 使用 `three` 的 `Vector3`，供网格和大圆细分。
+- `engine/render/startSkyRenderLoop.ts` 编排本帧：读 `SkySimulation`、插值天体、更新 overlay。装配发生在 `features/sky-viewer/SkyViewport.tsx`，不把渲染目录改成应用层。
+
+### 6.4 `SimulationClock`（`engine/clock`）
 
 职责：保存当前模拟 UTC 毫秒；管理播放方向和倍率；基于 `performance.now()` 推进，避免按帧累加造成掉帧时时间漂移。
 
@@ -128,29 +184,31 @@ simulationUtc = pausedAt + (performance.now - startedAt) * rate
 
 页面进入后台时停止 rAF，不补播后台时间。
 
-### 6.3 `AstronomyService`
+### 6.5 `AstronomyService`（`engine/astronomy`）
 
-唯一允许直接调用 `astronomy-engine` 的模块。输入 `Date` 与 `Observer`，输出太阳、月亮和行星的快照：赤经赤纬、方位高度、视星等、相位、土星光环倾角等。
+唯一允许直接调用 `astronomy-engine` 的模块。输入 `Date` 与 `Observer`，输出太阳、月亮和行星的快照：赤经赤纬、方位高度、视星等、相位、土星光环倾角等。Worker 内复用同一服务。
 
-业务层和渲染层不得直接依赖第三方天文 API。Worker 内复用同一服务。
+同目录还有：Worker 协议与 `attachAstroWorker`、采样窗口插值、月相名称、星座锚点装配。
 
-### 6.4 `CatalogService`
+### 6.6 `CatalogService`（`engine/catalog`）
 
 加载 `manifest.json`、二进制星表和名称索引；校验 HTTP 状态、字节长度、SHA-256 和记录数；解析为按视星等排序的运行时星表。失败抛出可重试的 `AppError('catalog')`。
 
-### 6.5 `createSkyScene` / `startSkyRenderLoop`
+### 6.7 `createSkyScene` / `startSkyRenderLoop`（`engine/render`）
 
 创建和销毁 Three.js 资源；在同一 rAF 内更新地平矩阵、相机、uniforms、DOM overlay 并 `render`。
 
-禁止：自行推进时间；发起星历计算以外的业务状态修改。太阳系采样通过注入的 `requestBodySnapshot` 触发。
+禁止：自行推进时间；直接 `import` 天文库；自行创建 Worker。太阳系采样通过 `SkyViewport` 注入的 `requestBodySnapshot` 触发。
 
-### 6.6 `SkyViewController`
+### 6.8 `SkyViewController`（`engine/interaction`）
 
 Pointer Events、滚轮、键盘；指针捕获和拖拽惯性；方位、高度、视场角约束；天体拾取。Three.js 相机只表达观察方向和视场，不承担天文坐标计算。
 
-### 6.7 Worker
+同目录的 `overlayProjection.ts` 把 NDC 转到 DOM 坐标，供帧循环写标签位置，仍属交互/投影，不放到 `render/layers`。
 
-`src/workers/astronomy.worker.ts` 只做天体快照，不做渲染。
+### 6.9 Worker（`src/workers`）
+
+`astronomy.worker.ts` 只做天体快照，不做渲染。协议类型定义在 `engine/astronomy/astroWorkerProtocol.ts`，避免 Worker 文件成为第二套 API。
 
 当前协议（实现）：
 
@@ -170,42 +228,42 @@ type AstroWorkerRequest = {
 
 ## 7. 目录结构
 
-按 feature-first UI + layer-first engine 组织：
+与第 6 节同一张地图，注释表示该目录的唯一职责：
 
 ```text
 src/
-  main.tsx
-  app/                 入口、TopBar、hooks
-  features/
-    sky-viewer/
+  main.tsx                 启动与 SW 注册
+  app/                     应用壳
+    App.tsx
+    components/            TopBar、ControlPanel
+    hooks/                 把 engine 接到 React（不是独立层）
+  features/                功能 UI
+    sky-viewer/            装配 scene / loop / worker / 指针
     location-controls/
     layer-controls/
     time-controls/
     object-details/
-  engine/
-    astronomy/
-    catalog/
-    clock/
-    coordinates/
-    interaction/
-    performance/
-    render/
+  engine/                  引擎包（子目录 = 能力）
+    clock/                 模拟时钟
+    astronomy/             天体快照与 Worker 协议
+    coordinates/           坐标与地方时
+    catalog/               运行时星表加载
+    render/                WebGL 场景
       layers/
       materials/
-  workers/
+    interaction/           视角、拾取、overlay 投影
+    performance/           帧预算
+  workers/                 计算线程入口
     astronomy.worker.ts
-  shared/
-    ui/
-    types/
-    errors/
-  config/
-  data/
+  data/                    源码内静态数据
+  config/                  产品常量
+  shared/                  类型、错误、通用 UI
   styles/
 scripts/
-  catalog/             星表构建与授权门禁
-  astronomy/           黄金样例校验
-  pwa/
-public/data/v1/        构建生成的运行时星表
+  catalog/                 星表构建与授权门禁
+  astronomy/               黄金样例校验
+  pwa/                     Service Worker 模板
+public/data/v1/            构建生成的运行时星表
 tests/
 docs/
 data/licenses/
@@ -259,11 +317,13 @@ type SkySimulation = {
 | 数据 | 现状 |
 | --- | --- |
 | 太阳、月亮、行星 | Astronomy Engine，MIT，Worker 内实时计算 |
-| 恒星 | 仓库默认 `fixture-bright-stars`，约 175 颗亮星，位于 `public/data/v1/` |
+| 恒星 | 仓库默认 `fixture-bright-stars`，约 226 颗亮星，位于 `public/data/v1/` |
 | 星座连线 | 项目维护的 YAML，构建期生成，不复制未授权第三方连线 |
 | 城市与时区 | 内置上海、北京、伦敦、纽约、悉尼；IANA 标识 + `Intl` |
 
-开发夹具用于开发、CI 和性能验证，不是完整生产星表。
+开发夹具用于开发、CI 和 `npm run build`，不是完整生产星表。
+
+夹具（fixture）就是这份手写小样本：`npm run dev` / `npm run build` 打包的都是它，所以画面只有约两百颗星。渲染按 GPU 点批次设计，能力对得上核心 `+5.5`、扩展 `+8.0`，对不上银河系全部恒星。书面授权只打开「可否发布候选目录」的门；`catalog:production` 现在仍读 `stars.yaml`，BSC5P/SAO 的下载与转换适配器尚未接入。详见 `docs/data-release-gate.md`。
 
 ### 9.4 恒星目录候选（生产）
 
@@ -516,7 +576,7 @@ ADR-005 原因：热路径需要同一帧更新 horizon 矩阵、相机、overla
 
 | 项目 | 当前实现 | 设计目标 |
 | --- | --- | --- |
-| 星表 | 自有夹具约 175 星 | BSC5P + SAO 等授权通过后的核心/扩展包，至 +8.0 |
+| 星表 | 自有夹具约 226 星；`catalog:production` 仍读 YAML，仅多授权检查 | BSC5P + SAO 适配器接入后的核心/扩展包，至 +8.0 |
 | Worker 协议 | 单一 `snapshot` + 6 小时窗口 | 更细的 INIT / SAMPLE_RANGE / SAMPLE_AT |
 | 状态库 | React hooks + ref | 可选 Zustand，仍禁止每帧重渲染 |
 | 恒星自行 | 夹具未带自行列 | 顶点着色器 `p0 + dp/dt * Δt` |

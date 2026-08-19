@@ -17,7 +17,17 @@ export function horizontalVector(altitude: number, azimuth: number) {
   return horizontalVectorInto(altitude, azimuth, new Vector3())
 }
 
-export function densifyGreatCircle(points: Vector3[], maxStepRad = Math.PI / 36) {
+/** Screen-up for a zenith-locked camera. Near the zenith, falls back to north along the current azimuth. */
+export function skyCameraUpInto(altitudeDeg: number, azimuthDeg: number, look: Vector3, out: Vector3) {
+  out.set(0, 1, 0).addScaledVector(look, -look.y)
+  if (out.lengthSq() < 1e-8) {
+    const azimuth = azimuthDeg * Math.PI / 180
+    out.set(Math.sin(azimuth), 0, Math.cos(azimuth))
+  }
+  return out.normalize()
+}
+
+export function densifyGreatCircle(points: Vector3[], maxStepRad = Math.PI / 90) {
   if (points.length < 2) return points
   const out: Vector3[] = [points[0].clone().normalize()]
   for (let index = 0; index < points.length - 1; index += 1) {

@@ -49,7 +49,7 @@ export function createGridLayer(
     })
   })
 
-  ;[-60, -30, 0, 30, 60].forEach((dec) => {
+  ;[-75, -60, -30, 0, 30, 60, 75].forEach((dec) => {
     for (let start = 0; start < 360; start += 90) {
       addSkyLine(
         group,
@@ -62,7 +62,7 @@ export function createGridLayer(
   for (let raHours = 0; raHours < 24; raHours += 2) {
     addSkyLine(
       group,
-      [-75, -60, -45, -30, -15, 0, 15, 30, 45, 60, 75].map((dec) => toVector3(equatorialUnit(raHours, dec))),
+      [-90, -80, -70, -60, -45, -30, -15, 0, 15, 30, 45, 60, 70, 80, 90].map((dec) => toVector3(equatorialUnit(raHours, dec))),
       'equatorialGrid',
       equatorialGrid,
     )

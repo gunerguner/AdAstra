@@ -6,7 +6,7 @@ export function createSkyLimbLayer(uniforms: SharedSkyUniforms) {
   const material = makeSkyLimbMaterial(uniforms)
   const mesh = new Mesh(new PlaneGeometry(2, 2), material)
   mesh.frustumCulled = false
-  mesh.renderOrder = 1
+  mesh.renderOrder = 20
   return { mesh, material }
 }
 

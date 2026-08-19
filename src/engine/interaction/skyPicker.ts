@@ -67,10 +67,10 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
     )
     if (!ndc) continue
     const distance = Math.hypot(ndc.x - input.ndcX, ndc.y - input.ndcY)
-    const radius = ndcRadiusForPixels(bodyPickSize(item.id, item.magnitude) * 0.85 + 16, input.minScreenSize)
+    const radius = ndcRadiusForPixels(bodyPickSize(item.id, item.magnitude), input.minScreenSize)
     if (distance > radius) continue
     const priority = appearance?.priority ?? 10
-    if (best && (priority < best.priority || (priority === best.priority && distance >= best.distance))) continue
+    if (best && (distance > best.distance || (distance === best.distance && priority < best.priority))) continue
     best = {
       id: item.id,
       name: item.name,
