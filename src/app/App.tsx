@@ -42,18 +42,14 @@ export default function App() {
     observer: { latitude: observer.latitude, longitude: observer.longitude },
     magnitudeLimit,
     layers,
-    azimuth: view.azimuth,
-    altitude: view.altitude,
-    fov: view.fov,
+    view: { ...view },
   })
   Object.assign(simulationRef.current, {
     observer: { latitude: observer.latitude, longitude: observer.longitude },
     magnitudeLimit,
     layers,
-    azimuth: view.azimuth,
-    altitude: view.altitude,
-    fov: view.fov,
   })
+  Object.assign(simulationRef.current.view, view)
 
   const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
 

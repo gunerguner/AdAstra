@@ -23,6 +23,8 @@ export type Vec3 = { x: number; y: number; z: number }
 export type SharedSkyUniforms = {
   sky: SkyProjectionUniforms
   horizonMat: Float32Array
+  /** J2000 方向用：地平矩阵 × IAU 1976 岁差。 */
+  eqjHorizonMat: Float32Array
   showBelow: { value: number }
   daylight: { value: number }
   twilight: { value: number }

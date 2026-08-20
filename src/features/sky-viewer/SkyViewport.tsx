@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
-import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
+import type { SelectedSkyObject, SkySimulation, SkyView } from '@/shared/types/sky'
 import type { AtmosphereState } from '@/engine/render/bodyAppearance'
 import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
@@ -16,7 +16,7 @@ import styles from './skyViewer.module.css'
 type Props = {
   catalog: RuntimeCatalog
   simulationRef: RefObject<SkySimulation>
-  onViewChange: (view: { azimuth: number; altitude: number; fov: number }) => void
+  onViewChange: (view: SkyView) => void
   onSelect: (item: SelectedSkyObject | null) => void
   selected?: SelectedSkyObject | null
   objectCardRef?: RefObject<HTMLElement | null>

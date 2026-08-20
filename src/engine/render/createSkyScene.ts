@@ -34,6 +34,7 @@ export function createSkyScene(options: {
   camera.position.set(0, 0, 0)
   const sky = createSkyProjectionUniforms(SKY_FOV_DEG)
   const horizonMat = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1])
+  const eqjHorizonMat = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1])
   const showBelow = { value: 1 }
   const daylight = { value: 0 }
   const twilight = { value: 0 }
@@ -41,7 +42,8 @@ export function createSkyScene(options: {
   const groundLight = { value: 0.06 }
   const sunDir = { value: new Vector3(0, -1, 0) }
   const viewToHorizon = { value: new Matrix3() }
-  const sharedUniforms = { horizonMat, sky, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon }
+  const sharedUniforms = { horizonMat, eqjHorizonMat, sky, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon }
+  const j2000Uniforms = { ...sharedUniforms, horizonMat: eqjHorizonMat }
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, PIXEL_RATIO_CAP))
   renderer.setClearColor(SKY_VOID_HEX, 1)
@@ -56,11 +58,11 @@ export function createSkyScene(options: {
 
   const skyDome = createFullscreenLayer(makeSkyDomeMaterial(sharedUniforms), -1)
   scene.add(skyDome.mesh)
-  const milkyWay = createMilkyWayLayer(sharedUniforms)
+  const milkyWay = createMilkyWayLayer(j2000Uniforms)
   scene.add(milkyWay.mesh)
-  const starLayer = createStarLayer(stars, { ...sharedUniforms, pixelRatio: renderer.getPixelRatio() })
+  const starLayer = createStarLayer(stars, { ...j2000Uniforms, pixelRatio: renderer.getPixelRatio() })
   scene.add(starLayer.points)
-  const grids = createGridLayer(constellationStars, sharedUniforms)
+  const grids = createGridLayer(constellationStars, j2000Uniforms)
   scene.add(grids.group)
   const bodies = createBodiesLayer(sky, renderer.getPixelRatio(), { daylight, twilight })
   scene.add(bodies.points)
@@ -82,7 +84,7 @@ export function createSkyScene(options: {
     renderer,
     scene,
     camera,
-    uniforms: { sky, horizonMat, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon },
+    uniforms: { sky, horizonMat, eqjHorizonMat, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon },
     scratch: {
       horizon: { x: 0, y: 0, z: 0 },
       lookTarget: new Vector3(),

@@ -290,9 +290,7 @@ type SkySimulation = {
   observer: Observer
   magnitudeLimit: number
   layers: LayerState
-  azimuth: number
-  altitude: number
-  fov: number
+  view: SkyView
   scrubbing?: boolean
   wake?: () => void
 }
@@ -393,7 +391,7 @@ public/data/v1/
 
 ### 10.2 恒星
 
-构建期给出 J2000 赤经赤纬。运行时转为赤道单位向量，乘以由地方恒星时和纬度构成的 3×3 地平矩阵，在顶点着色器中完成。时间变化时不重传恒星 Buffer，只更新矩阵 uniform。
+构建期给出 J2000 赤经赤纬。运行时转为赤道单位向量，乘以（地平矩阵 × IAU 1976 岁差），在顶点着色器中完成。时间变化时不重传恒星 Buffer，只更新矩阵 uniform。行星仍用日期赤道，不乘岁差。
 
 设计目标另含顶点着色器自行传播；当前夹具星表未带自行向量。
 

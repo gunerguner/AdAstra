@@ -46,6 +46,7 @@ function pick(overrides: Partial<Parameters<typeof pickSkyObject>[0]> = {}) {
     countStarsThroughMagnitude: () => 1,
     bodies: [body],
     horizonMat: new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]),
+    eqjHorizonMat: new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]),
     horizonScratch: { x: 0, y: 0, z: 0 },
     projected: new Vector3(),
     ...overrides,

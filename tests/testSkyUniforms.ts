@@ -6,6 +6,7 @@ export function testSkyUniforms(): SharedSkyUniforms {
   return {
     sky: createSkyProjectionUniforms(),
     horizonMat: new Float32Array(9),
+    eqjHorizonMat: new Float32Array(9),
     showBelow: { value: 1 },
     daylight: { value: 1 },
     twilight: { value: 0.2 },

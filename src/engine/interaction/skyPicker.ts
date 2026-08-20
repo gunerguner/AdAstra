@@ -30,6 +30,7 @@ export type PickInput = {
   countStarsThroughMagnitude: (limit: number) => number
   bodies: BodySnapshot[]
   horizonMat: Float32Array
+  eqjHorizonMat: Float32Array
   horizonScratch: { x: number; y: number; z: number }
   projected: Vector3
   starGrid?: StarPickGrid
@@ -99,7 +100,7 @@ function considerStar(input: PickInput, index: number, best: { star: Star; altit
   const star = input.stars[index]
   const horizonDir = applyHorizonMatrixInto(
     equatorialUnitInto(star.raHours, star.decDeg, unitScratch),
-    input.horizonMat,
+    input.eqjHorizonMat,
     input.horizonScratch,
   )
   if (!input.layers.showBelowHorizon && horizonDir.y < -0.05) return best
@@ -128,7 +129,7 @@ function fillStarGrid(input: PickInput, grid: StarPickGrid, limit: number) {
     const star = input.stars[index]
     const horizonDir = applyHorizonMatrixInto(
       equatorialUnitInto(star.raHours, star.decDeg, unitScratch),
-      input.horizonMat,
+      input.eqjHorizonMat,
       input.horizonScratch,
     )
     if (!input.layers.showBelowHorizon && horizonDir.y < -0.05) continue
@@ -151,7 +152,7 @@ function pickStar(input: PickInput): SelectedSkyObject | null {
     for (let index = 0; index < limit; index += 1) best = considerStar(input, index, best)
   } else {
     const m = input.camera.matrixWorldInverse.elements
-    const key = `${m[0]}:${m[2]}:${m[8]}:${m[10]}:${input.fov}:${input.aspect}:${input.magnitudeLimit}:${input.layers.showBelowHorizon}:${limit}`
+    const key = `${m[0]}:${m[2]}:${m[8]}:${m[10]}:${input.fov}:${input.aspect}:${input.magnitudeLimit}:${input.layers.showBelowHorizon}:${limit}:${input.eqjHorizonMat[0]}:${input.eqjHorizonMat[4]}:${input.eqjHorizonMat[8]}`
     if (!input.starGridKey || input.starGridKey.current !== key) {
       fillStarGrid(input, input.starGrid, limit)
       if (input.starGridKey) input.starGridKey.current = key

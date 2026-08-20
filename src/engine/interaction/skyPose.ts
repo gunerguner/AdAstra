@@ -1,4 +1,4 @@
-/** 选中对象此刻的方位/高度：恒星走地平矩阵，行星直接用快照角度。 */
+/** 选中对象此刻的方位/高度：恒星走岁差后的地平矩阵，行星走日期赤道地平矩阵。 */
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 import { applyHorizonMatrixInto, equatorialUnitInto, horizonAnglesFromVector } from '@/engine/coordinates/skyMath'
 import type { Star } from '@/shared/types/star'
@@ -21,6 +21,7 @@ export function poseOfSkyObject(
     bodies: BodySnapshot[]
     starById: Map<string, Star>
     horizonMat: Float32Array
+    eqjHorizonMat: Float32Array
     horizonScratch: { x: number; y: number; z: number }
   },
 ) {
@@ -31,5 +32,5 @@ export function poseOfSkyObject(
   }
   const star = options.starById.get(item.id)
   if (!star) return null
-  return poseFromEquatorial(star.raHours, star.decDeg, options.horizonMat, options.horizonScratch)
+  return poseFromEquatorial(star.raHours, star.decDeg, options.eqjHorizonMat, options.horizonScratch)
 }

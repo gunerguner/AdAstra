@@ -6,7 +6,7 @@ import type { RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { ConstellationAnchor } from '@/engine/astronomy/constellationData'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
-import { applyHorizonMatrixInto, equatorialUnitInto, fillHorizonMatrix } from '@/engine/coordinates/skyMath'
+import { applyHorizonMatrixInto, equatorialUnitInto, fillEqjHorizonMatrices } from '@/engine/coordinates/skyMath'
 import { ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG } from '@/engine/coordinates/astroConstants'
 import { horizontalVectorInto, skyCameraUpInto } from '@/engine/coordinates/skyGeometry'
 import { atmosphereState, type AtmosphereState } from './bodyAppearance'
@@ -131,7 +131,8 @@ export function startSkyRenderLoop(options: {
     const latest = simulationRef.current
     // 键序来自 defaultLayers + spread 更新，插入序稳定。
     const nextLayersKey = Object.values(latest.layers).join(':')
-    const viewChanged = latest.azimuth !== lastAzimuth || latest.altitude !== lastAltitude || latest.fov !== lastFov
+    const view = latest.view
+    const viewChanged = view.azimuth !== lastAzimuth || view.altitude !== lastAltitude || view.fov !== lastFov
     const layersChanged = nextLayersKey !== lastLayersKey
     const fullRate = isFullRateFrame({
       hidden: false,
@@ -143,7 +144,7 @@ export function startSkyRenderLoop(options: {
       layersChanged,
     })
     requestBodySnapshot(frameStartedAt, latest.utcMillis, latest.observer)
-    fillHorizonMatrix(latest.utcMillis, latest.observer, uniforms.horizonMat)
+    fillEqjHorizonMatrices(latest.utcMillis, latest.observer, uniforms.horizonMat, uniforms.eqjHorizonMat)
     uniforms.showBelow.value = latest.layers.showBelowHorizon ? 1 : 0
     const bodySnapshots = interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis)
     const sun = bodySnapshots[0]?.id === 'sun'
@@ -178,7 +179,7 @@ export function startSkyRenderLoop(options: {
         onAtmosphereChange?.(atmosphere)
       }
     }
-    uniforms.sky.uFov.value = degToRad(latest.fov)
+    uniforms.sky.uFov.value = degToRad(view.fov)
     const pixelRatio = renderer.getPixelRatio()
     layers.starMaterial.uniforms.uPixelRatio.value = pixelRatio
     ;(layers.bodyPoints.material as ShaderMaterial).uniforms.uPixelRatio.value = pixelRatio
@@ -205,8 +206,8 @@ export function startSkyRenderLoop(options: {
       layers.equator.visible = latest.layers.celestialEquator
     }
 
-    horizontalVectorInto(latest.altitude, latest.azimuth, scratch.lookTarget)
-    skyCameraUpInto(latest.altitude, latest.azimuth, scratch.lookTarget, scratch.projected)
+    horizontalVectorInto(view.altitude, view.azimuth, scratch.lookTarget)
+    skyCameraUpInto(view.altitude, view.azimuth, scratch.lookTarget, scratch.projected)
     camera.up.copy(scratch.projected)
     camera.lookAt(scratch.lookTarget)
     camera.updateMatrixWorld()
@@ -228,7 +229,7 @@ export function startSkyRenderLoop(options: {
       node,
       world,
       camera,
-      latest.fov,
+      view.fov,
       camera.aspect,
       width,
       height,
@@ -255,7 +256,7 @@ export function startSkyRenderLoop(options: {
         hideOverlay(node)
         return
       }
-      applyHorizonMatrixInto(anchor, uniforms.horizonMat, scratch.horizon)
+      applyHorizonMatrixInto(anchor, uniforms.eqjHorizonMat, scratch.horizon)
       if (scratch.horizon.y < 0.07) {
         hideOverlay(node)
         return
@@ -273,6 +274,7 @@ export function startSkyRenderLoop(options: {
           bodies: bodySnapshots,
           starById: catalog.starById,
           horizonMat: uniforms.horizonMat,
+          eqjHorizonMat: uniforms.eqjHorizonMat,
           horizonScratch: scratch.horizon,
         })
         if (pose) {
@@ -304,6 +306,7 @@ export function startSkyRenderLoop(options: {
           bodies: bodySnapshots,
           starById: catalog.starById,
           horizonMat: uniforms.horizonMat,
+          eqjHorizonMat: uniforms.eqjHorizonMat,
           horizonScratch: scratch.horizon,
         })
         if (pose) {
@@ -337,7 +340,7 @@ export function startSkyRenderLoop(options: {
       uniforms.horizonMat,
       scratch.horizon,
       camera,
-      latest.fov,
+      view.fov,
       camera.aspect,
       scratch.projected,
     )
@@ -360,9 +363,9 @@ export function startSkyRenderLoop(options: {
       }
     }
     lastUtcMillis = latest.utcMillis
-    lastAzimuth = latest.azimuth
-    lastAltitude = latest.altitude
-    lastFov = latest.fov
+    lastAzimuth = view.azimuth
+    lastAltitude = view.altitude
+    lastFov = view.fov
     lastLayersKey = nextLayersKey
     if (running) scheduleNext(fullRate)
   }

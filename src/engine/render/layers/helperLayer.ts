@@ -36,11 +36,12 @@ export function createHelperLayer(uniforms: SharedSkyUniforms) {
   horizonGlow.renderOrder = 6
   group.add(ground, horizonGlow, horizon)
 
+  const j2000Uniforms = { ...uniforms, horizonMat: uniforms.eqjHorizonMat }
   const ecliptic = new Line(
     new BufferGeometry().setFromPoints(densifyGreatCircle(
       Array.from({ length: 361 }, (_, index) => toVector3(eclipticEquatorialUnit(index))),
     )),
-    makeSkyLineMaterial('#f0a03a', 0.92, true, uniforms, {
+    makeSkyLineMaterial('#f0a03a', 0.92, true, j2000Uniforms, {
       color: '#d35400',
       opacity: 0.9,
     }),
@@ -49,7 +50,7 @@ export function createHelperLayer(uniforms: SharedSkyUniforms) {
     new BufferGeometry().setFromPoints(densifyGreatCircle(
       Array.from({ length: 361 }, (_, index) => toVector3(equatorialUnit((index / 360) * HOURS_PER_DAY, 0))),
     )),
-    makeSkyLineMaterial('#4cc4e8', 0.88, true, uniforms, {
+    makeSkyLineMaterial('#4cc4e8', 0.88, true, j2000Uniforms, {
       color: '#0b5f8a',
       opacity: 0.9,
     }),

@@ -2,7 +2,7 @@
 import type { RefObject } from 'react'
 import type { SkySimulation, SkyView } from '@/shared/types/sky'
 import { clampSkyFov } from '@/engine/render/skyProjection'
-import { fillHorizonMatrix } from '@/engine/coordinates/skyMath'
+import { fillEqjHorizonMatrices } from '@/engine/coordinates/skyMath'
 import { pickSkyObject } from './skyPicker'
 import { createStarPickGrid } from './starPickGrid'
 import { nudgeView, panView, zoomView } from './viewConstraints'
@@ -41,9 +41,7 @@ export class SkyViewController {
   ) {}
 
   emitView(next: SkyView, forceUiSync = false) {
-    this.simulationRef.current.azimuth = next.azimuth
-    this.simulationRef.current.altitude = next.altitude
-    this.simulationRef.current.fov = next.fov
+    Object.assign(this.simulationRef.current.view, next)
     this.onActivity()
     const now = performance.now()
     if (forceUiSync || now - this.lastViewSyncAt >= 50) {
@@ -55,8 +53,7 @@ export class SkyViewController {
   private flushViewSoon() {
     window.clearTimeout(this.viewSyncTimer)
     this.viewSyncTimer = window.setTimeout(() => {
-      const latest = this.simulationRef.current
-      this.emitView({ azimuth: latest.azimuth, altitude: latest.altitude, fov: latest.fov }, true)
+      this.emitView({ ...this.simulationRef.current.view }, true)
     }, 80)
   }
 
@@ -68,14 +65,14 @@ export class SkyViewController {
       -((clientY - rect.top) / rect.height) * 2 + 1,
     )
     const latest = this.simulationRef.current
-    fillHorizonMatrix(latest.utcMillis, latest.observer, uniforms.horizonMat)
+    fillEqjHorizonMatrices(latest.utcMillis, latest.observer, uniforms.horizonMat, uniforms.eqjHorizonMat)
     return pickSkyObject({
       ndcX: scratch.pickPoint.x,
       ndcY: scratch.pickPoint.y,
       minScreenSize: Math.max(1, Math.min(rect.width, rect.height)),
       pixelRatio: renderer.getPixelRatio(),
       camera,
-      fov: latest.fov,
+      fov: latest.view.fov,
       aspect: camera.aspect,
       layers: latest.layers,
       magnitudeLimit: latest.magnitudeLimit,
@@ -83,6 +80,7 @@ export class SkyViewController {
       countStarsThroughMagnitude: this.countStarsThroughMagnitude,
       bodies: this.bodiesAt(),
       horizonMat: uniforms.horizonMat,
+      eqjHorizonMat: uniforms.eqjHorizonMat,
       horizonScratch: scratch.horizon,
       projected: scratch.projected,
       starGrid: this.starGrid,
@@ -112,22 +110,21 @@ export class SkyViewController {
     this.onActivity()
     this.ctx.renderer.domElement.setPointerCapture(event.pointerId)
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
-    const latest = this.simulationRef.current
+    const view = this.simulationRef.current.view
     if (this.pointers.size >= 2) {
       this.drag = null
-      this.pinch = { distance: Math.max(this.pointerDistance(), 1), fov: latest.fov }
+      this.pinch = { distance: Math.max(this.pointerDistance(), 1), fov: view.fov }
       return
     }
-    this.drag = { x: event.clientX, y: event.clientY, azimuth: latest.azimuth, altitude: latest.altitude, moved: false }
+    this.drag = { x: event.clientX, y: event.clientY, azimuth: view.azimuth, altitude: view.altitude, moved: false }
   }
 
   onPointerMove = (event: PointerEvent) => {
     if (this.pointers.has(event.pointerId)) this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
     if (this.pinch && this.pointers.size >= 2) {
       this.hideHover()
-      const latest = this.simulationRef.current
       const distance = Math.max(this.pointerDistance(), 1)
-      this.emitView(zoomView({ ...latest, fov: this.pinch.fov }, this.pinch.distance / distance))
+      this.emitView(zoomView({ ...this.simulationRef.current.view, fov: this.pinch.fov }, this.pinch.distance / distance))
       return
     }
     if (this.drag) {
@@ -135,7 +132,7 @@ export class SkyViewController {
       if (!this.drag.moved) return
       this.hideHover()
       this.emitView(panView(
-        { azimuth: this.drag.azimuth, altitude: this.drag.altitude, fov: this.simulationRef.current.fov },
+        { azimuth: this.drag.azimuth, altitude: this.drag.altitude, fov: this.simulationRef.current.view.fov },
         event.clientX - this.drag.x,
         event.clientY - this.drag.y,
       ))
@@ -151,8 +148,7 @@ export class SkyViewController {
       this.callbacks.onSelect(this.hitAt(event.clientX, event.clientY))
     }
     if (this.drag?.moved && this.pointers.size === 0) {
-      const latest = this.simulationRef.current
-      this.emitView({ azimuth: latest.azimuth, altitude: latest.altitude, fov: latest.fov }, true)
+      this.emitView({ ...this.simulationRef.current.view }, true)
     }
     if (this.pointers.size === 0) this.drag = null
     if (this.ctx.renderer.domElement.hasPointerCapture(event.pointerId)) {
@@ -167,18 +163,18 @@ export class SkyViewController {
 
   onWheel = (event: WheelEvent) => {
     event.preventDefault()
-    const latest = this.simulationRef.current
+    const view = this.simulationRef.current.view
     const pixels = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaMode === 2 ? event.deltaY * 800 : event.deltaY
     this.emitView({
-      azimuth: latest.azimuth,
-      altitude: latest.altitude,
-      fov: clampSkyFov(latest.fov + pixels * 0.038),
+      azimuth: view.azimuth,
+      altitude: view.altitude,
+      fov: clampSkyFov(view.fov + pixels * 0.038),
     })
     this.flushViewSoon()
   }
 
   onKeyDown = (event: KeyboardEvent) => {
-    const next = nudgeView(this.simulationRef.current, event.key)
+    const next = nudgeView(this.simulationRef.current.view, event.key)
     if (!next) return
     event.preventDefault()
     this.emitView(next, true)
