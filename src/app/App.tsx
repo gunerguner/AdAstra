@@ -1,7 +1,7 @@
 import { lazy, Suspense, useMemo, useRef, useState } from 'react'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
-import { atmospherePhaseLabel, type AtmospherePhase } from '@/engine/render/bodyAppearance'
+import type { AtmospherePhase } from '@/engine/render/bodyAppearance'
 import { ErrorPanel, LoadingPanel } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
 import LayerSection from '@/features/layer-controls/LayerSection'
@@ -9,6 +9,7 @@ import { MagnitudeSection, QuickViewSection } from '@/features/layer-controls/Vi
 import TimeDeck from '@/features/time-controls/TimeDeck'
 import TopBar from './components/TopBar'
 import ControlPanel from './components/ControlPanel'
+import SiteFooter from './components/SiteFooter'
 import { useCatalog } from './hooks/useCatalog'
 import { useObserver } from './hooks/useObserver'
 import { useLayerState } from './hooks/useLayerState'
@@ -20,7 +21,8 @@ const SkyViewport = lazy(() => import('@/features/sky-viewer/SkyViewport'))
 
 export default function App() {
   const { catalog, catalogError, retry } = useCatalog()
-  const { cities, activeCityIndex, observer, setCity, setLatitude, setLongitude } = useObserver()
+  const location = useObserver()
+  const { observer } = location
   const { layers, toggleLayer } = useLayerState()
   const { view, setView, onViewChange, resetView } = useSkyView()
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
@@ -96,17 +98,11 @@ export default function App() {
 
       <div className={styles.atmosphere} />
       <TopBar
-        cities={cities}
-        activeCityIndex={activeCityIndex}
-        observer={observer}
+        location={location}
+        view={view}
         datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
         datetimeInputRef={datetimeInputRef}
-        azimuth={view.azimuth}
-        altitude={view.altitude}
         settingsOpen={isSettingsOpen}
-        onCityChange={setCity}
-        onLatitudeChange={setLatitude}
-        onLongitudeChange={setLongitude}
         onDateTimeChange={(value) => {
           const utcMillis = parseDateTimeLocal(value, observer.timeZone)
           if (utcMillis === null) return
@@ -125,26 +121,13 @@ export default function App() {
 
       <TimeDeck
         open={isTimeDeckOpen}
-        year={playback.currentTime.getFullYear()}
-        isPlaying={playback.isPlaying}
-        speed={playback.speed}
-        formattedTime={playback.formattedTime}
-        timelineOffset={playback.timelineOffset}
-        phaseLabel={atmospherePhaseLabel(atmospherePhase)}
-        phase={atmospherePhase}
         onToggleOpen={() => setIsTimeDeckOpen((value) => !value)}
-        onPlayPause={() => {
-          if (playback.isPlaying) playback.pausePlayback()
-          else playback.setIsPlaying(true)
-        }}
-        onAdjustTime={playback.adjustTime}
-        onSpeedChange={playback.setSpeed}
-        onTimelineChange={playback.scrubTimeline}
-        onTimelineAnchor={playback.beginTimelineScrub}
-        onTimelineCommit={playback.endTimelineScrub}
-        yearLabelRef={yearLabelRef}
-        formattedTimeRef={formattedTimeRef}
-      />
+        playback={playback}
+        phase={atmospherePhase}
+        clockRefs={clockRefs}
+      >
+        <SiteFooter />
+      </TimeDeck>
     </main>
   )
 }

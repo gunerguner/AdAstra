@@ -163,6 +163,11 @@ export function usePlayback(
     commitTime(simulationRef.current.utcMillis + milliseconds)
   }
 
+  const togglePlay = () => {
+    if (isPlaying) pausePlayback()
+    else setIsPlaying(true)
+  }
+
   return {
     currentTime,
     isPlaying,
@@ -172,6 +177,7 @@ export function usePlayback(
     formattedTime,
     commitTime,
     pausePlayback,
+    togglePlay,
     adjustTime,
     setIsPlaying,
     beginTimelineScrub,
@@ -179,3 +185,5 @@ export function usePlayback(
     endTimelineScrub,
   }
 }
+
+export type Playback = ReturnType<typeof usePlayback>

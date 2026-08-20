@@ -1,48 +1,33 @@
 import { CircleDot, Compass, MapPin, RotateCcw, Settings2, Sparkles } from 'lucide-react'
 import type { RefObject } from 'react'
 import { IconButton } from '@/shared/ui'
+import type { SkyView } from '@/shared/types/sky'
+import { useObserver } from '../hooks/useObserver'
 import styles from './TopBar.module.css'
 
-type Observer = {
-  name: string
-  latitude: number
-  longitude: number
-  timeZone: string
-}
-
 type Props = {
-  cities: readonly Observer[]
-  activeCityIndex: number
-  observer: Observer
+  location: ReturnType<typeof useObserver>
+  view: SkyView
   datetimeValue: string
   datetimeInputRef: RefObject<HTMLInputElement | null>
-  azimuth: number
-  altitude: number
   settingsOpen: boolean
-  onCityChange: (index: number) => void
-  onLatitudeChange: (value: number) => void
-  onLongitudeChange: (value: number) => void
   onDateTimeChange: (value: string) => void
   onResetNow: () => void
   onToggleSettings: () => void
 }
 
 export default function TopBar({
-  cities,
-  activeCityIndex,
-  observer,
+  location,
+  view,
   datetimeValue,
   datetimeInputRef,
-  azimuth,
-  altitude,
   settingsOpen,
-  onCityChange,
-  onLatitudeChange,
-  onLongitudeChange,
   onDateTimeChange,
   onResetNow,
   onToggleSettings,
 }: Props) {
+  const { cities, activeCityIndex, observer, setCity, setLatitude, setLongitude } = location
+
   return (
     <header className={styles.topbar}>
       <div className={styles.brand}>
@@ -58,7 +43,7 @@ export default function TopBar({
           <select
             aria-label="城市"
             value={activeCityIndex}
-            onChange={(event) => onCityChange(Number(event.target.value))}
+            onChange={(event) => setCity(Number(event.target.value))}
           >
             {cities.map((city, index) => (
               <option value={index} key={city.name}>{city.name}</option>
@@ -66,8 +51,8 @@ export default function TopBar({
           </select>
         </label>
         {[
-          { label: '纬度', min: -90, max: 90, value: observer.latitude, onChange: onLatitudeChange },
-          { label: '经度', min: -180, max: 180, value: observer.longitude, onChange: onLongitudeChange },
+          { label: '纬度', min: -90, max: 90, value: observer.latitude, onChange: setLatitude },
+          { label: '经度', min: -180, max: 180, value: observer.longitude, onChange: setLongitude },
         ].map((coord) => (
           <label className={`${styles.stat} ${styles.coord}`} key={coord.label}>
             <span>{coord.label}</span>
@@ -96,7 +81,7 @@ export default function TopBar({
         <div className={`${styles.stat} ${styles.view}`}>
           <Compass size={13} />
           <span>视线</span>
-          <strong>{Math.round(azimuth)}° · {Math.round(altitude)}°</strong>
+          <strong>{Math.round(view.azimuth)}° · {Math.round(view.altitude)}°</strong>
         </div>
       </div>
       <div className={styles.meta}>

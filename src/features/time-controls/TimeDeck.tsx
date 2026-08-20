@@ -9,31 +9,21 @@ import {
   Sun,
   Sunset,
 } from 'lucide-react'
-import { useEffect, useRef, type RefObject } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
+import type { LiveClockRefs, Playback } from '@/app/hooks/usePlayback'
 import { playbackSpeeds } from '@/config/playbackSpeeds'
 import { TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config/timeline'
-import type { AtmospherePhase } from '@/engine/render/bodyAppearance'
+import { atmospherePhaseLabel, type AtmospherePhase } from '@/engine/render/bodyAppearance'
 import { IconButton } from '@/shared/ui'
 import styles from './timeControls.module.css'
 
 type Props = {
   open: boolean
-  year: number
-  isPlaying: boolean
-  speed: number
-  formattedTime: string
-  timelineOffset: number
-  phaseLabel: string
-  phase: AtmospherePhase
   onToggleOpen: () => void
-  onPlayPause: () => void
-  onAdjustTime: (milliseconds: number) => void
-  onSpeedChange: (speed: number) => void
-  onTimelineChange: (offset: number) => void
-  onTimelineAnchor: (offset: number) => void
-  onTimelineCommit: () => void
-  yearLabelRef: RefObject<HTMLElement | null>
-  formattedTimeRef: RefObject<HTMLElement | null>
+  playback: Playback
+  phase: AtmospherePhase
+  clockRefs: Pick<LiveClockRefs, 'yearLabel' | 'formattedTime'>
+  children?: ReactNode
 }
 
 function PhaseIcon({ phase }: { phase: AtmospherePhase }) {
@@ -44,73 +34,62 @@ function PhaseIcon({ phase }: { phase: AtmospherePhase }) {
 
 export default function TimeDeck({
   open,
-  year,
-  isPlaying,
-  speed,
-  formattedTime,
-  timelineOffset,
-  phaseLabel,
-  phase,
   onToggleOpen,
-  onPlayPause,
-  onAdjustTime,
-  onSpeedChange,
-  onTimelineChange,
-  onTimelineAnchor,
-  onTimelineCommit,
-  yearLabelRef,
-  formattedTimeRef,
+  playback,
+  phase,
+  clockRefs,
+  children,
 }: Props) {
   const sliderRef = useRef<HTMLInputElement>(null)
   const draggingRef = useRef(false)
   const endScrub = () => {
     draggingRef.current = false
-    onTimelineCommit()
+    playback.endTimelineScrub()
   }
 
   useEffect(() => {
     if (draggingRef.current) return
     const slider = sliderRef.current
-    if (slider && slider.value !== String(timelineOffset)) slider.value = String(timelineOffset)
-  }, [timelineOffset])
+    if (slider && slider.value !== String(playback.timelineOffset)) slider.value = String(playback.timelineOffset)
+  }, [playback.timelineOffset])
 
   return (
-    <footer className={`${styles.deck} ${open ? '' : styles.collapsed}`}>
+    <footer className={`${styles.deck} ${open ? '' : styles.collapsed}`} aria-label="时间控制与站点信息">
       <div className={styles.top}>
         <div className={styles.label}>
-          <strong ref={yearLabelRef}>{year}</strong>
+          <strong ref={clockRefs.yearLabel}>{playback.currentTime.getFullYear()}</strong>
           <span className={styles.phase}>
             <PhaseIcon phase={phase} />
-            {phaseLabel}
+            {atmospherePhaseLabel(phase)}
           </span>
         </div>
         <div className={styles.actions}>
-          <button type="button" className={styles.step} onClick={() => onAdjustTime(-3600000)} aria-label="后退一小时" aria-hidden={!open} tabIndex={open ? 0 : -1}>
+          <button type="button" className={styles.step} onClick={() => playback.adjustTime(-3600000)} aria-label="后退一小时" aria-hidden={!open} tabIndex={open ? 0 : -1}>
             <ChevronLeft size={16} />
           </button>
           <button
             type="button"
-            className={`${styles.play} ${isPlaying ? styles.playing : ''}`}
-            onClick={onPlayPause}
-            aria-label={isPlaying ? '暂停' : '播放'}
+            className={`${styles.play} ${playback.isPlaying ? styles.playing : ''}`}
+            onClick={playback.togglePlay}
+            aria-label={playback.isPlaying ? '暂停' : '播放'}
           >
-            {isPlaying ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
+            {playback.isPlaying ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
           </button>
-          <button type="button" className={styles.step} onClick={() => onAdjustTime(3600000)} aria-label="前进一小时" aria-hidden={!open} tabIndex={open ? 0 : -1}>
+          <button type="button" className={styles.step} onClick={() => playback.adjustTime(3600000)} aria-label="前进一小时" aria-hidden={!open} tabIndex={open ? 0 : -1}>
             <ChevronRight size={16} />
           </button>
         </div>
         <div className={styles.side}>
           {open ? (
             <label className={styles.speed}>速度
-              <select value={speed} onChange={(event) => onSpeedChange(Number(event.target.value))}>
+              <select value={playback.speed} onChange={(event) => playback.setSpeed(Number(event.target.value))}>
                 {playbackSpeeds.map((item) => (
                   <option value={item.value} key={item.value}>{item.label}</option>
                 ))}
               </select>
             </label>
           ) : (
-            <span className={styles.clock} ref={formattedTimeRef}>{formattedTime}</span>
+            <span className={styles.clock} ref={clockRefs.formattedTime}>{playback.formattedTime}</span>
           )}
           <IconButton
             className={styles.toggle}
@@ -122,33 +101,30 @@ export default function TimeDeck({
           </IconButton>
         </div>
       </div>
-      <div className={styles.timelineWrap}>
-        <div className={styles.timelineInner}>
-          <div className={styles.timeline}>
-            <span>−{TIMELINE_RANGE_HOURS}h</span>
-            <div className={styles.track}>
-              <input
-                ref={sliderRef}
-                aria-label="拖动调整时间"
-                type="range"
-                min={-TIMELINE_RANGE_MS}
-                max={TIMELINE_RANGE_MS}
-                defaultValue={0}
-                onChange={(event) => onTimelineChange(Number(event.target.value))}
-                onPointerDown={(event) => {
-                  draggingRef.current = true
-                  event.currentTarget.setPointerCapture(event.pointerId)
-                  onTimelineAnchor(Number(event.currentTarget.value))
-                }}
-                onPointerUp={endScrub}
-                onPointerCancel={endScrub}
-                onKeyUp={onTimelineCommit}
-              />
-            </div>
-            <span>+{TIMELINE_RANGE_HOURS}h</span>
-          </div>
+      <div className={styles.timeline}>
+        <span>−{TIMELINE_RANGE_HOURS}h</span>
+        <div className={styles.track}>
+          <input
+            ref={sliderRef}
+            aria-label="拖动调整时间"
+            type="range"
+            min={-TIMELINE_RANGE_MS}
+            max={TIMELINE_RANGE_MS}
+            defaultValue={0}
+            onChange={(event) => playback.scrubTimeline(Number(event.target.value))}
+            onPointerDown={(event) => {
+              draggingRef.current = true
+              event.currentTarget.setPointerCapture(event.pointerId)
+              playback.beginTimelineScrub(Number(event.currentTarget.value))
+            }}
+            onPointerUp={endScrub}
+            onPointerCancel={endScrub}
+            onKeyUp={playback.endTimelineScrub}
+          />
         </div>
+        <span>+{TIMELINE_RANGE_HOURS}h</span>
       </div>
+      {children}
     </footer>
   )
 }

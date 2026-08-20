@@ -5,7 +5,7 @@
   bottom: calc(16px + var(--safe-bottom));
   transform: translateX(-50%);
   width: min(560px, calc(100vw - 360px));
-  padding: 7px 12px 6px;
+  padding: 8px 12px 7px;
   background: color-mix(in srgb, var(--color-deck) 88%, rgba(236, 195, 120, calc(var(--ui-warmth, 0) * 0.18)));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -15,12 +15,16 @@
 
 .collapsed {
   width: min(420px, calc(100vw - 360px));
-  padding: 5px 10px 4px;
+  padding: 6px 10px 5px;
 }
 
 .collapsed .step {
   visibility: hidden;
   pointer-events: none;
+}
+
+.collapsed .timeline {
+  display: none;
 }
 
 .top {
@@ -32,7 +36,6 @@
 
 .label {
   display: grid;
-  gap: 0;
   min-width: 0;
   justify-self: start;
 }
@@ -85,7 +88,14 @@
   aspect-ratio: 1;
   width: 26px;
   min-width: 26px;
+  padding: 0;
+  line-height: 0;
   border-radius: 50%;
+}
+
+.step svg,
+.play svg {
+  display: block;
 }
 
 .play {
@@ -130,19 +140,12 @@
   border-radius: var(--radius-sm);
 }
 
-.timelineWrap {
-  margin-top: 4px;
-}
-
-.timelineInner {
-  min-height: 0;
-}
-
 .timeline {
   display: grid;
   grid-template-columns: 28px 1fr 28px;
   align-items: center;
   gap: 4px;
+  margin-top: 4px;
   color: var(--color-label);
   font: 8px var(--font-mono);
 }
