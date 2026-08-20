@@ -31,6 +31,10 @@ export const ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG = -18
 /** 白昼混合视为「全白天」的太阳高度。 */
 export const DAYLIGHT_FULL_ALTITUDE_DEG = 6
 
+/** J2000 平黄极（赤经时、赤纬度）。与黄道共用 `OBLIQUITY_DEG`。 */
+export const NORTH_ECLIPTIC_POLE = { raHours: 18, decDeg: 90 - OBLIQUITY_DEG }
+export const SOUTH_ECLIPTIC_POLE = { raHours: 6, decDeg: OBLIQUITY_DEG - 90 }
+
 /** IAU 银道：北银极与银心（赤经时、赤纬度）。 */
 export const NORTH_GALACTIC_POLE = { raHours: 12.857298, decDeg: 27.12825 }
 export const GALACTIC_CENTER = { raHours: 17.760333, decDeg: -28.936175 }

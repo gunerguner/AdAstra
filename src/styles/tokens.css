@@ -45,6 +45,7 @@
   --overlay-label-shadow: 0 0 12px rgba(5, 10, 24, 0.92);
   --overlay-constellation: rgba(186, 198, 232, 0.78);
   --overlay-north: #f5cf88;
+  --overlay-ecliptic: #f0a03a;
   --overlay-hover-fg: #ecf5ff;
   --overlay-hover-bg: rgba(8, 16, 36, 0.78);
   --overlay-hover-border: rgba(173, 218, 255, 0.5);
@@ -71,6 +72,7 @@
   --overlay-label-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
   --overlay-constellation: #1a3a56;
   --overlay-north: #8a5414;
+  --overlay-ecliptic: #d35400;
   --overlay-hover-fg: #173047;
   --overlay-hover-bg: rgba(255, 255, 255, 0.8);
   --overlay-hover-border: rgba(28, 62, 92, 0.2);

@@ -50,6 +50,58 @@
   color: var(--overlay-north);
 }
 
+.eclipticPole {
+  position: absolute;
+  z-index: 6;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  display: none;
+  color: var(--overlay-ecliptic);
+  font: 11px var(--font-sans);
+  letter-spacing: 0.12em;
+  text-shadow: var(--overlay-label-shadow);
+  transform: translate3d(-999px, -999px, 0);
+  will-change: transform;
+  white-space: nowrap;
+}
+
+.eclipticPoleCross {
+  position: absolute;
+  left: -5px;
+  top: -5px;
+  width: 11px;
+  height: 11px;
+}
+
+.eclipticPoleCross::before,
+.eclipticPoleCross::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+}
+
+.eclipticPoleCross::before {
+  left: 0;
+  top: 5px;
+  width: 11px;
+  height: 1px;
+}
+
+.eclipticPoleCross::after {
+  left: 5px;
+  top: 0;
+  width: 1px;
+  height: 11px;
+}
+
+.eclipticPoleLabel {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  transform: translateX(-50%);
+}
+
 .constellationName {
   position: absolute;
   z-index: 6;

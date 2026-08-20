@@ -11,6 +11,7 @@ import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
 import { SkyViewController } from '@/engine/interaction/SkyViewController'
 import { ErrorPanel } from '@/shared/ui'
 import { cardinals } from '@/config/cardinals'
+import { eclipticPoles } from '@/config/eclipticPoles'
 import styles from './skyViewer.module.css'
 
 type Props = {
@@ -38,6 +39,7 @@ export default function SkyViewport({
   const hoverRef = useRef<HTMLDivElement>(null)
   const cardinalRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const constellationNameRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  const eclipticPoleRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const bodySnapshotRef = useRef<BodySnapshotWindow | null>(null)
   const hoverTargetRef = useRef<{ id: string; name: string; type: 'star' | 'body' } | null>(null)
   const selectedRef = useRef<SelectedSkyObject | null>(selected ?? null)
@@ -123,6 +125,7 @@ export default function SkyViewport({
       constellationAnchors,
       cardinalRefs,
       constellationNameRefs,
+      eclipticPoleRefs,
       hoverRef,
       hoverTargetRef,
       bodySnapshotRef,
@@ -161,6 +164,18 @@ export default function SkyViewport({
           }}
         >
           {cardinal.label}
+        </div>
+      ))}
+      {eclipticPoles.map((pole) => (
+        <div
+          key={pole.id}
+          className={styles.eclipticPole}
+          ref={(node) => {
+            eclipticPoleRefs.current[pole.id] = node
+          }}
+        >
+          <span className={styles.eclipticPoleCross} aria-hidden="true" />
+          <span className={styles.eclipticPoleLabel}>{pole.label}</span>
         </div>
       ))}
       {constellationStars.map((line) => (

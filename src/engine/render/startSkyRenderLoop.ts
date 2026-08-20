@@ -21,6 +21,7 @@ import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import type { ShaderMaterial } from 'three'
 import type { SkySceneContext } from './skyContext'
 import { cardinals } from '@/config/cardinals'
+import { eclipticPoles } from '@/config/eclipticPoles'
 
 export type SkyRenderLoop = {
   stop: () => void
@@ -36,6 +37,7 @@ export function startSkyRenderLoop(options: {
   constellationAnchors: ConstellationAnchor[]
   cardinalRefs: RefObject<Record<string, HTMLDivElement | null>>
   constellationNameRefs: RefObject<Record<string, HTMLDivElement | null>>
+  eclipticPoleRefs: RefObject<Record<string, HTMLDivElement | null>>
   hoverRef: RefObject<HTMLDivElement | null>
   hoverTargetRef: RefObject<{ id: string; name: string; type: 'star' | 'body' } | null>
   bodySnapshotRef: RefObject<BodySnapshotWindow | null>
@@ -52,6 +54,7 @@ export function startSkyRenderLoop(options: {
     constellationAnchors,
     cardinalRefs,
     constellationNameRefs,
+    eclipticPoleRefs,
     hoverRef,
     hoverTargetRef,
     bodySnapshotRef,
@@ -262,6 +265,22 @@ export function startSkyRenderLoop(options: {
         return
       }
       placeOverlay(node, scratch.projected.set(scratch.horizon.x, scratch.horizon.y, scratch.horizon.z), 0, 0, 1.05)
+    })
+
+    eclipticPoles.forEach((pole) => {
+      const node = eclipticPoleRefs.current[pole.id]
+      if (!node) return
+      if (!latest.layers.ecliptic) {
+        hideOverlay(node)
+        return
+      }
+      equatorialUnitInto(pole.raHours, pole.decDeg, scratch.horizon)
+      applyHorizonMatrixInto(scratch.horizon, uniforms.eqjHorizonMat, scratch.projected)
+      if (!latest.layers.showBelowHorizon && scratch.projected.y < 0.07) {
+        hideOverlay(node)
+        return
+      }
+      placeOverlay(node, scratch.projected, 0, 0, 1.05)
     })
 
     const hoverNode = hoverRef.current
