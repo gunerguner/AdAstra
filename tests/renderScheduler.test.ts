@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { IDLE_FRAME_MS, isFullRateFrame, nextFrameDelayMs, shouldPauseForVisibility } from '../src/engine/performance/renderScheduler'
+import { IDLE_FRAME_MS, isFullRateFrame, nextFrameDelayMs } from '../src/engine/performance/renderScheduler'
 
 describe('renderScheduler', () => {
   it('pauses completely while the document is hidden', () => {
-    expect(shouldPauseForVisibility(true)).toBe(true)
     expect(isFullRateFrame({
       hidden: true,
       now: 1000,

@@ -7,6 +7,7 @@ import { brightLimbAngle } from '@/engine/render/bodyLimb'
 import { createBodyAtlasTexture } from '@/engine/render/createBodyAtlas'
 import { makeBodyMaterial } from '@/engine/render/materials/bodyMaterial'
 import { projectSkyToNdc } from '@/engine/render/skyProjection'
+import { degToRad } from '@/shared/math'
 import type { LayerState } from '@/shared/types/sky'
 import type { SkyProjectionUniforms, Vec3 } from '@/engine/render/skyContext'
 
@@ -94,7 +95,7 @@ export function updateBodiesLayer(
     sizes.setX(index, show ? bodyPointSize(id, body.magnitude) : 0)
     opacities.setX(index, show ? (horizonScratch.y > 0 ? 1 : 0.28) : 0)
     bodyView.set(horizonScratch.x, horizonScratch.y, horizonScratch.z).applyMatrix4(camera.matrixWorldInverse)
-    const phase = id === 'sun' ? 0 : body.phaseAngle * Math.PI / 180
+    const phase = id === 'sun' ? 0 : degToRad(body.phaseAngle)
     const limb = id === 'sun' || !hasSunView ? 0 : brightLimbAngle(bodyView, sunView)
     colors.setXYZ(index, appearance.atlasIndex, phase, limb)
   })

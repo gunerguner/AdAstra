@@ -16,6 +16,7 @@ import { createFrameStats, publishFrameStats } from '@/engine/performance/frameS
 import { isFullRateFrame, nextFrameDelayMs } from '@/engine/performance/renderScheduler'
 import { applyOverlayPlacement, placeSkyOverlay } from '@/engine/interaction/overlayProjection'
 import { poseOfSkyObject } from '@/engine/interaction/skyPose'
+import { degToRad } from '@/shared/math'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import type { ShaderMaterial } from 'three'
 import type { SkySceneContext } from './skyContext'
@@ -85,11 +86,6 @@ export function startSkyRenderLoop(options: {
   let cardHeight = 0
   const overlayNdc = { x: 0, y: 0, z: 0 }
 
-  const layersKeyOf = (latest: SkySimulation) => {
-    const layersState = latest.layers
-    return `${layersState.stars}:${layersState.constellationLines}:${layersState.bodies}:${layersState.horizon}:${layersState.landscape}:${layersState.showBelowHorizon}:${layersState.ecliptic}:${layersState.celestialEquator}:${layersState.equatorialGrid}:${layersState.horizontalGrid}:${layersState.milkyWay}:${layersState.daylightEffect}`
-  }
-
   const cancelScheduled = () => {
     cancelAnimationFrame(frame)
     window.clearTimeout(idleTimer)
@@ -133,7 +129,8 @@ export function startSkyRenderLoop(options: {
     if (document.hidden) return
     const frameStartedAt = performance.now()
     const latest = simulationRef.current
-    const nextLayersKey = layersKeyOf(latest)
+    // 键序来自 defaultLayers + spread 更新，插入序稳定。
+    const nextLayersKey = Object.values(latest.layers).join(':')
     const viewChanged = latest.azimuth !== lastAzimuth || latest.altitude !== lastAltitude || latest.fov !== lastFov
     const layersChanged = nextLayersKey !== lastLayersKey
     const fullRate = isFullRateFrame({
@@ -181,7 +178,7 @@ export function startSkyRenderLoop(options: {
         onAtmosphereChange?.(atmosphere)
       }
     }
-    uniforms.sky.uFov.value = latest.fov * Math.PI / 180
+    uniforms.sky.uFov.value = degToRad(latest.fov)
     const pixelRatio = renderer.getPixelRatio()
     layers.starMaterial.uniforms.uPixelRatio.value = pixelRatio
     ;(layers.bodyPoints.material as ShaderMaterial).uniforms.uPixelRatio.value = pixelRatio
@@ -208,13 +205,7 @@ export function startSkyRenderLoop(options: {
       layers.equator.visible = latest.layers.celestialEquator
     }
 
-    const viewAltitude = latest.altitude * Math.PI / 180
-    const viewAzimuth = latest.azimuth * Math.PI / 180
-    scratch.lookTarget.set(
-      Math.cos(viewAltitude) * Math.sin(viewAzimuth),
-      Math.sin(viewAltitude),
-      Math.cos(viewAltitude) * Math.cos(viewAzimuth),
-    )
+    horizontalVectorInto(latest.altitude, latest.azimuth, scratch.lookTarget)
     skyCameraUpInto(latest.altitude, latest.azimuth, scratch.lookTarget, scratch.projected)
     camera.up.copy(scratch.projected)
     camera.lookAt(scratch.lookTarget)

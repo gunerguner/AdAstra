@@ -5,6 +5,16 @@ import type { Star } from '@/shared/types/star'
 
 const unitScratch = { x: 0, y: 0, z: 0 }
 
+function poseFromEquatorial(
+  raHours: number,
+  decDeg: number,
+  horizonMat: Float32Array,
+  horizonScratch: { x: number; y: number; z: number },
+) {
+  applyHorizonMatrixInto(equatorialUnitInto(raHours, decDeg, unitScratch), horizonMat, horizonScratch)
+  return horizonAnglesFromVector(horizonScratch)
+}
+
 export function poseOfSkyObject(
   item: { id: string; type: 'star' | 'body' },
   options: {
@@ -17,11 +27,9 @@ export function poseOfSkyObject(
   if (item.type === 'body') {
     const body = options.bodies.find((entry) => entry.id === item.id)
     if (!body) return null
-    applyHorizonMatrixInto(equatorialUnitInto(body.raHours, body.decDeg, unitScratch), options.horizonMat, options.horizonScratch)
-    return horizonAnglesFromVector(options.horizonScratch)
+    return poseFromEquatorial(body.raHours, body.decDeg, options.horizonMat, options.horizonScratch)
   }
   const star = options.starById.get(item.id)
   if (!star) return null
-  applyHorizonMatrixInto(equatorialUnitInto(star.raHours, star.decDeg, unitScratch), options.horizonMat, options.horizonScratch)
-  return horizonAnglesFromVector(options.horizonScratch)
+  return poseFromEquatorial(star.raHours, star.decDeg, options.horizonMat, options.horizonScratch)
 }

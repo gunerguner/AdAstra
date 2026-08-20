@@ -43,8 +43,10 @@ function localEpoch(parts: LocalDateParts) {
 }
 
 export function formatDateTimeLocal(utcMillis: number, timeZone: string) {
-  const value = partsAt(utcMillis, timeZone)
-  return `${value.year.toString().padStart(4, '0')}-${value.month.toString().padStart(2, '0')}-${value.day.toString().padStart(2, '0')}T${value.hour.toString().padStart(2, '0')}:${value.minute.toString().padStart(2, '0')}`
+  const parts = Object.fromEntries(
+    formatter(timeZone).formatToParts(new Date(utcMillis)).map((part) => [part.type, part.value]),
+  )
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`
 }
 
 /**

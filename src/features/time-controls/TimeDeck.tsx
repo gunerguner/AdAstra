@@ -63,6 +63,10 @@ export default function TimeDeck({
 }: Props) {
   const sliderRef = useRef<HTMLInputElement>(null)
   const draggingRef = useRef(false)
+  const endScrub = () => {
+    draggingRef.current = false
+    onTimelineCommit()
+  }
 
   useEffect(() => {
     if (draggingRef.current) return
@@ -136,14 +140,8 @@ export default function TimeDeck({
                   event.currentTarget.setPointerCapture(event.pointerId)
                   onTimelineAnchor(Number(event.currentTarget.value))
                 }}
-                onPointerUp={() => {
-                  draggingRef.current = false
-                  onTimelineCommit()
-                }}
-                onPointerCancel={() => {
-                  draggingRef.current = false
-                  onTimelineCommit()
-                }}
+                onPointerUp={endScrub}
+                onPointerCancel={endScrub}
                 onKeyUp={onTimelineCommit}
               />
             </div>

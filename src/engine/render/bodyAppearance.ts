@@ -8,6 +8,7 @@ import {
   DAYLIGHT_FULL_ALTITUDE_DEG,
   NAUTICAL_TWILIGHT_ALTITUDE_DEG,
 } from '@/engine/coordinates/astroConstants'
+import { clamp, degToRad } from '@/shared/math'
 
 export const SATURN_RING_SCALE = 1.9
 /** 夜间太阳精灵比光球略大，用来画光晕。 */
@@ -45,15 +46,15 @@ export const bodyAppearance: Record<string, {
   neptune: { color: '#6f8fe0', size: 8, priority: 16, atlasIndex: 8, spriteScale: 1 },
 }
 
+const BODY_KIND_LABEL: Record<string, string> = { sun: '太阳', moon: '月亮' }
+
 export function bodyKindLabel(id: string) {
-  if (id === 'sun') return '太阳'
-  if (id === 'moon') return '月亮'
-  return '行星'
+  return BODY_KIND_LABEL[id] ?? '行星'
 }
 
 export function bodyVisualScale(id: string, magnitude: number) {
   if (id === 'sun' || id === 'moon') return 1
-  return Math.max(0.7, Math.min(1.55, (1.6 - magnitude) / 3.8))
+  return clamp((1.6 - magnitude) / 3.8, 0.7, 1.55)
 }
 
 export function bodyPointSize(id: string, magnitude: number) {
@@ -69,7 +70,7 @@ export function bodyPickSize(id: string, magnitude: number) {
 }
 
 export function starBrightness(magnitude: number) {
-  return Math.max(0, Math.min(1, (3.1 - magnitude) / 4.6))
+  return clamp((3.1 - magnitude) / 4.6, 0, 1)
 }
 
 export function starPointSize(magnitude: number) {
@@ -106,12 +107,8 @@ const NIGHT_ATMOSPHERE: AtmosphereState = {
   phase: 'night',
 }
 
-function saturate(value: number) {
-  return Math.min(1, Math.max(0, value))
-}
-
 function smoothstep(edge0: number, edge1: number, value: number) {
-  const t = saturate((value - edge0) / (edge1 - edge0))
+  const t = clamp((value - edge0) / (edge1 - edge0), 0, 1)
   return t * t * (3 - 2 * t)
 }
 
@@ -123,12 +120,16 @@ export function atmospherePhase(sunAltitude: number, enabled: boolean): Atmosphe
   return 'day'
 }
 
+const ATMOSPHERE_PHASE_LABEL: Record<AtmospherePhase, string> = {
+  astronomical: '天文曙暮光',
+  nautical: '航海曙暮光',
+  civil: '民用曙暮光',
+  day: '白昼',
+  night: '夜晚',
+}
+
 export function atmospherePhaseLabel(phase: AtmospherePhase) {
-  if (phase === 'astronomical') return '天文曙暮光'
-  if (phase === 'nautical') return '航海曙暮光'
-  if (phase === 'civil') return '民用曙暮光'
-  if (phase === 'day') return '白昼'
-  return '夜晚'
+  return ATMOSPHERE_PHASE_LABEL[phase]
 }
 
 /** 由太阳高度得到昼夜混合系数。天文曙暮光以下全夜，DAYLIGHT_FULL 左右白天。 */
@@ -140,11 +141,13 @@ export function atmosphereState(sunAltitude: number, sunAzimuth: number, enabled
       sunAzimuth,
     }
   }
-  const altitude = sunAltitude * Math.PI / 180
-  const azimuth = sunAzimuth * Math.PI / 180
-  const daylight = saturate(
+  const altitude = degToRad(sunAltitude)
+  const azimuth = degToRad(sunAzimuth)
+  const daylight = clamp(
     (sunAltitude - NAUTICAL_TWILIGHT_ALTITUDE_DEG)
       / (DAYLIGHT_FULL_ALTITUDE_DEG - NAUTICAL_TWILIGHT_ALTITUDE_DEG),
+    0,
+    1,
   )
   const twilight = smoothstep(ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG, -8, sunAltitude)
     * (1 - smoothstep(2, 14, sunAltitude))
@@ -153,11 +156,11 @@ export function atmosphereState(sunAltitude: number, sunAzimuth: number, enabled
     daylight,
     twilight,
     night,
-    warmth: twilight * (0.28 + 0.72 * (1 - saturate(Math.abs(sunAltitude) / 10))),
+    warmth: twilight * (0.28 + 0.72 * (1 - clamp(Math.abs(sunAltitude) / 10, 0, 1))),
     groundLight: smoothstep(NAUTICAL_TWILIGHT_ALTITUDE_DEG, 8, sunAltitude),
     sunElevation: sunAltitude,
     sunAzimuth,
-    sunDirX: Math.cos(altitude) * Math.sin(azimuth),
+    sunDirX: -Math.cos(altitude) * Math.sin(azimuth),
     sunDirY: Math.sin(altitude),
     sunDirZ: Math.cos(altitude) * Math.cos(azimuth),
     phase: atmospherePhase(sunAltitude, true),

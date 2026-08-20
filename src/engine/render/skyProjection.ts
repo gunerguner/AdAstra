@@ -3,6 +3,7 @@
  * 用球面立体投影把朝前半球摊到平面；SKY_HORIZON_LIFT 把地平往下挪，平视时多看到天空。
  * 圆盘外（view.z 太大）裁成虚空色，所以画面是「球」而不是透视盒子。
  */
+import { clamp } from '@/shared/math'
 import type { Camera } from 'three'
 import { Vector3 } from 'three'
 
@@ -18,7 +19,7 @@ export const SKY_VOID_HEX = 0x050817
 export const SKY_VOID_RGB = [5 / 255, 8 / 255, 23 / 255] as const
 
 export function clampSkyFov(fovDeg: number) {
-  return Math.min(SKY_FOV_MAX, Math.max(SKY_FOV_MIN, fovDeg))
+  return clamp(fovDeg, SKY_FOV_MIN, SKY_FOV_MAX)
 }
 
 export const skyVoidColorGlsl = /* glsl */ `

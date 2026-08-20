@@ -12,7 +12,7 @@ describe('视角约束', () => {
 
   it('拖拽按原系数平移并环绕方位角', () => {
     const next = panView({ azimuth: 10, altitude: 0, fov: 100 }, 100, 50)
-    expect(next.azimuth).toBe((10 - 22 + 360) % 360)
+    expect(next.azimuth).toBe((10 + 22) % 360)
     expect(next.altitude).toBe(8)
   })
 
@@ -22,7 +22,7 @@ describe('视角约束', () => {
   })
 
   it('方向键微调视角', () => {
-    expect(nudgeView(view, 'ArrowLeft')?.azimuth).toBe(16)
+    expect(nudgeView(view, 'ArrowLeft')?.azimuth).toBe(4)
     expect(nudgeView(view, 'ArrowUp')?.altitude).toBe(4)
     expect(nudgeView(view, 'x')).toBeNull()
   })

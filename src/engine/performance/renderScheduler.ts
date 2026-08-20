@@ -22,7 +22,3 @@ export function isFullRateFrame(input: RenderScheduleInput) {
 export function nextFrameDelayMs(fullRate: boolean) {
   return fullRate ? 0 : IDLE_FRAME_MS
 }
-
-export function shouldPauseForVisibility(hidden: boolean) {
-  return hidden
-}

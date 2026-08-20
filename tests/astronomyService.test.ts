@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { MoonPhase } from 'astronomy-engine'
 import { astronomyService } from '../src/engine/astronomy/astronomyService'
 import { interpolateBodySnapshots, type BodySnapshot, type BodySnapshotWindow } from '../src/engine/astronomy/bodyInterpolation'
-import { lerpDegrees, moonPhaseName } from '../src/engine/astronomy/moonPhaseName'
+import { lerpDegrees } from '../src/shared/math'
+import { moonPhaseName } from '../src/engine/astronomy/moonPhaseName'
 
 function sample(overrides: Partial<BodySnapshot> = {}): BodySnapshot {
   return {

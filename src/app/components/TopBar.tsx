@@ -65,30 +65,23 @@ export default function TopBar({
             ))}
           </select>
         </label>
-        <label className={`${styles.stat} ${styles.coord}`}>
-          <span>纬度</span>
-          <input
-            aria-label="纬度"
-            type="number"
-            min="-90"
-            max="90"
-            step="0.01"
-            value={observer.latitude}
-            onChange={(event) => onLatitudeChange(Number(event.target.value))}
-          />
-        </label>
-        <label className={`${styles.stat} ${styles.coord}`}>
-          <span>经度</span>
-          <input
-            aria-label="经度"
-            type="number"
-            min="-180"
-            max="180"
-            step="0.01"
-            value={observer.longitude}
-            onChange={(event) => onLongitudeChange(Number(event.target.value))}
-          />
-        </label>
+        {[
+          { label: '纬度', min: -90, max: 90, value: observer.latitude, onChange: onLatitudeChange },
+          { label: '经度', min: -180, max: 180, value: observer.longitude, onChange: onLongitudeChange },
+        ].map((coord) => (
+          <label className={`${styles.stat} ${styles.coord}`} key={coord.label}>
+            <span>{coord.label}</span>
+            <input
+              aria-label={coord.label}
+              type="number"
+              min={coord.min}
+              max={coord.max}
+              step="0.01"
+              value={coord.value}
+              onChange={(event) => coord.onChange(Number(event.target.value))}
+            />
+          </label>
+        ))}
         <label className={`${styles.stat} ${styles.time}`}>
           <CircleDot size={13} />
           <span>{observer.timeZone}</span>

@@ -4,14 +4,14 @@
   top: calc(74px + var(--safe-top));
   right: 22px;
   width: 300px;
-  max-height: calc(100dvh - 230px - var(--safe-bottom));
+  max-height: calc(100dvh - 140px - var(--safe-bottom));
   overflow: hidden;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
 .scroll {
   overflow-y: auto;
-  max-height: calc(100dvh - 250px - var(--safe-bottom));
+  max-height: calc(100dvh - 140px - var(--safe-bottom));
 }
 
 @media (max-width: 940px) {

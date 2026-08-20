@@ -20,10 +20,12 @@ export function clearStarPickGrid(grid: StarPickGrid) {
   for (const bucket of grid.buckets) bucket.length = 0
 }
 
+function ndcToBin(ndc: number, count: number) {
+  return Math.min(count - 1, Math.max(0, Math.floor((ndc * 0.5 + 0.5) * count)))
+}
+
 export function starPickCell(ndcX: number, ndcY: number, cols: number, rows: number) {
-  const col = Math.min(cols - 1, Math.max(0, Math.floor((ndcX * 0.5 + 0.5) * cols)))
-  const row = Math.min(rows - 1, Math.max(0, Math.floor((ndcY * 0.5 + 0.5) * rows)))
-  return row * cols + col
+  return ndcToBin(ndcY, rows) * cols + ndcToBin(ndcX, cols)
 }
 
 export function addStarToPickGrid(grid: StarPickGrid, index: number, ndcX: number, ndcY: number) {
@@ -42,10 +44,10 @@ export function queryStarPickGrid(
   const maxX = ndcX + radius
   const minY = ndcY - radius
   const maxY = ndcY + radius
-  const col0 = Math.min(grid.cols - 1, Math.max(0, Math.floor((minX * 0.5 + 0.5) * grid.cols)))
-  const col1 = Math.min(grid.cols - 1, Math.max(0, Math.floor((maxX * 0.5 + 0.5) * grid.cols)))
-  const row0 = Math.min(grid.rows - 1, Math.max(0, Math.floor((minY * 0.5 + 0.5) * grid.rows)))
-  const row1 = Math.min(grid.rows - 1, Math.max(0, Math.floor((maxY * 0.5 + 0.5) * grid.rows)))
+  const col0 = ndcToBin(minX, grid.cols)
+  const col1 = ndcToBin(maxX, grid.cols)
+  const row0 = ndcToBin(minY, grid.rows)
+  const row1 = ndcToBin(maxY, grid.rows)
   for (let row = row0; row <= row1; row += 1) {
     for (let col = col0; col <= col1; col += 1) {
       const bucket = grid.buckets[row * grid.cols + col]

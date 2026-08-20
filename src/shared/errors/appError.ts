@@ -20,7 +20,7 @@ export class AppError extends Error {
   }
 }
 
-const titles: Record<AppErrorCode, string> = {
+export const titles: Record<AppErrorCode, string> = {
   catalog: '星表无法加载',
   webgl: '无法绘制星空',
   worker: '天体计算中断',
@@ -45,10 +45,6 @@ export function toAppError(error: unknown, fallback: AppErrorCode = 'unknown'): 
     cause: error,
     retryable: fallback === 'catalog' || fallback === 'worker' || fallback === 'render',
   })
-}
-
-export function errorTitle(error: AppError) {
-  return titles[error.code]
 }
 
 export function logAppError(error: unknown, context?: string) {

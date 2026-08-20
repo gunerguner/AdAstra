@@ -11,17 +11,12 @@ type Props = {
   ref?: Ref<HTMLElement>
 }
 
-function eyebrow(selected: SelectedSkyObject) {
-  if (selected.type === 'star') return '恒星'
-  return bodyKindLabel(selected.id)
-}
-
 export default function ObjectCard({ selected, onClose, ref }: Props) {
   const kind = selected.type === 'star' ? 'star' : selected.id === 'sun' || selected.id === 'moon' ? selected.id : 'planet'
   return (
     <aside className={styles.card} data-kind={kind} ref={ref}>
       <IconButton className={styles.close} onClick={onClose} aria-label="关闭详情"><X size={15} /></IconButton>
-      <span className={styles.eyebrow}><i className={styles.swatch} aria-hidden="true" />{eyebrow(selected)}</span>
+      <span className={styles.eyebrow}><i className={styles.swatch} aria-hidden="true" />{selected.type === 'star' ? '恒星' : bodyKindLabel(selected.id)}</span>
       <h2>{selected.name}</h2>
       <div className={styles.stats}>
         {selected.constellation && <span><small>星座</small>{selected.constellation}</span>}

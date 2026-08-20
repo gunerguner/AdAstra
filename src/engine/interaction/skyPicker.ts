@@ -12,7 +12,6 @@ import { ndcRadiusForPixels } from './overlayProjection'
 import {
   addStarToPickGrid,
   clearStarPickGrid,
-  createStarPickGrid,
   queryStarPickGrid,
   type StarPickGrid,
 } from './starPickGrid'
@@ -123,10 +122,6 @@ function considerStar(input: PickInput, index: number, best: { star: Star; altit
   }
 }
 
-function maxStarPickRadius(input: PickInput) {
-  return ndcRadiusForPixels(starPointSize(-1.5) * input.pixelRatio * 0.65 + 8, input.minScreenSize)
-}
-
 function fillStarGrid(input: PickInput, grid: StarPickGrid, limit: number) {
   clearStarPickGrid(grid)
   for (let index = 0; index < limit; index += 1) {
@@ -161,7 +156,13 @@ function pickStar(input: PickInput): SelectedSkyObject | null {
       fillStarGrid(input, input.starGrid, limit)
       if (input.starGridKey) input.starGridKey.current = key
     }
-    queryStarPickGrid(input.starGrid, input.ndcX, input.ndcY, maxStarPickRadius(input), candidateScratch)
+    queryStarPickGrid(
+      input.starGrid,
+      input.ndcX,
+      input.ndcY,
+      ndcRadiusForPixels(starPointSize(-1.5) * input.pixelRatio * 0.65 + 8, input.minScreenSize),
+      candidateScratch,
+    )
     for (const index of candidateScratch) best = considerStar(input, index, best)
   }
   if (!best) return null
@@ -180,8 +181,4 @@ export function pickSkyObject(input: PickInput): SelectedSkyObject | null {
   const bodyHit = pickBody(input)
   if (bodyHit || !input.layers.stars) return bodyHit
   return pickStar(input)
-}
-
-export function createPickerStarGrid() {
-  return createStarPickGrid()
 }

@@ -12,19 +12,20 @@
     "react-dom": "^19.2.8",
     "three": "^0.185.1"
   },
+  "packageManager": "pnpm@10.20.0",
   "scripts": {
     "dev": "vite",
-    "build": "npm run catalog:fixture && vite build",
+    "build": "pnpm catalog:fixture && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src tests vite.config.ts vitest.config.ts scripts",
     "test": "vitest run",
-    "verify": "npm run typecheck && npm run lint && npm test && npm run astro:golden",
+    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm astro:golden",
     "catalog:fixture": "node scripts/catalog/build-catalog.mjs",
     "catalog:production": "node scripts/catalog/build-catalog.mjs --production",
     "gate:data": "node scripts/catalog/check-release-gate.mjs",
     "astro:golden": "node scripts/astronomy/check-golden.mjs",
-    "build:release": "npm run gate:data && npm run catalog:production && npm run verify && vite build"
+    "build:release": "pnpm gate:data && pnpm catalog:production && pnpm verify && vite build"
   },
   "repository": {
     "type": "git",

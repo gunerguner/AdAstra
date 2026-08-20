@@ -4,16 +4,17 @@
  */
 import { Vector3 } from 'three'
 import { GREAT_CIRCLE_STEP_RAD } from './astroConstants'
+import { degToRad } from '@/shared/math'
 
 export const toVector3 = (point: { x: number; y: number; z: number }) =>
   new Vector3(point.x, point.y, point.z)
 
-/** 高度角/方位角（度）→ 地平单位向量。0° 方位为正北，90° 为正东。 */
+/** 高度角/方位角（度）→ 地平单位向量。0° 正北、90° 正东；+X 为西，面朝南时左东右西。 */
 export function horizontalVectorInto(altitude: number, azimuth: number, out: Vector3) {
-  const alt = altitude * Math.PI / 180
-  const az = azimuth * Math.PI / 180
+  const alt = degToRad(altitude)
+  const az = degToRad(azimuth)
   return out.set(
-    Math.cos(alt) * Math.sin(az),
+    -Math.cos(alt) * Math.sin(az),
     Math.sin(alt),
     Math.cos(alt) * Math.cos(az),
   )
@@ -27,8 +28,8 @@ export function horizontalVector(altitude: number, azimuth: number) {
 export function skyCameraUpInto(_altitudeDeg: number, azimuthDeg: number, look: Vector3, out: Vector3) {
   out.set(0, 1, 0).addScaledVector(look, -look.y)
   if (out.lengthSq() < 1e-8) {
-    const azimuth = azimuthDeg * Math.PI / 180
-    out.set(Math.sin(azimuth), 0, Math.cos(azimuth))
+    const azimuth = degToRad(azimuthDeg)
+    out.set(-Math.sin(azimuth), 0, Math.cos(azimuth))
   }
   return out.normalize()
 }

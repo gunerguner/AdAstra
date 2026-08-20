@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Vector3 } from 'three'
 import { densifyGreatCircle, horizontalVector, skyCameraUpInto } from '../src/engine/coordinates/skyGeometry'
+import { horizonAnglesFromVector } from '../src/engine/coordinates/skyMath'
 
 describe('skyGeometry', () => {
   it('maps zenith to the horizontal up axis', () => {
@@ -8,6 +9,17 @@ describe('skyGeometry', () => {
     expect(zenith.x).toBeCloseTo(0, 6)
     expect(zenith.y).toBeCloseTo(1, 6)
     expect(zenith.z).toBeCloseTo(0, 6)
+  })
+
+  it('puts east on -X so facing south is left-east right-west', () => {
+    const east = horizontalVector(0, 90)
+    const west = horizontalVector(0, 270)
+    const south = horizontalVector(0, 180)
+    expect(south.z).toBeCloseTo(-1, 6)
+    expect(east.x).toBeCloseTo(-1, 6)
+    expect(west.x).toBeCloseTo(1, 6)
+    expect(horizonAnglesFromVector(east).azimuth).toBeCloseTo(90, 5)
+    expect(horizonAnglesFromVector(west).azimuth).toBeCloseTo(270, 5)
   })
 
   it('keeps camera up perpendicular to the look direction near zenith', () => {

@@ -27,17 +27,16 @@ export function buildConstellationStars(catalog: RuntimeCatalog): ConstellationS
 
 export function buildConstellationAnchors(constellationStars: ConstellationStars[]): ConstellationAnchor[] {
   return constellationStars.map((line) => {
-    let x = 0
-    let y = 0
-    let z = 0
-    line.segments.forEach((segment) => {
-      segment.forEach((star) => {
+    const { x, y, z } = line.segments.flat().reduce(
+      (sum, star) => {
         const vector = equatorialUnit(star.raHours, star.decDeg)
-        x += vector.x
-        y += vector.y
-        z += vector.z
-      })
-    })
+        sum.x += vector.x
+        sum.y += vector.y
+        sum.z += vector.z
+        return sum
+      },
+      { x: 0, y: 0, z: 0 },
+    )
     const length = Math.hypot(x, y, z) || 1
     return { name: line.name, x: x / length, y: y / length, z: z / length }
   })

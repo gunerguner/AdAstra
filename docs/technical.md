@@ -308,7 +308,7 @@ type SkySimulation = {
 
 ### 9.2 商业发布门禁
 
-星表是当前最大非技术风险。`npm run catalog:production` 读取 `data/licenses/catalog-sources.json`；`productionAllowed` 为 `false` 时构建失败。细则见 `docs/data-release-gate.md`。
+星表是当前最大非技术风险。`pnpm catalog:production` 读取 `data/licenses/catalog-sources.json`；`productionAllowed` 为 `false` 时构建失败。细则见 `docs/data-release-gate.md`。
 
 门禁是发布阻断项。未获书面结论不得把候选星表打入生产包。若数据源包含 ESA Gaia、Hipparcos 或 Tycho，必须获得 ESA 商业授权或替换相关记录。
 
@@ -321,9 +321,9 @@ type SkySimulation = {
 | 星座连线 | 项目维护的 YAML，构建期生成，不复制未授权第三方连线 |
 | 城市与时区 | 内置上海、北京、伦敦、纽约、悉尼；IANA 标识 + `Intl` |
 
-开发夹具用于开发、CI 和 `npm run build`，不是完整生产星表。
+开发夹具用于开发、CI 和 `pnpm build`，不是完整生产星表。
 
-夹具（fixture）就是这份手写小样本：`npm run dev` / `npm run build` 打包的都是它，所以画面只有约两百颗星。渲染按 GPU 点批次设计，能力对得上核心 `+5.5`、扩展 `+8.0`，对不上银河系全部恒星。书面授权只打开「可否发布候选目录」的门；`catalog:production` 现在仍读 `stars.yaml`，BSC5P/SAO 的下载与转换适配器尚未接入。详见 `docs/data-release-gate.md`。
+夹具（fixture）就是这份手写小样本：`pnpm dev` / `pnpm build` 打包的都是它，所以画面只有约两百颗星。渲染按 GPU 点批次设计，能力对得上核心 `+5.5`、扩展 `+8.0`，对不上银河系全部恒星。书面授权只打开「可否发布候选目录」的门；`catalog:production` 现在仍读 `stars.yaml`，BSC5P/SAO 的下载与转换适配器尚未接入。详见 `docs/data-release-gate.md`。
 
 ### 9.4 恒星目录候选（生产）
 
@@ -412,13 +412,13 @@ Worker 返回时间窗口两端的 `BodySnapshot`。主线程对赤经赤纬做�
 - 太阳、主要行星：与归档 JPL Horizons 对比不超过 3 角分。
 - 月亮：不超过 5 角分。
 - 亮星：±200 年不超过 5 角分。
-- CI 禁止实时调用 JPL；基准必须入库。当前 `npm run astro:golden` 对照 Astronomy Engine 钉死样例，角误差阈值 0.02°。
+- CI 禁止实时调用 JPL；基准必须入库。当前 `pnpm astro:golden` 对照 Astronomy Engine 钉死样例，角误差阈值 0.02°。
 
 ## 11. 渲染设计
 
 ### 11.1 场景约定
 
-右手坐标：`+Y` 天顶，`+Z` 北，`+X` 东。相机为 `PerspectiveCamera`，位于单位球心；用方位角和高度角生成观察方向，不允许 roll。视场建议 20°–100°。高度角在天顶附近需稳定处理。
+右手坐标：`+Y` 天顶，`+Z` 北，`+X` 西。方位角数值仍是北为零、向东增加；渲染把东放到 `-X`，这样面朝南时左东右西，与肉眼一致（Three.js 相机朝向 `-Z` 时屏幕右侧为 `+X`）。相机为 `PerspectiveCamera`，位于单位球心；用方位角和高度角生成观察方向，不允许 roll。视场建议 20°–100°。高度角在天顶附近需稳定处理。
 
 ### 11.2 图层顺序（后到前）
 
@@ -523,7 +523,7 @@ HTTP 长缓存 + 内容哈希。Service Worker Cache Storage 缓存静态资源�
 
 固定地点（北京、伦敦、纽约、悉尼，以及赤道与极圈附近）、当前时间与 ±200 年边界、分至、月亮近地平、行星冲合、高自行星。对照归档 JPL、Astronomy Engine 官方测试、可选 ERFA/桌面软件抽样。验证方位高度、角距离、黄道与天赤道关系、地平上下、东西不镜像。
 
-当前仓库：`npm run astro:golden` + `tests/astronomyService.test.ts`、`tests/skyMath.test.ts`、`tests/dateTimeLocal.test.ts`。
+当前仓库：`pnpm astro:golden` + `tests/astronomyService.test.ts`、`tests/skyMath.test.ts`、`tests/dateTimeLocal.test.ts`。
 
 ### 16.3 时间动画与交互
 
@@ -543,7 +543,7 @@ license check → catalog build → catalog verification
   → bundle budget check → E2E smoke
 ```
 
-常用命令：`npm run dev` / `test` / `verify` / `build` / `build:release` / `gate:data` / `catalog:production`。
+常用命令：`pnpm dev` / `test` / `verify` / `build` / `build:release` / `gate:data` / `catalog:production`。
 
 生产失败条件：授权未核验、校验和不匹配、首屏包超预算、天文基准超差、冒烟失败。
 

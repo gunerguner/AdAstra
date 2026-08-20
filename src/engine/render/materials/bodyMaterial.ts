@@ -43,7 +43,7 @@ export function makeBodyMaterial(uniforms: {
         float visible = 1.0 - skyOutsideView(viewDir);
         vAtlasIndex = color.x;
         float keepBright = step(vAtlasIndex, 1.45) + step(2.55, vAtlasIndex) * step(vAtlasIndex, 3.45);
-        float dayMul = mix(mix(1.0, 0.16, uDaylight), 1.0, clamp(keepBright, 0.0, 1.0));
+        float dayMul = mix(mix(1.0, 0.72, uDaylight), 1.0, clamp(keepBright, 0.0, 1.0));
         vOpacity = opacity * visible * dayMul;
         vPhase = color.y;
         vLimb = color.z;
@@ -52,8 +52,9 @@ export function makeBodyMaterial(uniforms: {
         vSpriteScale = vAtlasIndex < 0.5
           ? mix(${SUN_GLOW_SCALE.toFixed(2)}, ${SUN_DAY_GLOW_SCALE.toFixed(2)}, dayMix)
           : (vAtlasIndex > 5.5 && vAtlasIndex < 6.5 ? ${SATURN_RING_SCALE.toFixed(2)} : 1.0);
+        float daySize = mix(1.0, 1.22, dayMix * (1.0 - step(vAtlasIndex, 1.45)));
         gl_Position = projectSkyDir(viewDir);
-        gl_PointSize = size * vSpriteScale * uPixelRatio * visible * step(gl_Position.z, 1.2) * clamp(1.22 / uFov, 0.52, 1.9);
+        gl_PointSize = size * vSpriteScale * uPixelRatio * visible * daySize * step(gl_Position.z, 1.2) * clamp(1.22 / uFov, 0.52, 1.9);
       }
     `,
     fragmentShader: `
@@ -116,6 +117,10 @@ export function makeBodyMaterial(uniforms: {
           color = albedo * lit;
           float edge = 1.0 - smoothstep(0.9, 1.0, sr);
           alpha = vOpacity * edge;
+          if (!isMoon) {
+            float dayMix = smoothstep(0.22, 0.72, uDaylight);
+            color = mix(color, mix(color, vec3(1.0), 0.2) * 1.08, dayMix);
+          }
           if (isMoon) {
             float dayMix = smoothstep(0.28, 0.78, uDaylight);
             float haze = (1.0 - smoothstep(0.04, 0.22, vAlt)) * 0.38;

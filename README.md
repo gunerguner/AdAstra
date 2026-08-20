@@ -60,7 +60,7 @@ flowchart TB
 - **星座连线**：由项目维护的 YAML 数据生成，不直接复制授权不明确的第三方连线文件。
 - **城市与时区**：当前内置上海、北京、伦敦、纽约和悉尼等少量预设，时区使用 IANA 标识并由浏览器 `Intl` API 处理。
 
-当前默认数据适用于开发、测试和 `npm run build`，并非完整生产星表。画面星星少是因为打进去的是夹具，不是渲染上限。有授权也不等于自动拉取全天目录：生产构建门禁通过后，仍需把 BSC5P/SAO 等候选源接入构建期适配器，目标是大约 `+5.5` / `+8.0` 的科普星表，不是银河系全部恒星。详情见 [数据发布门禁](docs/data-release-gate.md)。
+当前默认数据适用于开发、测试和 `pnpm build`，并非完整生产星表。画面星星少是因为打进去的是夹具，不是渲染上限。有授权也不等于自动拉取全天目录：生产构建门禁通过后，仍需把 BSC5P/SAO 等候选源接入构建期适配器，目标是大约 `+5.5` / `+8.0` 的科普星表，不是银河系全部恒星。详情见 [数据发布门禁](docs/data-release-gate.md)。
 
 ### 主要技术与工具
 
@@ -87,7 +87,7 @@ flowchart TB
 ### 环境要求
 
 - Node.js 20.19+ 或 22.12+
-- npm
+- pnpm 10（可用 `corepack enable` 按 `package.json` 的 `packageManager` 启用）
 - 支持 WebGL2 和 ES Module Worker 的现代浏览器
 
 推荐使用 Chrome、Edge、Safari 或 Firefox 的近期版本。
@@ -104,13 +104,13 @@ cd AdAstra
 ### 2. 安装依赖
 
 ```bash
-npm ci
+pnpm install --frozen-lockfile
 ```
 
-没有 `package-lock.json` 时可改用：
+没有 `pnpm-lock.yaml` 时可改用：
 
 ```bash
-npm install
+pnpm install
 ```
 
 
@@ -118,7 +118,7 @@ npm install
 ### 3. 启动开发服务
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 终端会输出本地访问地址，默认通常为：
@@ -133,16 +133,16 @@ http://localhost:5173/
 
 ```bash
 # 类型检查
-npm run typecheck
+pnpm typecheck
 
 # 代码检查
-npm run lint
+pnpm lint
 
 # 单元测试
-npm test
+pnpm test
 
 # 类型、代码、测试和天文黄金样例的完整验证
-npm run verify
+pnpm verify
 ```
 
 
@@ -150,8 +150,8 @@ npm run verify
 ### 5. 构建和本地预览
 
 ```bash
-npm run build
-npm run preview
+pnpm build
+pnpm preview
 ```
 
 普通 `build` 会先生成开发夹具星表，再把静态产物输出到 `dist/`。`dist/` 可以部署到支持 HTTPS 的静态文件服务器或 CDN；正式环境需要 HTTPS，Service Worker 才能正常工作。
@@ -172,16 +172,16 @@ docker compose -f docker/docker-compose.yml --env-file docker/.env up -d
 
 ```bash
 # 重新生成开发夹具星表
-npm run catalog:fixture
+pnpm catalog:fixture
 
 # 检查数据发布门禁
-npm run gate:data
+pnpm gate:data
 
 # 生成生产星表（授权门禁未通过时会失败）
-npm run catalog:production
+pnpm catalog:production
 
 # 完整生产发布构建
-npm run build:release
+pnpm build:release
 ```
 
 `catalog:production` 和 `build:release` 的失败可能是预期行为：当前候选生产星表仍需完成源级授权核验，项目会主动阻止未经确认的数据进入发布包。

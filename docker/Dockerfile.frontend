@@ -7,11 +7,13 @@ ENV TZ=Asia/Shanghai
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable \
+  && corepack prepare pnpm@10.20.0 --activate \
+  && pnpm install --frozen-lockfile
 
 COPY . .
-RUN npm run build
+RUN pnpm build
 
 FROM nginx:stable-alpine AS production
 

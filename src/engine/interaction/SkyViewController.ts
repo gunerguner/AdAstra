@@ -3,7 +3,8 @@ import type { RefObject } from 'react'
 import type { SkySimulation, SkyView } from '@/shared/types/sky'
 import { clampSkyFov } from '@/engine/render/skyProjection'
 import { fillHorizonMatrix } from '@/engine/coordinates/skyMath'
-import { createPickerStarGrid, pickSkyObject } from './skyPicker'
+import { pickSkyObject } from './skyPicker'
+import { createStarPickGrid } from './starPickGrid'
 import { nudgeView, panView, zoomView } from './viewConstraints'
 import type { SkySceneContext } from '@/engine/render/skyContext'
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
@@ -24,7 +25,7 @@ export class SkyViewController {
   private viewSyncTimer = 0
   private hoverFrame = 0
   private pendingHover: { x: number; y: number } | null = null
-  private readonly starGrid = createPickerStarGrid()
+  private readonly starGrid = createStarPickGrid()
   private readonly starGridKey = { current: '' }
 
   constructor(

@@ -9,10 +9,10 @@ AdAstra 是**纯前端静态 PWA**：没有后端、数据库或 `/api` 反代�
 
 | 组件  | 说明                                                                                 |
 | --- | ---------------------------------------------------------------------------------- |
-| 前端  | 镜像由 `docker/Dockerfile.frontend` 构建：`npm ci` + `npm run build` + Nginx 监听 **8080** |
+| 前端  | 镜像由 `docker/Dockerfile.frontend` 构建：`pnpm install --frozen-lockfile` + `pnpm build` + Nginx 监听 **8080** |
 
 
-构建使用 `npm run build`（开发夹具星表 `fixture-bright-stars`）。生产星表仍受数据授权门禁限制，**不要**在门禁未通过时改用 `build:release`，否则镜像构建会失败。详见仓库内 `docs/data-release-gate.md`。
+构建使用 `pnpm build`（开发夹具星表 `fixture-bright-stars`）。生产星表仍受数据授权门禁限制，**不要**在门禁未通过时改用 `build:release`，否则镜像构建会失败。详见仓库内 `docs/data-release-gate.md`。
 
 改前端后须 `build frontend`；仅重启容器不会更新页面。
 
@@ -108,7 +108,7 @@ curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8083/manifest.webman
 | 改了前端页面线上没变化                                 | `docker compose ... build frontend && up -d frontend`                                                        |
 | 与其他项目端口冲突                                   | 修改 `FRONTEND_PUBLISH_PORT`，并同步更新 tencentDocker 的 `ADASTRA_FRONTEND_UPSTREAM`                                 |
 | Service Worker 不更新 / 一直旧版                   | 确认 `nginx.conf` 对 `/service-worker.js` 设置了 `Cache-Control: no-cache`，并走 HTTPS 域名访问                           |
-| `npm run build` 在镜像里失败且提到 productionAllowed | 不要改用 `build:release`；当前线上包使用夹具星表                                                                             |
+| `pnpm build` 在镜像里失败且提到 productionAllowed | 不要改用 `build:release`；当前线上包使用夹具星表                                                                             |
 | 页面能开但 Service Worker 安装失败                   | `cache.addAll` 会预缓存 `/favicon-32.png`、`/icon-192.png` 等；仓库当前默认只有 `public/favicon.svg`。缺 PNG 时在线浏览仍可用，离线安装会失败 |
 
 

@@ -1,7 +1,9 @@
 /**
  * 赤道 ↔ 地平：星表给赤经/赤纬，画面要方位/高度。
- * 向量约定：赤道 x=春分点、z=北天极；地平 x=东、y=天顶、z=北。
+ * 向量约定：赤道 x=春分点、z=北天极；地平 x=西、y=天顶、z=北。
+ * +X 取西，是为了面朝南时左东右西，与肉眼一致（Three 相机朝向 -Z 时右侧为 +X）。
  */
+import { clamp, degToRad, radToDeg, wrapDegrees } from '@/shared/math'
 import type { Observer } from '@/shared/types/observer'
 import {
   DEG_PER_HOUR,
@@ -14,17 +16,9 @@ import {
   SIDEREAL_HOURS_PER_SOLAR_DAY,
 } from './astroConstants'
 
-const degToRad = (value: number) => (value * Math.PI) / 180
-const radToDeg = (value: number) => (value * 180) / Math.PI
-
-const utcMillisOf = (time: number | Date) => (typeof time === 'number' ? time : time.getTime())
-
-/** Unix 毫秒 → 儒略日。 */
-const julianDate = (utcMillis: number) => utcMillis / MS_PER_DAY + JULIAN_UNIX_EPOCH
-
 /** 当地恒星时（小时）：春分点相对观测者子午圈转了多少。 */
 export function localSiderealHours(time: number | Date, longitude: number) {
-  const jd = julianDate(utcMillisOf(time))
+  const jd = (typeof time === 'number' ? time : time.getTime()) / MS_PER_DAY + JULIAN_UNIX_EPOCH
   const d = jd - JULIAN_J2000
   return ((GMST_HOURS_AT_J2000 + SIDEREAL_HOURS_PER_SOLAR_DAY * d + longitude / DEG_PER_HOUR) % HOURS_PER_DAY + HOURS_PER_DAY) % HOURS_PER_DAY
 }
@@ -60,8 +54,8 @@ export function fillHorizonMatrix(
   const cosLst = Math.cos(lst)
   const sinLat = Math.sin(lat)
   const cosLat = Math.cos(lat)
-  out[0] = -sinLst
-  out[1] = cosLst
+  out[0] = sinLst
+  out[1] = -cosLst
   out[2] = 0
   out[3] = cosLat * cosLst
   out[4] = cosLat * sinLst
@@ -96,7 +90,7 @@ export function eclipticEquatorialUnit(longitudeDeg: number) {
 /** 地平单位向量 → 高度角、方位角（度）。y 是天顶分量。 */
 export function horizonAnglesFromVector(vector: { x: number; y: number; z: number }) {
   return {
-    altitude: Math.asin(Math.max(-1, Math.min(1, vector.y))) * 180 / Math.PI,
-    azimuth: (Math.atan2(vector.x, vector.z) * 180 / Math.PI + 360) % 360,
+    altitude: radToDeg(Math.asin(clamp(vector.y, -1, 1))),
+    azimuth: wrapDegrees(radToDeg(Math.atan2(-vector.x, vector.z))),
   }
 }

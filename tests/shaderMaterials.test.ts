@@ -50,6 +50,12 @@ describe('shader sky projection uniforms', () => {
     expect(materials[0].vertexShader).toContain(SUN_DAY_GLOW_SCALE.toFixed(2))
   })
 
+  it('keeps planets readable against a daylight sky', () => {
+    expect(materials[0].vertexShader).toContain('0.72')
+    expect(materials[0].vertexShader).toContain('daySize')
+    expect(materials[0].fragmentShader).toContain('mix(color, vec3(1.0), 0.2)')
+  })
+
   it('crops pixels outside the celestial sphere', () => {
     expect(materials[3].fragmentShader).toContain('skyOutsideMask')
     expect(materials[4].fragmentShader).toContain('skyVoidColor')

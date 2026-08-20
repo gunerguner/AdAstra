@@ -120,20 +120,22 @@ export function createSkyScene(options: {
 export function disposeSkyScene(ctx: SkySceneContext) {
   ctx.layers.starGeometry.dispose()
   ctx.layers.starMaterial.dispose()
-  disposeMesh(ctx.layers.skyDome)
-  disposeMesh(ctx.layers.milkyWay)
+  ;[
+    ctx.layers.skyDome,
+    ctx.layers.milkyWay,
+    ctx.layers.ecliptic,
+    ctx.layers.equator,
+    ctx.layers.horizon,
+    ctx.layers.horizonGlow,
+    ctx.layers.ground,
+    ctx.layers.skyLimb,
+  ].forEach(disposeMesh)
   ctx.layers.linesGroup.children.forEach((child) => {
     ;(child as Line).geometry.dispose()
   })
   ctx.materials.constellationLine.dispose()
   ctx.materials.equatorialGrid.dispose()
   ctx.materials.horizontalGrid.dispose()
-  disposeMesh(ctx.layers.ecliptic)
-  disposeMesh(ctx.layers.equator)
-  disposeMesh(ctx.layers.horizon)
-  disposeMesh(ctx.layers.horizonGlow)
-  disposeMesh(ctx.layers.ground)
-  disposeMesh(ctx.layers.skyLimb)
   disposeBodiesLayer(ctx.layers.bodyPoints)
   ctx.renderer.dispose()
   ctx.renderer.domElement.remove()

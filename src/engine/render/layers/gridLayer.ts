@@ -41,13 +41,12 @@ export function createGridLayer(
 
   constellationStars.forEach((line) => {
     line.segments.forEach((segment) => {
-      const points = densifyGreatCircle(segment.map((star) => toVector3(equatorialUnit(star.raHours, star.decDeg))))
-      if (points.length > 1) {
-        const mesh = new Line(new BufferGeometry().setFromPoints(points), constellationLine)
-        mesh.frustumCulled = false
-        mesh.userData.kind = 'constellation'
-        group.add(mesh)
-      }
+      addSkyLine(
+        group,
+        segment.map((star) => toVector3(equatorialUnit(star.raHours, star.decDeg))),
+        'constellation',
+        constellationLine,
+      )
     })
   })
 

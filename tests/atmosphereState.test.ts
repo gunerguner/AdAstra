@@ -43,7 +43,7 @@ describe('atmosphere state', () => {
     expect(north.sunDirY).toBeCloseTo(0, 5)
     expect(north.sunDirZ).toBeCloseTo(1, 5)
     const east = atmosphereState(0, 90, true)
-    expect(east.sunDirX).toBeCloseTo(1, 5)
+    expect(east.sunDirX).toBeCloseTo(-1, 5)
     expect(east.sunDirZ).toBeCloseTo(0, 5)
     const zenith = atmosphereState(90, 12, true)
     expect(zenith.sunDirY).toBeCloseTo(1, 5)

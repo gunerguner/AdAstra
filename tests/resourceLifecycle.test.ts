@@ -6,7 +6,8 @@ describe('render resource lifecycle', () => {
   it('disposes body atlas with the rest of the sky scene', () => {
     const source = readFileSync(resolve(import.meta.dirname, '../src/engine/render/createSkyScene.ts'), 'utf8')
     expect(source).toContain('disposeBodiesLayer(ctx.layers.bodyPoints)')
-    expect(source).toContain('disposeMesh(ctx.layers.skyDome)')
+    expect(source).toContain('ctx.layers.skyDome')
+    expect(source).toContain('.forEach(disposeMesh)')
   })
 
   it('stops the render loop, observers, worker and scene together', () => {

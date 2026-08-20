@@ -2,7 +2,7 @@
  * 在 Worker 给出的两个采样时刻之间插值太阳系天体。
  * 主线程每帧只做球面/角度插值，不直接调用第三方星历库。
  */
-import { lerpDegrees } from './moonPhaseName'
+import { clamp, degToRad, lerp, lerpDegrees, radToDeg } from '@/shared/math'
 import { DEG_PER_HOUR, HOURS_PER_DAY } from '@/engine/coordinates/astroConstants'
 
 export type BodySnapshot = {
@@ -52,33 +52,18 @@ function slot(index: number): BodySnapshot {
   return created
 }
 
-function copySnapshot(from: BodySnapshot, out: BodySnapshot) {
-  out.id = from.id
-  out.name = from.name
-  out.altitude = from.altitude
-  out.azimuth = from.azimuth
-  out.raHours = from.raHours
-  out.decDeg = from.decDeg
-  out.magnitude = from.magnitude
-  out.phaseAngle = from.phaseAngle
-  out.phaseFraction = from.phaseFraction
-  out.synodicDeg = from.synodicDeg
-  out.ringTilt = from.ringTilt
-  return out
-}
-
 function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: BodySnapshot) {
-  const fromRa = from.raHours * DEG_PER_HOUR * Math.PI / 180
-  const toRa = to.raHours * DEG_PER_HOUR * Math.PI / 180
-  const fromDec = from.decDeg * Math.PI / 180
-  const toDec = to.decDeg * Math.PI / 180
+  const fromRa = degToRad(from.raHours * DEG_PER_HOUR)
+  const toRa = degToRad(to.raHours * DEG_PER_HOUR)
+  const fromDec = degToRad(from.decDeg)
+  const toDec = degToRad(to.decDeg)
   const ax = Math.cos(fromDec) * Math.cos(fromRa)
   const ay = Math.cos(fromDec) * Math.sin(fromRa)
   const az = Math.sin(fromDec)
   const bx = Math.cos(toDec) * Math.cos(toRa)
   const by = Math.cos(toDec) * Math.sin(toRa)
   const bz = Math.sin(toDec)
-  const dot = Math.min(1, Math.max(-1, ax * bx + ay * by + az * bz))
+  const dot = clamp(ax * bx + ay * by + az * bz, -1, 1)
   const omega = Math.acos(dot)
   const sinOmega = Math.sin(omega)
   const left = sinOmega < 1e-6 ? 1 - t : Math.sin((1 - t) * omega) / sinOmega
@@ -86,19 +71,19 @@ function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: B
   const x = ax * left + bx * right
   const y = ay * left + by * right
   const z = az * left + bz * right
-  copySnapshot(from, out)
-  out.raHours = ((Math.atan2(y, x) * 180 / Math.PI / DEG_PER_HOUR) + HOURS_PER_DAY) % HOURS_PER_DAY
-  out.decDeg = Math.atan2(z, Math.hypot(x, y)) * 180 / Math.PI
-  out.altitude = from.altitude + (to.altitude - from.altitude) * t
-  out.azimuth = from.azimuth + ((((to.azimuth - from.azimuth + 540) % 360) - 180) * t)
-  out.magnitude = from.magnitude + (to.magnitude - from.magnitude) * t
-  out.phaseAngle = from.phaseAngle + (to.phaseAngle - from.phaseAngle) * t
-  out.phaseFraction = from.phaseFraction + (to.phaseFraction - from.phaseFraction) * t
+  Object.assign(out, from)
+  out.raHours = ((radToDeg(Math.atan2(y, x)) / DEG_PER_HOUR) + HOURS_PER_DAY) % HOURS_PER_DAY
+  out.decDeg = radToDeg(Math.atan2(z, Math.hypot(x, y)))
+  out.altitude = lerp(from.altitude, to.altitude, t)
+  out.azimuth = lerpDegrees(from.azimuth, to.azimuth, t)
+  out.magnitude = lerp(from.magnitude, to.magnitude, t)
+  out.phaseAngle = lerp(from.phaseAngle, to.phaseAngle, t)
+  out.phaseFraction = lerp(from.phaseFraction, to.phaseFraction, t)
   out.synodicDeg = from.synodicDeg != null && to.synodicDeg != null
     ? lerpDegrees(from.synodicDeg, to.synodicDeg, t)
     : from.synodicDeg
   out.ringTilt = from.ringTilt != null && to.ringTilt != null
-    ? from.ringTilt + (to.ringTilt - from.ringTilt) * t
+    ? lerp(from.ringTilt, to.ringTilt, t)
     : from.ringTilt
   return out
 }
@@ -108,7 +93,7 @@ export function interpolateBodySnapshots(window: BodySnapshotWindow | null, utcM
   if (!window) return EMPTY
   if (window === cachedWindow && utcMillis === cachedUtcMillis) return result
   const span = Math.max(window.toUtcMillis - window.fromUtcMillis, 1)
-  const t = Math.min(1, Math.max(0, (utcMillis - window.fromUtcMillis) / span))
+  const t = clamp((utcMillis - window.fromUtcMillis) / span, 0, 1)
   nextById.clear()
   for (const body of window.to) nextById.set(body.id, body)
   result.length = window.from.length
@@ -116,7 +101,7 @@ export function interpolateBodySnapshots(window: BodySnapshotWindow | null, utcM
     const from = window.from[index]
     const to = nextById.get(from.id)
     const out = slot(index)
-    result[index] = to ? interpolatePair(from, to, t, out) : copySnapshot(from, out)
+    result[index] = to ? interpolatePair(from, to, t, out) : Object.assign(out, from)
   }
   cachedWindow = window
   cachedUtcMillis = utcMillis

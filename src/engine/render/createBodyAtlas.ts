@@ -60,7 +60,6 @@ export function createBodyAtlasTexture() {
     },
     (nx, ny) => {
       const crater = noise(nx * 16 + 2, ny * 16)
-      let r = 228, g = 224, b = 214
       const maria = [
         [-0.32, -0.08, 0.36],
         [-0.08, -0.3, 0.24],
@@ -68,13 +67,10 @@ export function createBodyAtlasTexture() {
         [0.1, 0.2, 0.18],
         [-0.44, 0.24, 0.16],
       ]
-      for (const [mx, my, rad] of maria) {
-        if (Math.hypot(nx - mx, ny - my) < rad) {
-          r = 92
-          g = 96
-          b = 104
-        }
-      }
+      const inMare = maria.some(([mx, my, rad]) => Math.hypot(nx - mx, ny - my) < rad)
+      const r = inMare ? 92 : 228
+      const g = inMare ? 96 : 224
+      const b = inMare ? 104 : 214
       const shade = 0.78 + crater * 0.28
       return [r * shade, g * shade, b * shade]
     },

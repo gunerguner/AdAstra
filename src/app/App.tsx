@@ -46,12 +46,14 @@ export default function App() {
     altitude: view.altitude,
     fov: view.fov,
   })
-  simulationRef.current.observer = { latitude: observer.latitude, longitude: observer.longitude }
-  simulationRef.current.magnitudeLimit = magnitudeLimit
-  simulationRef.current.layers = layers
-  simulationRef.current.azimuth = view.azimuth
-  simulationRef.current.altitude = view.altitude
-  simulationRef.current.fov = view.fov
+  Object.assign(simulationRef.current, {
+    observer: { latitude: observer.latitude, longitude: observer.longitude },
+    magnitudeLimit,
+    layers,
+    azimuth: view.azimuth,
+    altitude: view.altitude,
+    fov: view.fov,
+  })
 
   const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
 
@@ -79,9 +81,9 @@ export default function App() {
             onAtmosphereChange={(state) => {
               const root = document.documentElement
               root.dataset.skyPhase = state.phase
-              root.style.setProperty('--ui-daylight', state.daylight.toFixed(3))
-              root.style.setProperty('--ui-twilight', state.twilight.toFixed(3))
-              root.style.setProperty('--ui-warmth', state.warmth.toFixed(3))
+              ;(['daylight', 'twilight', 'warmth'] as const).forEach((key) => {
+                root.style.setProperty(`--ui-${key}`, state[key].toFixed(3))
+              })
               setAtmospherePhase((current) => current === state.phase ? current : state.phase)
             }}
           >

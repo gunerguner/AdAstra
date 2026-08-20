@@ -21,9 +21,8 @@ export function createFrameStats(capacity = 45) {
     },
     snapshot(): FrameStatsSnapshot {
       if (filled === 0) return { count: 0, lastMs, averageMs: 0, p95Ms: 0 }
-      let sum = 0
       const ordered = Array.from(samples.subarray(0, filled)).sort((a, b) => a - b)
-      for (let index = 0; index < filled; index += 1) sum += samples[index]
+      const sum = ordered.reduce((total, sample) => total + sample, 0)
       const p95Index = Math.min(filled - 1, Math.floor(filled * 0.95))
       return {
         count: filled,
@@ -34,9 +33,7 @@ export function createFrameStats(capacity = 45) {
     },
     get averageMs() {
       if (filled === 0) return 0
-      let sum = 0
-      for (let index = 0; index < filled; index += 1) sum += samples[index]
-      return sum / filled
+      return samples.subarray(0, filled).reduce((total, sample) => total + sample, 0) / filled
     },
     get filled() {
       return filled
