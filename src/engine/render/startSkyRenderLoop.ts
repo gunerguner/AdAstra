@@ -16,7 +16,7 @@ import { createFrameStats, publishFrameStats } from '@/engine/performance/frameS
 import { isFullRateFrame, nextFrameDelayMs } from '@/engine/performance/renderScheduler'
 import { createSkyOverlayUpdater, type SkyOverlayRefs } from '@/engine/interaction/updateSkyOverlays'
 import { degToRad } from '@/shared/math'
-import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
+import type { SkySimulation } from '@/shared/types/sky'
 import type { ShaderMaterial } from 'three'
 import type { SkySceneContext } from './skyContext'
 
@@ -33,7 +33,6 @@ export function startSkyRenderLoop(options: {
   overlays: SkyOverlayRefs
   bodySnapshotRef: RefObject<BodySnapshotWindow | null>
   requestBodySnapshot: (now: number, utcMillis: number, observer: SkySimulation['observer']) => void
-  onSelect: (item: SelectedSkyObject | null) => void
   onAtmosphereChange?: (state: AtmosphereState) => void
 }): SkyRenderLoop {
   const {
@@ -44,7 +43,6 @@ export function startSkyRenderLoop(options: {
     overlays,
     bodySnapshotRef,
     requestBodySnapshot,
-    onSelect,
     onAtmosphereChange,
   } = options
   const { renderer, scene, camera, uniforms, scratch, layers } = ctx
@@ -56,7 +54,6 @@ export function startSkyRenderLoop(options: {
     starById: catalog.starById,
     constellationAnchors,
     overlays,
-    onSelect,
   })
   let lastFrameAt = performance.now()
   let qualityPixelRatio = renderer.getPixelRatio()

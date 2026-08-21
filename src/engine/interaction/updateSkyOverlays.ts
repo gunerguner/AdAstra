@@ -43,9 +43,8 @@ export function createSkyOverlayUpdater(options: {
   starById: Map<string, Star>
   constellationAnchors: ConstellationAnchor[]
   overlays: SkyOverlayRefs
-  onSelect: (item: SelectedSkyObject | null) => void
 }) {
-  const { camera, uniforms, scratch, starById, constellationAnchors, overlays, onSelect } = options
+  const { camera, uniforms, scratch, starById, constellationAnchors, overlays } = options
   const overlayNdc = { x: 0, y: 0, z: 0 }
   let activeCard: HTMLElement | null = null
   let altitudeStatNode: Element | null = null
@@ -199,7 +198,7 @@ export function createSkyOverlayUpdater(options: {
         { width: cardWidth, height: cardHeight },
       )
       if (!pose) {
-        onSelect(null)
+        hideOverlay(card)
         return
       }
       if (altitudeStatNode) altitudeStatNode.textContent = `${pose.altitude.toFixed(1)}°`

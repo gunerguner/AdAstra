@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { Camera, Vector3 } from 'three'
 import { createSkyOverlayUpdater, type SkyOverlayRefs } from '../src/engine/interaction/updateSkyOverlays'
 import { defaultLayers } from '../src/config/defaultLayers'
@@ -49,19 +49,15 @@ function overlays(partial: Partial<{
   }
 }
 
-function updater(overlayRefs: SkyOverlayRefs, onSelect = vi.fn()) {
-  return {
-    onSelect,
-    sky: createSkyOverlayUpdater({
-      camera: identityCamera,
-      uniforms: { horizonMat: identityMat(), eqjHorizonMat: identityMat() },
-      scratch: { horizon: { x: 0, y: 0, z: 0 }, projected: new Vector3() },
-      starById: new Map<string, Star>(),
-      constellationAnchors: [{ name: 'Orion', x: 0, y: 0.45, z: -0.89 }],
-      overlays: overlayRefs,
-      onSelect,
-    }),
-  }
+function updater(overlayRefs: SkyOverlayRefs) {
+  return createSkyOverlayUpdater({
+    camera: identityCamera,
+    uniforms: { horizonMat: identityMat(), eqjHorizonMat: identityMat() },
+    scratch: { horizon: { x: 0, y: 0, z: 0 }, projected: new Vector3() },
+    starById: new Map<string, Star>(),
+    constellationAnchors: [{ name: 'Orion', x: 0, y: 0.45, z: -0.89 }],
+    overlays: overlayRefs,
+  })
 }
 
 function frame(layers: Partial<LayerState> = {}, bodySnapshots: BodySnapshot[] = []) {
@@ -92,8 +88,7 @@ const polarBody: BodySnapshot = {
 describe('updateSkyOverlays', () => {
   it('hides constellation names when the constellation layer is off', () => {
     const node = overlayNode()
-    const { sky } = updater(overlays({ constellation: node }))
-    sky.update(frame({ constellationLines: false }))
+    updater(overlays({ constellation: node })).update(frame({ constellationLines: false }))
     expect(node.style.display).toBe('none')
   })
 
@@ -107,7 +102,6 @@ describe('updateSkyOverlays', () => {
       starById: new Map(),
       constellationAnchors: [{ name: 'Orion', x: 0, y: 0.01, z: -1 }],
       overlays: overlayRefs,
-      onSelect: vi.fn(),
     })
     sky.update(frame())
     expect(node.style.display).toBe('none')
@@ -115,8 +109,7 @@ describe('updateSkyOverlays', () => {
 
   it('hides ecliptic poles when the ecliptic layer is off', () => {
     const node = overlayNode()
-    const { sky } = updater(overlays({ pole: node }))
-    sky.update(frame({ ecliptic: false }))
+    updater(overlays({ pole: node })).update(frame({ ecliptic: false }))
     expect(node.style.display).toBe('none')
   })
 
@@ -134,8 +127,7 @@ describe('updateSkyOverlays', () => {
       selected,
       hoverTarget: { id: 'moon', name: '月亮', type: 'body' },
     })
-    const { sky } = updater(overlayRefs)
-    sky.update(frame())
+    updater(overlayRefs).update(frame())
     expect(hover.style.display).toBe('none')
     expect(overlayRefs.hoverTargetRef.current?.id).toBe('moon')
   })
@@ -146,13 +138,12 @@ describe('updateSkyOverlays', () => {
       hover,
       hoverTarget: { id: 'moon', name: '月亮', type: 'body' },
     })
-    const { sky } = updater(overlayRefs)
-    sky.update(frame({}, [polarBody]))
+    updater(overlayRefs).update(frame({}, [polarBody]))
     expect(hover.style.display).toBe('none')
     expect(overlayRefs.hoverTargetRef.current).toBeNull()
   })
 
-  it('deselects the object card when it leaves the view', () => {
+  it('hides the object card when it leaves the view without clearing selection', () => {
     const card = overlayNode()
     const selected: SelectedSkyObject = {
       id: 'moon',
@@ -161,9 +152,9 @@ describe('updateSkyOverlays', () => {
       altitude: 90,
       azimuth: 0,
     }
-    const { sky, onSelect } = updater(overlays({ card, selected }))
-    sky.update(frame({}, [polarBody]))
+    const overlayRefs = overlays({ card, selected })
+    updater(overlayRefs).update(frame({}, [polarBody]))
     expect(card.style.display).toBe('none')
-    expect(onSelect).toHaveBeenCalledWith(null)
+    expect(overlayRefs.selectedRef.current?.id).toBe('moon')
   })
 })

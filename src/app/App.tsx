@@ -1,14 +1,19 @@
-import { lazy, Suspense, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useMemo, useRef, useState } from 'react'
+import { LocateFixed } from 'lucide-react'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
+import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
+import { locateSkyTarget } from '@/engine/interaction/locateSkyTarget'
 import type { AtmospherePhase } from '@/engine/render/atmosphereState'
-import { ErrorPanel, LoadingPanel } from '@/shared/ui'
+import { ErrorPanel, LoadingPanel, Notice } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
+import QuickNav from '@/features/quick-nav/QuickNav'
 import LayerSection from '@/features/layer-controls/LayerSection'
 import { MagnitudeSection, QuickViewSection } from '@/features/layer-controls/ViewSections'
 import TimeDeck from '@/features/time-controls/TimeDeck'
 import TopBar from './components/TopBar'
 import ControlPanel from './components/ControlPanel'
+import HoverDock from './components/HoverDock'
 import SiteFooter from './components/SiteFooter'
 import { useCatalog } from './hooks/useCatalog'
 import { useObserver } from './hooks/useObserver'
@@ -19,6 +24,11 @@ import styles from './App.module.css'
 
 const SkyViewport = lazy(() => import('@/features/sky-viewer/SkyViewport'))
 
+function formatSignedAltitude(degrees: number) {
+  const sign = degrees < 0 ? '−' : ''
+  return `${sign}${Math.abs(degrees).toFixed(1)}°`
+}
+
 export default function App() {
   const { catalog, catalogError, retry } = useCatalog()
   const location = useObserver()
@@ -28,8 +38,10 @@ export default function App() {
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(true)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
   const [atmospherePhase, setAtmospherePhase] = useState<AtmospherePhase>('night')
   const objectCardRef = useRef<HTMLElement>(null)
+  const bodySnapshotRef = useRef<BodySnapshotWindow | null>(null)
   const datetimeInputRef = useRef<HTMLInputElement>(null)
   const yearLabelRef = useRef<HTMLElement>(null)
   const clockRefs = useMemo(() => ({
@@ -51,12 +63,48 @@ export default function App() {
   Object.assign(simulationRef.current.view, view)
 
   const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
+  const dismissNotice = useCallback(() => setNotice(null), [])
+  const [bodyEpoch, setBodyEpoch] = useState(0)
+  const bodyMagnitudes = useMemo(() => {
+    const magnitudes: Record<string, number> = {}
+    for (const body of interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)) {
+      magnitudes[body.id] = body.magnitude
+    }
+    return magnitudes
+  }, [bodyEpoch, playback.currentTime, observer.latitude, observer.longitude])
 
   const resetNow = () => {
     playback.pausePlayback()
     playback.commitTime(Date.now())
     resetView()
     setSelected(null)
+    setNotice(null)
+  }
+
+  const locateTarget = (id: string, type: 'star' | 'body') => {
+    if (!catalog) return
+    const latest = simulationRef.current
+    const result = locateSkyTarget({
+      id,
+      type,
+      bodies: interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis),
+      starById: catalog.starById,
+      utcMillis: latest.utcMillis,
+      observer: latest.observer,
+      view: latest.view,
+    })
+    if (!result) {
+      setNotice(type === 'body' ? '太阳系位置还在计算，请稍后再试' : null)
+      return
+    }
+    if (!result.belowHorizon) {
+      setView({ azimuth: result.azimuth, altitude: result.altitude, fov: latest.view.fov })
+    }
+    setSelected(result.selected)
+    latest.wake?.()
+    setNotice(result.belowHorizon
+      ? `${result.selected.name}目前在地平线以下（${formatSignedAltitude(result.targetAltitude)}）`
+      : null)
   }
 
   return (
@@ -69,8 +117,13 @@ export default function App() {
           <SkyViewport
             catalog={catalog}
             simulationRef={simulationRef}
+            bodySnapshotRef={bodySnapshotRef}
+            onBodiesReady={() => setBodyEpoch((value) => value + 1)}
             onViewChange={onViewChange}
-            onSelect={setSelected}
+            onSelect={(item) => {
+              setSelected(item)
+              if (item) setNotice(null)
+            }}
             selected={selected}
             objectCardRef={objectCardRef}
             onAtmosphereChange={(state) => {
@@ -107,11 +160,25 @@ export default function App() {
         }}
       />
 
+      {catalog && (
+        <HoverDock
+          side="left"
+          panelId="sky-quick-nav"
+          handleLabel="快速定位"
+          handleLabelPinned="收起快速定位"
+          handleIcon={<LocateFixed size={15} strokeWidth={1.65} />}
+        >
+          <QuickNav catalog={catalog} bodyMagnitudes={bodyMagnitudes} onLocate={locateTarget} />
+        </HoverDock>
+      )}
+
       <ControlPanel>
         <LayerSection layers={layers} onToggle={toggleLayer} />
         <MagnitudeSection magnitudeLimit={magnitudeLimit} onChange={setMagnitudeLimit} />
         <QuickViewSection view={view} onChange={setView} />
       </ControlPanel>
+
+      <Notice message={notice} onDismiss={dismissNotice} />
 
       <TimeDeck
         open={isTimeDeckOpen}

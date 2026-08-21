@@ -21,6 +21,8 @@ type Props = {
   onSelect: (item: SelectedSkyObject | null) => void
   selected?: SelectedSkyObject | null
   objectCardRef?: RefObject<HTMLElement | null>
+  bodySnapshotRef: RefObject<BodySnapshotWindow | null>
+  onBodiesReady?: () => void
   onAtmosphereChange?: (state: AtmosphereState) => void
   children?: ReactNode
 }
@@ -32,6 +34,8 @@ export default function SkyViewport({
   onSelect,
   selected,
   objectCardRef,
+  bodySnapshotRef,
+  onBodiesReady,
   onAtmosphereChange,
   children,
 }: Props) {
@@ -40,7 +44,6 @@ export default function SkyViewport({
   const cardinalRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const constellationNameRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const eclipticPoleRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const bodySnapshotRef = useRef<BodySnapshotWindow | null>(null)
   const hoverTargetRef = useRef<{ id: string; name: string; type: 'star' | 'body' } | null>(null)
   const selectedRef = useRef<SelectedSkyObject | null>(selected ?? null)
   selectedRef.current = selected ?? null
@@ -48,6 +51,7 @@ export default function SkyViewport({
   const selectObject = useEffectEvent(onSelect)
   const changeView = useEffectEvent(onViewChange)
   const changeAtmosphere = useEffectEvent(onAtmosphereChange ?? (() => {}))
+  const bodiesReady = useEffectEvent(onBodiesReady ?? (() => {}))
 
   const constellationStars = useMemo(() => buildConstellationStars(catalog), [catalog])
   const constellationAnchors = useMemo(() => buildConstellationAnchors(constellationStars), [constellationStars])
@@ -59,6 +63,7 @@ export default function SkyViewport({
     const worker = attachAstroWorker({
       onSnapshot: (window) => {
         bodySnapshotRef.current = window
+        bodiesReady()
         setViewportError((current) => current?.code === 'worker' ? null : current)
       },
       onError: (error) => {
@@ -132,7 +137,6 @@ export default function SkyViewport({
       },
       bodySnapshotRef,
       requestBodySnapshot: worker.requestSnapshot,
-      onSelect: selectObject,
       onAtmosphereChange: changeAtmosphere,
     })
     scheduler.wake = loop.wake
@@ -144,7 +148,7 @@ export default function SkyViewport({
       worker.terminate()
       disposeSkyScene(ctx)
     }
-  }, [catalog, objectCardRef, simulationRef, constellationAnchors, constellationStars])
+  }, [catalog, objectCardRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars])
 
   return (
     <div className={`${styles.viewport} ${viewportError?.code === 'webgl' ? styles.fallback : ''}`} ref={mountRef}>
