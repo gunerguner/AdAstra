@@ -4,6 +4,7 @@ constellations:
     segments:
       - [ meissa, betelgeuse ]
       - [ meissa, bellatrix ]
+      - [ betelgeuse, bellatrix ]
       - [ betelgeuse, alnitak ]
       - [ bellatrix, mintaka ]
       - [ alnitak, alnilam, mintaka ]
@@ -38,6 +39,7 @@ constellations:
     segments:
       - [ rasElased, muLeo, zetaLeo, algieba, etaLeo, regulus ]
       - [ regulus, thetaLeo, denebola, zosma, algieba ]
+      - [ thetaLeo, zosma ]
   - name: 天蝎座
     segments:
       - [ piSco, dschubba, betaSco ]
@@ -59,8 +61,7 @@ constellations:
   - name: 金牛座
     segments:
       - [ electra, alcyone, atlas ]
-      - [ ain, aldebaran, zetaTau ]
-      - [ aldebaran, elnath ]
+      - [ elnath, ain, aldebaran, zetaTau ]
   - name: 双子座
     segments:
       - [ castor, pollux ]
@@ -72,9 +73,8 @@ constellations:
       - [ porrima, heze ]
   - name: 牧夫座
     segments:
-      - [ nekkar, seginus, rhoBoo, izar, seginus ]
-      - [ rhoBoo, arcturus, muphrid ]
-      - [ izar, arcturus ]
+      - [ seginus, nekkar, izar, arcturus, rhoBoo, seginus ]
+      - [ arcturus, muphrid ]
   - name: 仙女座
     segments:
       - [ alpheratz, deltaAnd, mirach, alamak ]
@@ -88,9 +88,8 @@ constellations:
       - [ mirfak, algol ]
   - name: 御夫座
     segments:
-      - [ hassaleh, capella, menkalinan, mahasim, hassaleh ]
+      - [ capella, menkalinan, mahasim, elnath, hassaleh, capella ]
       - [ capella, almaaz ]
-      - [ mahasim, elnath ]
   - name: 大犬座
     segments:
       - [ mirzam, sirius, wezen, adhara ]
@@ -134,7 +133,7 @@ constellations:
   - name: 天龙座
     segments:
       - [ etamin, rastaban, grumium, etamin ]
-      - [ rastaban, zetaDra, thuban, giausar ]
+      - [ grumium, zetaDra, thuban, giausar ]
   - name: 长蛇座
     segments:
       - [ deltaHya, epsilonHya, zetaHya, sigmaHya ]

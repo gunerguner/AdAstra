@@ -13,16 +13,17 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import type { LiveClockRefs, Playback } from '@/app/hooks/usePlayback'
 import { playbackSpeeds } from '@/config/playbackSpeeds'
 import { TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config/timeline'
-import { atmospherePhaseLabel, type AtmospherePhase } from '@/engine/render/bodyAppearance'
+import { atmospherePhaseLabel, type AtmospherePhase } from '@/engine/render/atmosphereState'
 import { IconButton } from '@/shared/ui'
 import styles from './timeControls.module.css'
 
 type Props = {
   open: boolean
   onToggleOpen: () => void
+  onResetNow: () => void
   playback: Playback
   phase: AtmospherePhase
-  clockRefs: Pick<LiveClockRefs, 'yearLabel' | 'formattedTime'>
+  clockRefs: Pick<LiveClockRefs, 'yearLabel'>
   children?: ReactNode
 }
 
@@ -35,6 +36,7 @@ function PhaseIcon({ phase }: { phase: AtmospherePhase }) {
 export default function TimeDeck({
   open,
   onToggleOpen,
+  onResetNow,
   playback,
   phase,
   clockRefs,
@@ -56,12 +58,23 @@ export default function TimeDeck({
   return (
     <footer className={`${styles.deck} ${open ? '' : styles.collapsed}`} aria-label="时间控制与站点信息">
       <div className={styles.top}>
-        <div className={styles.label}>
-          <strong ref={clockRefs.yearLabel}>{playback.currentTime.getFullYear()}</strong>
-          <span className={styles.phase}>
-            <PhaseIcon phase={phase} />
-            {atmospherePhaseLabel(phase)}
-          </span>
+        <div className={styles.start}>
+          <div className={styles.label}>
+            <strong ref={clockRefs.yearLabel}>{playback.currentTime.getFullYear()}</strong>
+            <span className={styles.phase}>
+              <PhaseIcon phase={phase} />
+              {atmospherePhaseLabel(phase)}
+            </span>
+          </div>
+          {open && (
+            <label className={styles.speed}>速度
+              <select value={playback.speed} onChange={(event) => playback.setSpeed(Number(event.target.value))}>
+                {playbackSpeeds.map((item) => (
+                  <option value={item.value} key={item.value}>{item.label}</option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
         <div className={styles.actions}>
           <button type="button" className={styles.step} onClick={() => playback.adjustTime(-3600000)} aria-label="后退一小时" aria-hidden={!open} tabIndex={open ? 0 : -1}>
@@ -80,17 +93,16 @@ export default function TimeDeck({
           </button>
         </div>
         <div className={styles.side}>
-          {open ? (
-            <label className={styles.speed}>速度
-              <select value={playback.speed} onChange={(event) => playback.setSpeed(Number(event.target.value))}>
-                {playbackSpeeds.map((item) => (
-                  <option value={item.value} key={item.value}>{item.label}</option>
-                ))}
-              </select>
-            </label>
-          ) : (
-            <span className={styles.clock} ref={clockRefs.formattedTime}>{playback.formattedTime}</span>
-          )}
+          <button
+            type="button"
+            className={styles.now}
+            onClick={onResetNow}
+            aria-label="回到此时此地"
+            title="回到此时此地"
+          >
+            <span className={styles.nowDot} aria-hidden="true" />
+            此刻
+          </button>
           <IconButton
             className={styles.toggle}
             onClick={onToggleOpen}

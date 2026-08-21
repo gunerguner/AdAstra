@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react'
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { SimulationClock } from '@/engine/clock/simulationClock'
 import { defaultPlaybackSpeed } from '@/config/playbackSpeeds'
 import { TIMELINE_UI_INTERVAL_MS } from '@/config/timeline'
@@ -8,21 +8,17 @@ import type { SkySimulation } from '@/shared/types/sky'
 export type LiveClockRefs = {
   datetimeInput: RefObject<HTMLInputElement | null>
   yearLabel: RefObject<HTMLElement | null>
-  formattedTime: RefObject<HTMLElement | null>
 }
 
 function writeLiveClock(
   utcMillis: number,
   timeZone: string,
   clockRefs: LiveClockRefs,
-  clockFormat: Intl.DateTimeFormat,
 ) {
   const datetime = clockRefs.datetimeInput.current
   if (datetime) datetime.value = formatDateTimeLocal(utcMillis, timeZone)
   const year = clockRefs.yearLabel.current
   if (year) year.textContent = String(new Date(utcMillis).getFullYear())
-  const formatted = clockRefs.formattedTime.current
-  if (formatted) formatted.textContent = clockFormat.format(utcMillis)
 }
 
 export function usePlayback(
@@ -43,17 +39,6 @@ export function usePlayback(
   const clockRefsRef = useRef(clockRefs)
   clockRefsRef.current = clockRefs
 
-  const clockFormat = useMemo(() => new Intl.DateTimeFormat('zh-CN', {
-    timeZone,
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }), [timeZone])
-  const formattedTime = useMemo(() => clockFormat.format(currentTime), [clockFormat, currentTime])
-
   const applySimulationTime = useCallback((utcMillis: number) => {
     clock.current.seek(utcMillis)
     const simulation = simulationRef.current
@@ -62,8 +47,8 @@ export function usePlayback(
   }, [simulationRef])
 
   const paintClock = useCallback((utcMillis: number) => {
-    writeLiveClock(utcMillis, timeZone, clockRefsRef.current, clockFormat)
-  }, [clockFormat, timeZone])
+    writeLiveClock(utcMillis, timeZone, clockRefsRef.current)
+  }, [timeZone])
 
   const commitTime = useCallback((utcMillis: number, resetTimeline = true) => {
     applySimulationTime(utcMillis)
@@ -174,7 +159,6 @@ export function usePlayback(
     speed,
     setSpeed,
     timelineOffset,
-    formattedTime,
     commitTime,
     pausePlayback,
     togglePlay,

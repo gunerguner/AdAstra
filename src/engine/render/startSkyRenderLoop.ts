@@ -9,19 +9,16 @@ import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astr
 import { applyHorizonMatrixInto, equatorialUnitInto, fillEqjHorizonMatrices } from '@/engine/coordinates/skyMath'
 import { ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG } from '@/engine/coordinates/astroConstants'
 import { horizontalVectorInto, skyCameraUpInto } from '@/engine/coordinates/skyGeometry'
-import { atmosphereState, type AtmosphereState } from './bodyAppearance'
+import { atmosphereState, type AtmosphereState } from './atmosphereState'
 import { updateBodiesLayer } from './layers/bodyLayer'
 import { decidePixelRatio } from '@/engine/performance/pixelRatio'
 import { createFrameStats, publishFrameStats } from '@/engine/performance/frameStats'
 import { isFullRateFrame, nextFrameDelayMs } from '@/engine/performance/renderScheduler'
-import { applyOverlayPlacement, placeSkyOverlay } from '@/engine/interaction/overlayProjection'
-import { poseOfSkyObject } from '@/engine/interaction/skyPose'
+import { createSkyOverlayUpdater, type SkyOverlayRefs } from '@/engine/interaction/updateSkyOverlays'
 import { degToRad } from '@/shared/math'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import type { ShaderMaterial } from 'three'
 import type { SkySceneContext } from './skyContext'
-import { cardinals } from '@/config/cardinals'
-import { eclipticPoles } from '@/config/eclipticPoles'
 
 export type SkyRenderLoop = {
   stop: () => void
@@ -32,14 +29,8 @@ export function startSkyRenderLoop(options: {
   ctx: SkySceneContext
   catalog: RuntimeCatalog
   simulationRef: RefObject<SkySimulation>
-  selectedRef: RefObject<SelectedSkyObject | null>
-  objectCardRef?: RefObject<HTMLElement | null>
   constellationAnchors: ConstellationAnchor[]
-  cardinalRefs: RefObject<Record<string, HTMLDivElement | null>>
-  constellationNameRefs: RefObject<Record<string, HTMLDivElement | null>>
-  eclipticPoleRefs: RefObject<Record<string, HTMLDivElement | null>>
-  hoverRef: RefObject<HTMLDivElement | null>
-  hoverTargetRef: RefObject<{ id: string; name: string; type: 'star' | 'body' } | null>
+  overlays: SkyOverlayRefs
   bodySnapshotRef: RefObject<BodySnapshotWindow | null>
   requestBodySnapshot: (now: number, utcMillis: number, observer: SkySimulation['observer']) => void
   onSelect: (item: SelectedSkyObject | null) => void
@@ -49,14 +40,8 @@ export function startSkyRenderLoop(options: {
     ctx,
     catalog,
     simulationRef,
-    selectedRef,
-    objectCardRef,
     constellationAnchors,
-    cardinalRefs,
-    constellationNameRefs,
-    eclipticPoleRefs,
-    hoverRef,
-    hoverTargetRef,
+    overlays,
     bodySnapshotRef,
     requestBodySnapshot,
     onSelect,
@@ -64,6 +49,15 @@ export function startSkyRenderLoop(options: {
   } = options
   const { renderer, scene, camera, uniforms, scratch, layers } = ctx
   const frameStats = createFrameStats(45)
+  const skyOverlays = createSkyOverlayUpdater({
+    camera,
+    uniforms,
+    scratch,
+    starById: catalog.starById,
+    constellationAnchors,
+    overlays,
+    onSelect,
+  })
   let lastFrameAt = performance.now()
   let qualityPixelRatio = renderer.getPixelRatio()
   let running = true
@@ -82,12 +76,6 @@ export function startSkyRenderLoop(options: {
   let lastAtmosphereKey = ''
   let lastWidth = -1
   let lastHeight = -1
-  let activeCard: HTMLElement | null = null
-  let altitudeStatNode: Element | null = null
-  let azimuthStatNode: Element | null = null
-  let cardWidth = 0
-  let cardHeight = 0
-  const overlayNdc = { x: 0, y: 0, z: 0 }
 
   const cancelScheduled = () => {
     cancelAnimationFrame(frame)
@@ -221,136 +209,16 @@ export function startSkyRenderLoop(options: {
     const sizeChanged = width !== lastWidth || height !== lastHeight
     lastWidth = width
     lastHeight = height
-    const placeOverlay = (
-      node: HTMLElement,
-      world: typeof scratch.projected,
-      offsetX = 0,
-      offsetY = 0,
-      edge = 1,
-      size?: { width: number; height: number },
-    ) => placeSkyOverlay(
-      node,
-      world,
-      camera,
-      view.fov,
-      camera.aspect,
+    skyOverlays.update({
       width,
       height,
-      overlayNdc,
-      offsetX,
-      offsetY,
-      edge,
-      size,
-    )
-    const hideOverlay = (node: HTMLElement) => applyOverlayPlacement(node, { visible: false, x: 0, y: 0 })
-
-    if (viewChanged || sizeChanged) {
-      cardinals.forEach((cardinal) => {
-        const node = cardinalRefs.current[cardinal.id]
-        if (!node) return
-        placeOverlay(node, horizontalVectorInto(3.5, cardinal.azimuth, scratch.projected), 0, 0, 1.2)
-      })
-    }
-
-    constellationAnchors.forEach((anchor) => {
-      const node = constellationNameRefs.current[anchor.name]
-      if (!node) return
-      if (!latest.layers.constellationLines) {
-        hideOverlay(node)
-        return
-      }
-      applyHorizonMatrixInto(anchor, uniforms.eqjHorizonMat, scratch.horizon)
-      if (scratch.horizon.y < 0.07) {
-        hideOverlay(node)
-        return
-      }
-      placeOverlay(node, scratch.projected.set(scratch.horizon.x, scratch.horizon.y, scratch.horizon.z), 0, 0, 1.05)
+      fov: view.fov,
+      aspect: camera.aspect,
+      viewChanged,
+      sizeChanged,
+      layers: latest.layers,
+      bodySnapshots,
     })
-
-    eclipticPoles.forEach((pole) => {
-      const node = eclipticPoleRefs.current[pole.id]
-      if (!node) return
-      if (!latest.layers.ecliptic) {
-        hideOverlay(node)
-        return
-      }
-      equatorialUnitInto(pole.raHours, pole.decDeg, scratch.horizon)
-      applyHorizonMatrixInto(scratch.horizon, uniforms.eqjHorizonMat, scratch.projected)
-      if (!latest.layers.showBelowHorizon && scratch.projected.y < 0.07) {
-        hideOverlay(node)
-        return
-      }
-      placeOverlay(node, scratch.projected, 0, 0, 1.05)
-    })
-
-    const hoverNode = hoverRef.current
-    const hoverTarget = hoverTargetRef.current
-    if (hoverNode && hoverTarget) {
-      if (selectedRef.current?.id === hoverTarget.id) {
-        hideOverlay(hoverNode)
-      } else {
-        const pose = poseOfSkyObject(hoverTarget, {
-          bodies: bodySnapshots,
-          starById: catalog.starById,
-          horizonMat: uniforms.horizonMat,
-          eqjHorizonMat: uniforms.eqjHorizonMat,
-          horizonScratch: scratch.horizon,
-        })
-        if (pose) {
-          const visible = placeOverlay(
-            hoverNode,
-            horizontalVectorInto(pose.altitude, pose.azimuth, scratch.projected),
-            14,
-            -18,
-          )
-          if (!visible) hoverTargetRef.current = null
-        } else hoverTargetRef.current = null
-      }
-    }
-
-    const card = objectCardRef?.current
-    const currentSelected = selectedRef.current
-    if (card) {
-      if (card !== activeCard) {
-        activeCard = card
-        altitudeStatNode = card.querySelector('[data-stat="altitude"]')
-        azimuthStatNode = card.querySelector('[data-stat="azimuth"]')
-        cardWidth = 0
-        cardHeight = 0
-      }
-      if (!currentSelected) {
-        hideOverlay(card)
-      } else {
-        const pose = poseOfSkyObject(currentSelected, {
-          bodies: bodySnapshots,
-          starById: catalog.starById,
-          horizonMat: uniforms.horizonMat,
-          eqjHorizonMat: uniforms.eqjHorizonMat,
-          horizonScratch: scratch.horizon,
-        })
-        if (pose) {
-          if (!cardWidth || !cardHeight) {
-            cardWidth = card.offsetWidth
-            cardHeight = card.offsetHeight
-          }
-          const visible = placeOverlay(
-            card,
-            horizontalVectorInto(pose.altitude, pose.azimuth, scratch.projected),
-            18,
-            -36,
-            1,
-            { width: cardWidth, height: cardHeight },
-          )
-          if (visible) {
-            if (altitudeStatNode) altitudeStatNode.textContent = `${pose.altitude.toFixed(1)}°`
-            if (azimuthStatNode) azimuthStatNode.textContent = `${pose.azimuth.toFixed(1)}°`
-          } else onSelect(null)
-        } else {
-          hideOverlay(card)
-          onSelect(null)
-        }
-      }
-    }
 
     updateBodiesLayer(
       layers.bodyPoints,

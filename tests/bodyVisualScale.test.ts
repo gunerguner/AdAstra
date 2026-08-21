@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { atmosphereState, bodyPickSize, bodyPointSize, bodyVisualScale, starBrightness, SUN_DAY_GLOW_SCALE, SUN_GLOW_SCALE } from '../src/engine/render/bodyAppearance'
+import { atmosphereState } from '../src/engine/render/atmosphereState'
+import { bodyPickSize, bodyPointSize, bodyVisualScale, starBrightness, SUN_DAY_GLOW_SCALE, SUN_GLOW_SCALE } from '../src/engine/render/bodyAppearance'
 
 describe('body appearance', () => {
   it('preserves the Sun and Moon visual scale', () => {

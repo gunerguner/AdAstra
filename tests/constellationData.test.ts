@@ -38,4 +38,40 @@ describe('constellation data', () => {
     ).map((line) => line.name)
     expect(undrawable).toEqual([])
   })
+
+  it('uses common stick-figure edges instead of crossing chords', () => {
+    const edgesOf = (name: string) => {
+      const line = constellationLines.find((item) => item.name === name)
+      if (!line) throw new Error(name)
+      const edges = new Set<string>()
+      for (const segment of line.segments) {
+        for (let index = 0; index < segment.length - 1; index += 1) {
+          const [a, b] = [segment[index], segment[index + 1]].sort()
+          edges.add(`${a}|${b}`)
+        }
+      }
+      return edges
+    }
+
+    const taurus = edgesOf('金牛座')
+    expect(taurus.has('ain|elnath')).toBe(true)
+    expect(taurus.has('ain|aldebaran')).toBe(true)
+    expect(taurus.has('aldebaran|zetaTau')).toBe(true)
+    expect(taurus.has('aldebaran|elnath')).toBe(false)
+
+    const auriga = edgesOf('御夫座')
+    expect(auriga.has('elnath|hassaleh')).toBe(true)
+    expect(auriga.has('elnath|mahasim')).toBe(true)
+    expect(auriga.has('hassaleh|mahasim')).toBe(false)
+
+    const orion = edgesOf('猎户座')
+    expect(orion.has('bellatrix|betelgeuse')).toBe(true)
+
+    const leo = edgesOf('狮子座')
+    expect(leo.has('thetaLeo|zosma')).toBe(true)
+
+    const draco = edgesOf('天龙座')
+    expect(draco.has('grumium|zetaDra')).toBe(true)
+    expect(draco.has('rastaban|zetaDra')).toBe(false)
+  })
 })

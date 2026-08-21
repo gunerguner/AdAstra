@@ -1,7 +1,7 @@
 import { useEffect, useEffectEvent, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation, SkyView } from '@/shared/types/sky'
-import type { AtmosphereState } from '@/engine/render/bodyAppearance'
+import type { AtmosphereState } from '@/engine/render/atmosphereState'
 import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { buildConstellationAnchors, buildConstellationStars } from '@/engine/astronomy/constellationData'
@@ -120,14 +120,16 @@ export default function SkyViewport({
       ctx,
       catalog,
       simulationRef,
-      selectedRef,
-      objectCardRef,
       constellationAnchors,
-      cardinalRefs,
-      constellationNameRefs,
-      eclipticPoleRefs,
-      hoverRef,
-      hoverTargetRef,
+      overlays: {
+        cardinalRefs,
+        constellationNameRefs,
+        eclipticPoleRefs,
+        hoverRef,
+        hoverTargetRef,
+        objectCardRef,
+        selectedRef,
+      },
       bodySnapshotRef,
       requestBodySnapshot: worker.requestSnapshot,
       onSelect: selectObject,

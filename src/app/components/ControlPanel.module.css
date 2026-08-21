@@ -1,37 +1,134 @@
-.panel {
+.dock {
   position: absolute;
   z-index: 10;
-  top: calc(74px + var(--safe-top));
-  right: 22px;
-  width: 300px;
-  max-height: calc(100dvh - 160px - var(--safe-bottom));
+  top: calc(70px + var(--safe-top));
+  right: 0;
+  display: flex;
+  align-items: center;
+  max-height: calc(100dvh - 156px - var(--safe-bottom));
+  transform: translateX(calc(100% - 32px));
+  transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(-10px 8px 28px rgba(2, 6, 18, 0.32));
+}
+
+.open,
+.dock:focus-within {
+  transform: translateX(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dock:hover {
+    transform: translateX(0);
+  }
+}
+
+.handle {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 32px;
+  height: 112px;
+  margin-right: -1px;
+  display: grid;
+  place-items: center;
+  color: var(--color-gold-soft);
+  background: color-mix(in srgb, var(--color-panel) 92%, rgba(236, 195, 120, calc(var(--ui-warmth, 0) * 0.16)));
+  border: 1px solid var(--color-border);
+  border-right: 0;
+  border-radius: 14px 0 0 14px;
+  backdrop-filter: blur(var(--blur-panel));
+  box-shadow: inset 1px 0 0 rgba(245, 207, 136, 0.16);
+  animation: handleBreath 5.2s ease-in-out infinite;
+}
+
+.handle::before {
+  content: '';
+  position: absolute;
+  inset: -18px 0 -18px -14px;
+}
+
+.handleSpine {
+  position: absolute;
+  left: 7px;
+  top: 18px;
+  bottom: 18px;
+  width: 1px;
+  border-radius: 99px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--color-gold) 22%,
+    var(--color-gold-soft) 50%,
+    var(--color-gold) 78%,
+    transparent
+  );
+  opacity: 0.55;
+}
+
+.handle svg {
+  position: relative;
+  margin-left: 4px;
+}
+
+.open .handle,
+.dock[data-pinned] .handle {
+  animation: none;
+  color: var(--color-gold);
+  box-shadow: inset 1px 0 0 rgba(245, 207, 136, 0.28);
+}
+
+.dock[data-pinned] .handle {
+  background: var(--color-gold-fill);
+}
+
+.sheet {
+  width: 292px;
   overflow: hidden;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  border-right: 0;
+  border-radius: 16px 0 0 16px;
 }
 
 .scroll {
   overflow-y: auto;
-  max-height: calc(100dvh - 160px - var(--safe-bottom));
+  max-height: calc(100dvh - 156px - var(--safe-bottom));
 }
 
-@media (max-width: 940px) {
-  .panel {
-    width: 270px;
-    right: 15px;
+@keyframes handleBreath {
+  0%,
+  100% {
+    box-shadow:
+      inset 1px 0 0 rgba(245, 207, 136, 0.16),
+      -2px 0 12px rgba(236, 195, 120, 0.04);
+  }
+  50% {
+    box-shadow:
+      inset 1px 0 0 rgba(245, 207, 136, 0.42),
+      -4px 0 18px rgba(236, 195, 120, 0.2);
   }
 }
 
 @media (max-width: 680px) {
-  .panel {
-    top: calc(70px + var(--safe-top));
-    right: 15px;
-    left: 15px;
-    width: auto;
-    bottom: calc(136px + var(--safe-bottom));
-    max-height: none;
+  .dock {
+    top: calc(64px + var(--safe-top));
+    max-height: calc(100dvh - 132px - var(--safe-bottom));
+  }
+
+  .handle {
+    width: 36px;
+    height: 96px;
+  }
+
+  .sheet {
+    width: min(292px, calc(100vw - 48px));
   }
 
   .scroll {
-    max-height: 100%;
+    max-height: calc(100dvh - 132px - var(--safe-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .handle {
+    animation: none;
   }
 }

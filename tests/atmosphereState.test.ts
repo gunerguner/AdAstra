@@ -3,7 +3,7 @@ import {
   atmospherePhase,
   atmospherePhaseLabel,
   atmosphereState,
-} from '../src/engine/render/bodyAppearance'
+} from '../src/engine/render/atmosphereState'
 import {
   ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG,
   CIVIL_TWILIGHT_ALTITUDE_DEG,

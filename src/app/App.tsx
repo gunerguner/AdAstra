@@ -1,7 +1,7 @@
 import { lazy, Suspense, useMemo, useRef, useState } from 'react'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
-import type { AtmospherePhase } from '@/engine/render/bodyAppearance'
+import type { AtmospherePhase } from '@/engine/render/atmosphereState'
 import { ErrorPanel, LoadingPanel } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
 import LayerSection from '@/features/layer-controls/LayerSection'
@@ -26,18 +26,15 @@ export default function App() {
   const { layers, toggleLayer } = useLayerState()
   const { view, setView, onViewChange, resetView } = useSkyView()
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(true)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
   const [atmospherePhase, setAtmospherePhase] = useState<AtmospherePhase>('night')
   const objectCardRef = useRef<HTMLElement>(null)
   const datetimeInputRef = useRef<HTMLInputElement>(null)
   const yearLabelRef = useRef<HTMLElement>(null)
-  const formattedTimeRef = useRef<HTMLElement>(null)
   const clockRefs = useMemo(() => ({
     datetimeInput: datetimeInputRef,
     yearLabel: yearLabelRef,
-    formattedTime: formattedTimeRef,
   }), [])
   const simulationRef = useRef<SkySimulation>({
     utcMillis: Date.now(),
@@ -102,18 +99,15 @@ export default function App() {
         view={view}
         datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
         datetimeInputRef={datetimeInputRef}
-        settingsOpen={isSettingsOpen}
         onDateTimeChange={(value) => {
           const utcMillis = parseDateTimeLocal(value, observer.timeZone)
           if (utcMillis === null) return
           playback.pausePlayback()
           playback.commitTime(utcMillis)
         }}
-        onResetNow={resetNow}
-        onToggleSettings={() => setIsSettingsOpen((value) => !value)}
       />
 
-      <ControlPanel open={isSettingsOpen}>
+      <ControlPanel>
         <LayerSection layers={layers} onToggle={toggleLayer} />
         <MagnitudeSection magnitudeLimit={magnitudeLimit} onChange={setMagnitudeLimit} />
         <QuickViewSection view={view} onChange={setView} />
@@ -125,6 +119,7 @@ export default function App() {
         playback={playback}
         phase={atmospherePhase}
         clockRefs={clockRefs}
+        onResetNow={resetNow}
       >
         <SiteFooter />
       </TimeDeck>

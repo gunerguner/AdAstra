@@ -1,6 +1,5 @@
-import { CircleDot, Compass, MapPin, RotateCcw, Settings2, Sparkles } from 'lucide-react'
+import { CircleDot, Compass, MapPin, Sparkles } from 'lucide-react'
 import type { RefObject } from 'react'
-import { IconButton } from '@/shared/ui'
 import type { SkyView } from '@/shared/types/sky'
 import { useObserver } from '../hooks/useObserver'
 import styles from './TopBar.module.css'
@@ -10,10 +9,7 @@ type Props = {
   view: SkyView
   datetimeValue: string
   datetimeInputRef: RefObject<HTMLInputElement | null>
-  settingsOpen: boolean
   onDateTimeChange: (value: string) => void
-  onResetNow: () => void
-  onToggleSettings: () => void
 }
 
 export default function TopBar({
@@ -21,10 +17,7 @@ export default function TopBar({
   view,
   datetimeValue,
   datetimeInputRef,
-  settingsOpen,
   onDateTimeChange,
-  onResetNow,
-  onToggleSettings,
 }: Props) {
   const { cities, activeCityIndex, observer, setCity, setLatitude, setLongitude } = location
 
@@ -83,17 +76,6 @@ export default function TopBar({
           <span>视线</span>
           <strong>{Math.round(view.azimuth)}° · {Math.round(view.altitude)}°</strong>
         </div>
-      </div>
-      <div className={styles.meta}>
-        <IconButton onClick={onResetNow} aria-label="回到此时此地"><RotateCcw size={17} /></IconButton>
-        <IconButton
-          active={settingsOpen}
-          onClick={onToggleSettings}
-          aria-label={settingsOpen ? '收起控制台' : '展开控制台'}
-          aria-pressed={settingsOpen}
-        >
-          <Settings2 size={17} />
-        </IconButton>
       </div>
     </header>
   )

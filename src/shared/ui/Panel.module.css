@@ -4,9 +4,3 @@
   border-radius: var(--radius-md);
   backdrop-filter: blur(var(--blur-panel));
 }
-
-.collapsed {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(24px);
-}
