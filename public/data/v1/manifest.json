@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "fixture-fc09604535b2",
-  "generatedAt": "2026-08-26T03:15:06.531Z",
+  "catalogVersion": "fixture-5057d31c4319",
+  "generatedAt": "2026-08-26T06:08:32.381Z",
   "production": false,
   "source": "fixture-bright-stars",
   "files": [
     {
       "name": "core-stars.bin",
       "indexName": "core-stars.index.json",
-      "byteLength": 8420,
-      "sha256": "fc09604535b258e332d79654ec6a8a6cd6991779687e28f93fd45b897d88afc3",
-      "count": 421,
+      "byteLength": 8400,
+      "sha256": "5057d31c4319b5b7bb041c94fa76048a8dd10f60de7d9f18c33f9210259cc3f8",
+      "count": 420,
       "layout": {
         "type": "float32-soa",
         "fields": [

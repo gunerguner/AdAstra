@@ -504,13 +504,6 @@ stars:
     decDeg: -43.433
     magnitude: 2.23
     color: "#ff8f55"
-  - id: gammaDra
-    name: 天棓一
-    constellation: 天龙座
-    raHours: 17.9434
-    decDeg: 51.489
-    magnitude: 2.24
-    color: "#ff8f55"
   - id: caph
     name: 王良一
     constellation: 仙后座

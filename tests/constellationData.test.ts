@@ -4,9 +4,10 @@ import { constellationLines } from '../src/data/catalog'
 import starCatalog from '../src/data/stars.yaml'
 import type { RuntimeCatalog } from '../src/engine/catalog/catalogService'
 
-const starIds = new Set(
-  (starCatalog as { stars: Array<{ id: string }> }).stars.map((star) => star.id),
-)
+const stars = (starCatalog as { stars: Array<{ id: string; magnitude: number }> }).stars
+const starIds = new Set(stars.map((star) => star.id))
+const starById = new Map(stars.map((star) => [star.id, star]))
+const preExpansionIds = new Set(['etaUmi', 'asellusBorealis', 'deltaCrB', 'mizarB', 'chara'])
 
 describe('constellation data', () => {
   it('drops constellation references that are absent from the catalog', () => {
@@ -39,6 +40,16 @@ describe('constellation data', () => {
       line.segments.every((segment) => segment.length < 2),
     ).map((line) => line.name)
     expect(undrawable).toEqual([])
+  })
+
+  it('does not add constellation-only stars above V 4.5', () => {
+    const usedIds = new Set(constellationLines.flatMap((line) => line.segments.flat()))
+    const offenders = [...usedIds].flatMap((id) => {
+      const star = starById.get(id)
+      if (!star || preExpansionIds.has(id) || star.magnitude <= 4.5) return []
+      return [`${id}:${star.magnitude}`]
+    })
+    expect(offenders).toEqual([])
   })
 
   it('uses common stick-figure edges instead of crossing chords', () => {

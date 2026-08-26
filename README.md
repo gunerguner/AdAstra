@@ -58,7 +58,7 @@ flowchart TB
 - **Rendering**: Three.js + WebGL2. The sky uses a spherical projection rather than a perspective box; stars, Milky Way, helper lines, and bodies are separate layers with custom GLSL.
 - **Offline**: Content-hashed static assets are cached by a Service Worker.
 
-The current catalog is a project-maintained bright-star list of about 421 stars (all-sky V≤3.0 stars plus stick-figure anchors for 57 familiar constellations, V≤4.5), covering familiar naked-eye constellation structure. The Sun, Moon, and planets are not in the catalog; they are computed live from the ephemeris.
+The current catalog is a project-maintained bright-star list of about 420 stars (all-sky V≤3.0 stars plus stick-figure anchors for 57 familiar constellations, V≤4.5), covering familiar naked-eye constellation structure. The Sun, Moon, and planets are not in the catalog; they are computed live from the ephemeris.
 
 ### Stack
 

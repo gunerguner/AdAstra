@@ -504,2446 +504,2439 @@
     "index": 71
   },
   {
-    "id": "gammaDra",
-    "name": "天棓一",
-    "constellation": "天龙座",
-    "color": "#ff8f55",
-    "index": 72
-  },
-  {
     "id": "caph",
     "name": "王良一",
     "constellation": "仙后座",
     "color": "#fff1c8",
-    "index": 73
+    "index": 72
   },
   {
     "id": "epsilonSco",
     "name": "尾宿二",
     "constellation": "天蝎座",
     "color": "#ffc07a",
-    "index": 74
+    "index": 73
   },
   {
     "id": "dschubba",
     "name": "心宿一",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 75
+    "index": 74
   },
   {
     "id": "epsilonCen",
     "name": "库楼增",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 76
+    "index": 75
   },
   {
     "id": "alphaLup",
     "name": "豺狼一",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 77
+    "index": 76
   },
   {
     "id": "etaCen",
     "name": "库楼增三",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 78
+    "index": 77
   },
   {
     "id": "izar",
     "name": "七公六",
     "constellation": "牧夫座",
     "color": "#ffc07a",
-    "index": 79
+    "index": 78
   },
   {
     "id": "merak",
     "name": "天璇",
     "constellation": "大熊座",
     "color": "#dce8ff",
-    "index": 80
+    "index": 79
   },
   {
     "id": "enif",
     "name": "危宿三",
     "constellation": "飞马座",
     "color": "#ff8f55",
-    "index": 81
+    "index": 80
   },
   {
     "id": "ankaa",
     "name": "天钩一",
     "constellation": "凤凰座",
     "color": "#ff8f55",
-    "index": 82
+    "index": 81
   },
   {
     "id": "phecda",
     "name": "天玑",
     "constellation": "大熊座",
     "color": "#e4eeff",
-    "index": 83
+    "index": 82
   },
   {
     "id": "kappaSco",
     "name": "尾宿七",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 84
+    "index": 83
   },
   {
     "id": "scheat",
     "name": "室宿二",
     "constellation": "飞马座",
     "color": "#ff8f55",
-    "index": 85
+    "index": 84
   },
   {
     "id": "sabik",
     "name": "宋",
     "constellation": "蛇夫座",
     "color": "#eef4ff",
-    "index": 86
+    "index": 85
   },
   {
     "id": "aludra",
     "name": "弧矢二",
     "constellation": "大犬座",
     "color": "#b7d4ff",
-    "index": 87
+    "index": 86
   },
   {
     "id": "alderamin",
     "name": "天钩五",
     "constellation": "仙王座",
     "color": "#eef4ff",
-    "index": 88
+    "index": 87
   },
   {
     "id": "gammaCas",
     "name": "策",
     "constellation": "仙后座",
     "color": "#c8dcff",
-    "index": 89
+    "index": 88
   },
   {
     "id": "kappaVel",
     "name": "船帆κ",
     "constellation": "船帆座",
     "color": "#b7d4ff",
-    "index": 90
+    "index": 89
   },
   {
     "id": "gienahCyg",
     "name": "天津九",
     "constellation": "天鹅座",
     "color": "#ffc07a",
-    "index": 91
+    "index": 90
   },
   {
     "id": "markab",
     "name": "室宿一",
     "constellation": "飞马座",
     "color": "#c8dcff",
-    "index": 92
+    "index": 91
   },
   {
     "id": "menkar",
     "name": "天囷一",
     "constellation": "鲸鱼座",
     "color": "#ff8f55",
-    "index": 93
+    "index": 92
   },
   {
     "id": "zetaCen",
     "name": "库楼增二",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 94
+    "index": 93
   },
   {
     "id": "zosma",
     "name": "西上相",
     "constellation": "狮子座",
     "color": "#eef4ff",
-    "index": 95
+    "index": 94
   },
   {
     "id": "zetaOph",
     "name": "宋增",
     "constellation": "蛇夫座",
     "color": "#b7d4ff",
-    "index": 96
+    "index": 95
   },
   {
     "id": "arneb",
     "name": "厕一",
     "constellation": "天兔座",
     "color": "#fff1c8",
-    "index": 97
+    "index": 96
   },
   {
     "id": "deltaCen",
     "name": "半人马δ",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 98
+    "index": 97
   },
   {
     "id": "gienahCrv",
     "name": "轸宿一",
     "constellation": "乌鸦座",
     "color": "#b7d4ff",
-    "index": 99
+    "index": 98
   },
   {
     "id": "ascella",
     "name": "斗宿六",
     "constellation": "人马座",
     "color": "#eef4ff",
-    "index": 100
+    "index": 99
   },
   {
     "id": "zubeneschamali",
     "name": "氐宿四",
     "constellation": "天秤座",
     "color": "#c8dcff",
-    "index": 101
+    "index": 100
   },
   {
     "id": "betaSco",
     "name": "房宿三",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 102
+    "index": 101
   },
   {
     "id": "mahasim",
     "name": "五车四",
     "constellation": "御夫座",
     "color": "#eef4ff",
-    "index": 103
+    "index": 102
   },
   {
     "id": "alphaSer",
     "name": "巨蛇一",
     "constellation": "巨蛇座",
     "color": "#ff8f55",
-    "index": 104
+    "index": 103
   },
   {
     "id": "sheratan",
     "name": "娄宿一",
     "constellation": "白羊座",
     "color": "#eef4ff",
-    "index": 105
+    "index": 104
   },
   {
     "id": "kraz",
     "name": "轸宿四",
     "constellation": "乌鸦座",
     "color": "#fff1c8",
-    "index": 106
+    "index": 105
   },
   {
     "id": "alphaCol",
     "name": "天鸽α",
     "constellation": "天鸽座",
     "color": "#b7d4ff",
-    "index": 107
+    "index": 106
   },
   {
     "id": "ruchbah",
     "name": "阁道三",
     "constellation": "仙后座",
     "color": "#eef4ff",
-    "index": 108
+    "index": 107
   },
   {
     "id": "muphrid",
     "name": "七公增七",
     "constellation": "牧夫座",
     "color": "#fff1c8",
-    "index": 109
+    "index": 108
   },
   {
     "id": "betaLup",
     "name": "豺狼β",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 110
+    "index": 109
   },
   {
     "id": "upsilonSco",
     "name": "尾宿五增",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 111
+    "index": 110
   },
   {
     "id": "hassaleh",
     "name": "五车一",
     "constellation": "御夫座",
     "color": "#ffc07a",
-    "index": 112
+    "index": 111
   },
   {
     "id": "alphaMus",
     "name": "苍蝇一",
     "constellation": "苍蝇座",
     "color": "#b7d4ff",
-    "index": 113
+    "index": 112
   },
   {
     "id": "iotaAur",
     "name": "御夫座ι",
     "constellation": "御夫座",
     "color": "#ff8f55",
-    "index": 114
+    "index": 113
   },
   {
     "id": "muVel",
     "name": "船帆μ",
     "constellation": "船帆座",
     "color": "#ffe3a8",
-    "index": 115
+    "index": 114
   },
   {
     "id": "kausMedia",
     "name": "箕宿二",
     "constellation": "人马座",
     "color": "#ffc07a",
-    "index": 116
+    "index": 115
   },
   {
     "id": "piPup",
     "name": "船尾座π",
     "constellation": "船尾座",
     "color": "#ff8f55",
-    "index": 117
+    "index": 116
   },
   {
     "id": "tarazed",
     "name": "河鼓二",
     "constellation": "天鹰座",
     "color": "#ffc07a",
-    "index": 118
+    "index": 117
   },
   {
     "id": "etaDra",
     "name": "右枢增",
     "constellation": "天龙座",
     "color": "#ffe3a8",
-    "index": 119
+    "index": 118
   },
   {
     "id": "porrima",
     "name": "太微右垣四",
     "constellation": "室女座",
     "color": "#fff1c8",
-    "index": 120
+    "index": 119
   },
   {
     "id": "yedPrior",
     "name": "天市右垣十一",
     "constellation": "蛇夫座",
     "color": "#ff8f55",
-    "index": 121
+    "index": 120
   },
   {
     "id": "zubenelgenubi",
     "name": "氐宿一",
     "constellation": "天秤座",
     "color": "#eef4ff",
-    "index": 122
+    "index": 121
   },
   {
     "id": "iotaCen",
     "name": "半人马ι",
     "constellation": "半人马座",
     "color": "#eef4ff",
-    "index": 123
+    "index": 122
   },
   {
     "id": "iotaOri",
     "name": "参宿ι",
     "constellation": "猎户座",
     "color": "#b7d4ff",
-    "index": 124
+    "index": 123
   },
   {
     "id": "thetaCar",
     "name": "南船三",
     "constellation": "船底座",
     "color": "#b7d4ff",
-    "index": 125
+    "index": 124
   },
   {
     "id": "kornephoros",
     "name": "天市右垣一",
     "constellation": "武仙座",
     "color": "#fff1c8",
-    "index": 126
+    "index": 125
   },
   {
     "id": "cebrai",
     "name": "宗正",
     "constellation": "蛇夫座",
     "color": "#ffc07a",
-    "index": 127
+    "index": 126
   },
   {
     "id": "rasalgethi",
     "name": "帝座",
     "constellation": "武仙座",
     "color": "#ff6d4a",
-    "index": 128
+    "index": 127
   },
   {
     "id": "rastaban",
     "name": "天棓三",
     "constellation": "天龙座",
     "color": "#fff1c8",
-    "index": 129
+    "index": 128
   },
   {
     "id": "cursa",
     "name": "玉井三",
     "constellation": "波江座",
     "color": "#eef4ff",
-    "index": 130
+    "index": 129
   },
   {
     "id": "deltaCru",
     "name": "十字架四",
     "constellation": "南十字座",
     "color": "#b7d4ff",
-    "index": 131
+    "index": 130
   },
   {
     "id": "gammaLup",
     "name": "豺狼座γ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 132
+    "index": 131
   },
   {
     "id": "kausBorealis",
     "name": "箕宿一",
     "constellation": "人马座",
     "color": "#ffc07a",
-    "index": 133
+    "index": 132
   },
   {
     "id": "zetaHer",
     "name": "天纪二",
     "constellation": "武仙座",
     "color": "#fff1c8",
-    "index": 134
+    "index": 133
   },
   {
     "id": "tauSco",
     "name": "心宿增",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 135
+    "index": 134
   },
   {
     "id": "betaHyi",
     "name": "水蛇二",
     "constellation": "水蛇座",
     "color": "#ffe3a8",
-    "index": 136
+    "index": 135
   },
   {
     "id": "algenib",
     "name": "壁宿二",
     "constellation": "飞马座",
     "color": "#b7d4ff",
-    "index": 137
+    "index": 136
   },
   {
     "id": "rhoPup",
     "name": "船尾座ρ",
     "constellation": "船尾座",
     "color": "#fff1c8",
-    "index": 138
+    "index": 137
   },
   {
     "id": "nihal",
     "name": "厕二",
     "constellation": "天兔座",
     "color": "#fff1c8",
-    "index": 139
+    "index": 138
   },
   {
     "id": "betaAra",
     "name": "天坛座β",
     "constellation": "天坛座",
     "color": "#ff8f55",
-    "index": 140
+    "index": 139
   },
   {
     "id": "alphaAra",
     "name": "天坛α",
     "constellation": "天坛座",
     "color": "#b7d4ff",
-    "index": 141
+    "index": 140
   },
   {
     "id": "vindemiatrix",
     "name": "太微左垣四",
     "constellation": "室女座",
     "color": "#fff1c8",
-    "index": 142
+    "index": 141
   },
   {
     "id": "atik",
     "name": "卷舌六",
     "constellation": "英仙座",
     "color": "#b7d4ff",
-    "index": 143
+    "index": 142
   },
   {
     "id": "betaTra",
     "name": "三角形一",
     "constellation": "南三角座",
     "color": "#fff1c8",
-    "index": 144
+    "index": 143
   },
   {
     "id": "denebAlgedi",
     "name": "垒壁阵四",
     "constellation": "摩羯座",
     "color": "#eef4ff",
-    "index": 145
+    "index": 144
   },
   {
     "id": "alphaHyi",
     "name": "水蛇座α",
     "constellation": "水蛇座",
     "color": "#fff1c8",
-    "index": 146
+    "index": 145
   },
   {
     "id": "deltaCyg",
     "name": "天津二",
     "constellation": "天鹅座",
     "color": "#c8dcff",
-    "index": 147
+    "index": 146
   },
   {
     "id": "alcyone",
     "name": "昴宿六",
     "constellation": "金牛座",
     "color": "#c8dcff",
-    "index": 148
+    "index": 147
   },
   {
     "id": "tejat",
     "name": "井宿二",
     "constellation": "双子座",
     "color": "#ff8f55",
-    "index": 149
+    "index": 148
   },
   {
     "id": "alphaTuc",
     "name": "杜鹃一",
     "constellation": "杜鹃座",
     "color": "#ff8f55",
-    "index": 150
+    "index": 149
   },
   {
     "id": "acamar",
     "name": "天园六",
     "constellation": "波江座",
     "color": "#eef4ff",
-    "index": 151
+    "index": 150
   },
   {
     "id": "piSco",
     "name": "房宿四",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 152
+    "index": 151
   },
   {
     "id": "sigmaSco",
     "name": "心宿三",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 153
+    "index": 152
   },
   {
     "id": "gomeisa",
     "name": "南河二",
     "constellation": "小犬座",
     "color": "#c8dcff",
-    "index": 154
+    "index": 153
   },
   {
     "id": "albaldah",
     "name": "斗宿二",
     "constellation": "人马座",
     "color": "#fff1c8",
-    "index": 155
+    "index": 154
   },
   {
     "id": "gammaTra",
     "name": "三角形二",
     "constellation": "南三角座",
     "color": "#eef4ff",
-    "index": 156
+    "index": 155
   },
   {
     "id": "corCaroli",
     "name": "常陈一",
     "constellation": "猎犬座",
     "color": "#eef4ff",
-    "index": 157
+    "index": 156
   },
   {
     "id": "epsilonPer",
     "name": "天船五",
     "constellation": "英仙座",
     "color": "#c8dcff",
-    "index": 158
+    "index": 157
   },
   {
     "id": "sadalsuud",
     "name": "虚宿一",
     "constellation": "宝瓶座",
     "color": "#fff1c8",
-    "index": 159
+    "index": 158
   },
   {
     "id": "upsilonCar",
     "name": "船底座υ",
     "constellation": "船底座",
     "color": "#eef4ff",
-    "index": 160
+    "index": 159
   },
   {
     "id": "gammaPer",
     "name": "天船二",
     "constellation": "英仙座",
     "color": "#fff1c8",
-    "index": 161
+    "index": 160
   },
   {
     "id": "etaPeg",
     "name": "室宿增",
     "constellation": "飞马座",
     "color": "#ffe3a8",
-    "index": 162
+    "index": 161
   },
   {
     "id": "algorab",
     "name": "轸宿三",
     "constellation": "乌鸦座",
     "color": "#eef4ff",
-    "index": 163
+    "index": 162
   },
   {
     "id": "tauPup",
     "name": "船尾座τ",
     "constellation": "船尾座",
     "color": "#ff8f55",
-    "index": 164
+    "index": 163
   },
   {
     "id": "zaurak",
     "name": "天园一",
     "constellation": "波江座",
     "color": "#ff8f55",
-    "index": 165
+    "index": 164
   },
   {
     "id": "sadalmelik",
     "name": "危宿一",
     "constellation": "宝瓶座",
     "color": "#fff1c8",
-    "index": 166
+    "index": 165
   },
   {
     "id": "rasElased",
     "name": "轩辕十一",
     "constellation": "狮子座",
     "color": "#fff1c8",
-    "index": 167
+    "index": 166
   },
   {
     "id": "mebsuta",
     "name": "井宿五",
     "constellation": "双子座",
     "color": "#fff1c8",
-    "index": 168
+    "index": 167
   },
   {
     "id": "gamma2Sgr",
     "name": "箕宿增",
     "constellation": "人马座",
     "color": "#ff8f55",
-    "index": 169
+    "index": 168
   },
   {
     "id": "zetaAql",
     "name": "天市左垣十一",
     "constellation": "天鹰座",
     "color": "#eef4ff",
-    "index": 170
+    "index": 169
   },
   {
     "id": "iotaSco",
     "name": "尾宿六",
     "constellation": "天蝎座",
     "color": "#c8dcff",
-    "index": 171
+    "index": 170
   },
   {
     "id": "almaaz",
     "name": "柱一",
     "constellation": "御夫座",
     "color": "#fff1c8",
-    "index": 172
+    "index": 171
   },
   {
     "id": "gammaHya",
     "name": "星宿增",
     "constellation": "长蛇座",
     "color": "#ffe3a8",
-    "index": 173
+    "index": 172
   },
   {
     "id": "pherkad",
     "name": "太子",
     "constellation": "小熊座",
     "color": "#eef4ff",
-    "index": 174
+    "index": 173
   },
   {
     "id": "muSco",
     "name": "尾宿一",
     "constellation": "天蝎座",
     "color": "#b7d4ff",
-    "index": 175
+    "index": 174
   },
   {
     "id": "mira",
     "name": "刍藁增二",
     "constellation": "鲸鱼座",
     "color": "#ff8f55",
-    "index": 176
+    "index": 175
   },
   {
     "id": "minkar",
     "name": "轸宿二",
     "constellation": "乌鸦座",
     "color": "#ffc07a",
-    "index": 177
+    "index": 176
   },
   {
     "id": "gammaGru",
     "name": "鹤二",
     "constellation": "天鹤座",
     "color": "#b7d4ff",
-    "index": 178
+    "index": 177
   },
   {
     "id": "psiUma",
     "name": "大熊座ψ",
     "constellation": "大熊座",
     "color": "#ff8f55",
-    "index": 179
+    "index": 178
   },
   {
     "id": "betaTri",
     "name": "三角二",
     "constellation": "三角座",
     "color": "#eef4ff",
-    "index": 180
+    "index": 179
   },
   {
     "id": "deltaPer",
     "name": "天船四",
     "constellation": "英仙座",
     "color": "#c8dcff",
-    "index": 181
+    "index": 180
   },
   {
     "id": "zetaCma",
     "name": "弧矢二",
     "constellation": "大犬座",
     "color": "#b7d4ff",
-    "index": 182
+    "index": 181
   },
   {
     "id": "zetaTau",
     "name": "天关",
     "constellation": "金牛座",
     "color": "#b7d4ff",
-    "index": 183
+    "index": 182
   },
   {
     "id": "seginus",
     "name": "招摇",
     "constellation": "牧夫座",
     "color": "#eef4ff",
-    "index": 184
+    "index": 183
   },
   {
     "id": "albireo",
     "name": "辇道增七",
     "constellation": "天鹅座",
     "color": "#ffc07a",
-    "index": 185
+    "index": 184
   },
   {
     "id": "dabih",
     "name": "牛宿一",
     "constellation": "摩羯座",
     "color": "#fff1c8",
-    "index": 186
+    "index": 185
   },
   {
     "id": "muUma",
     "name": "大熊座μ",
     "constellation": "大熊座",
     "color": "#ff6d4a",
-    "index": 187
+    "index": 186
   },
   {
     "id": "deltaDra",
     "name": "天棓二",
     "constellation": "天龙座",
     "color": "#ffe3a8",
-    "index": 188
+    "index": 187
   },
   {
     "id": "etaSgr",
     "name": "箕宿二",
     "constellation": "人马座",
     "color": "#ff6d4a",
-    "index": 189
+    "index": 188
   },
   {
     "id": "zetaHya",
     "name": "柳宿六",
     "constellation": "长蛇座",
     "color": "#fff1c8",
-    "index": 190
+    "index": 189
   },
   {
     "id": "nuHya",
     "name": "长蛇座ν",
     "constellation": "长蛇座",
     "color": "#ff8f55",
-    "index": 191
+    "index": 190
   },
   {
     "id": "lambdaCen",
     "name": "半人马座λ",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 192
+    "index": 191
   },
   {
     "id": "iotaUma",
     "name": "大熊座ι",
     "constellation": "大熊座",
     "color": "#eef4ff",
-    "index": 193
+    "index": 192
   },
   {
     "id": "zetaAra",
     "name": "天坛座ζ",
     "constellation": "天坛座",
     "color": "#ff8f55",
-    "index": 194
+    "index": 193
   },
   {
     "id": "deltaHer",
     "name": "天市右垣三",
     "constellation": "武仙座",
     "color": "#eef4ff",
-    "index": 195
+    "index": 194
   },
   {
     "id": "betaCol",
     "name": "天鸽β",
     "constellation": "天鸽座",
     "color": "#ff8f55",
-    "index": 196
+    "index": 195
   },
   {
     "id": "kappaCen",
     "name": "半人马座κ",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 197
+    "index": 196
   },
   {
     "id": "piHer",
     "name": "天纪三",
     "constellation": "武仙座",
     "color": "#ffc07a",
-    "index": 198
+    "index": 197
   },
   {
     "id": "phiSgr",
     "name": "斗宿三",
     "constellation": "人马座",
     "color": "#c8dcff",
-    "index": 199
+    "index": 198
   },
   {
     "id": "zetaDra",
     "name": "天棓二",
     "constellation": "天龙座",
     "color": "#c8dcff",
-    "index": 200
+    "index": 199
   },
   {
     "id": "thetaUma",
     "name": "大熊座θ",
     "constellation": "大熊座",
     "color": "#fff1c8",
-    "index": 201
+    "index": 200
   },
   {
     "id": "nuPup",
     "name": "船尾座ν",
     "constellation": "船尾座",
     "color": "#b7d4ff",
-    "index": 202
+    "index": 201
   },
   {
     "id": "etaAur",
     "name": "御夫座η",
     "constellation": "御夫座",
     "color": "#b7d4ff",
-    "index": 203
+    "index": 202
   },
   {
     "id": "epsilonLep",
     "name": "厕三",
     "constellation": "天兔座",
     "color": "#ffc07a",
-    "index": 204
+    "index": 203
   },
   {
     "id": "kappaOph",
     "name": "蛇夫座κ",
     "constellation": "蛇夫座",
     "color": "#ff8f55",
-    "index": 205
+    "index": 204
   },
   {
     "id": "pi3Ori",
     "name": "参宿π3",
     "constellation": "猎户座",
     "color": "#fff1c8",
-    "index": 206
+    "index": 205
   },
   {
     "id": "errai",
     "name": "少卫增八",
     "constellation": "仙王座",
     "color": "#ffc07a",
-    "index": 207
+    "index": 206
   },
   {
     "id": "zetaCyg",
     "name": "天津增",
     "constellation": "天鹅座",
     "color": "#ffe3a8",
-    "index": 208
+    "index": 207
   },
   {
     "id": "deltaLup",
     "name": "豺狼座δ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 209
+    "index": 208
   },
   {
     "id": "alfirk",
     "name": "天钩三",
     "constellation": "仙王座",
     "color": "#b7d4ff",
-    "index": 210
+    "index": 209
   },
   {
     "id": "epsilonOph",
     "name": "蛇夫座ε",
     "constellation": "蛇夫座",
     "color": "#ffe3a8",
-    "index": 211
+    "index": 210
   },
   {
     "id": "etaSer",
     "name": "巨蛇座η",
     "constellation": "巨蛇座",
     "color": "#ff8f55",
-    "index": 212
+    "index": 211
   },
   {
     "id": "thetaAql",
     "name": "天鹰座θ",
     "constellation": "天鹰座",
     "color": "#b7d4ff",
-    "index": 213
+    "index": 212
   },
   {
     "id": "sulafat",
     "name": "渐台三",
     "constellation": "天琴座",
     "color": "#c8dcff",
-    "index": 214
+    "index": 213
   },
   {
     "id": "sigmaHya",
     "name": "星宿增",
     "constellation": "长蛇座",
     "color": "#ffc07a",
-    "index": 215
+    "index": 214
   },
   {
     "id": "sigmaPup",
     "name": "船尾座σ",
     "constellation": "船尾座",
     "color": "#ff8f55",
-    "index": 216
+    "index": 215
   },
   {
     "id": "piHya",
     "name": "长蛇座π",
     "constellation": "长蛇座",
     "color": "#ff8f55",
-    "index": 217
+    "index": 216
   },
   {
     "id": "deltaAnd",
     "name": "奎宿五",
     "constellation": "仙女座",
     "color": "#ffc07a",
-    "index": 218
+    "index": 217
   },
   {
     "id": "skat",
     "name": "羽林军二十六",
     "constellation": "宝瓶座",
     "color": "#eef4ff",
-    "index": 219
+    "index": 218
   },
   {
     "id": "thetaOph",
     "name": "蛇夫座θ",
     "constellation": "蛇夫座",
     "color": "#b7d4ff",
-    "index": 220
+    "index": 219
   },
   {
     "id": "sigmaLib",
     "name": "折威七",
     "constellation": "天秤座",
     "color": "#ff8f55",
-    "index": 221
+    "index": 220
   },
   {
     "id": "iotaDra",
     "name": "天龙座ι",
     "constellation": "天龙座",
     "color": "#ff8f55",
-    "index": 222
+    "index": 221
   },
   {
     "id": "muLep",
     "name": "天兔座μ",
     "constellation": "天兔座",
     "color": "#b7d4ff",
-    "index": 223
+    "index": 222
   },
   {
     "id": "megrez",
     "name": "天权",
     "constellation": "大熊座",
     "color": "#edf4ff",
-    "index": 224
+    "index": 223
   },
   {
     "id": "propus",
     "name": "井宿一",
     "constellation": "双子座",
     "color": "#ff8f55",
-    "index": 225
+    "index": 224
   },
   {
     "id": "gammaAra",
     "name": "天坛座γ",
     "constellation": "天坛座",
     "color": "#b7d4ff",
-    "index": 226
+    "index": 225
   },
   {
     "id": "betaPhe",
     "name": "凤凰β",
     "constellation": "凤凰座",
     "color": "#ffe3a8",
-    "index": 227
+    "index": 226
   },
   {
     "id": "tauSgr",
     "name": "斗宿增",
     "constellation": "人马座",
     "color": "#ff8f55",
-    "index": 228
+    "index": 227
   },
   {
     "id": "nuOph",
     "name": "蛇夫座ν",
     "constellation": "蛇夫座",
     "color": "#ff8f55",
-    "index": 229
+    "index": 228
   },
   {
     "id": "thetaLeo",
     "name": "西次相",
     "constellation": "狮子座",
     "color": "#eef4ff",
-    "index": 230
+    "index": 229
   },
   {
     "id": "etaSco",
     "name": "尾宿三",
     "constellation": "天蝎座",
     "color": "#fff1c8",
-    "index": 231
+    "index": 230
   },
   {
     "id": "xiPup",
     "name": "船尾座ξ",
     "constellation": "船尾座",
     "color": "#ffb56a",
-    "index": 232
+    "index": 231
   },
   {
     "id": "zetaCep",
     "name": "造父增",
     "constellation": "仙王座",
     "color": "#ff8f55",
-    "index": 233
+    "index": 232
   },
   {
     "id": "xiGem",
     "name": "井宿增",
     "constellation": "双子座",
     "color": "#fff1c8",
-    "index": 234
+    "index": 233
   },
   {
     "id": "etaOri",
     "name": "参宿增",
     "constellation": "猎户座",
     "color": "#b7d4ff",
-    "index": 235
+    "index": 234
   },
   {
     "id": "omicronUma",
     "name": "大熊座ο",
     "constellation": "大熊座",
     "color": "#ffe3a8",
-    "index": 236
+    "index": 235
   },
   {
     "id": "deltaAql",
     "name": "右旗三",
     "constellation": "天鹰座",
     "color": "#fff1c8",
-    "index": 237
+    "index": 236
   },
   {
     "id": "epsilonLup",
     "name": "豺狼座ε",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 238
+    "index": 237
   },
   {
     "id": "segin",
     "name": "阁道二",
     "constellation": "仙后座",
     "color": "#c8dcff",
-    "index": 239
+    "index": 238
   },
   {
     "id": "zauwaken",
     "name": "东次将",
     "constellation": "室女座",
     "color": "#ffc07a",
-    "index": 240
+    "index": 239
   },
   {
     "id": "heze",
     "name": "角宿二",
     "constellation": "室女座",
     "color": "#eef4ff",
-    "index": 241
+    "index": 240
   },
   {
     "id": "epsilonHya",
     "name": "柳宿五",
     "constellation": "长蛇座",
     "color": "#fff1c8",
-    "index": 242
+    "index": 241
   },
   {
     "id": "meissa",
     "name": "觜宿一",
     "constellation": "猎户座",
     "color": "#c8dcff",
-    "index": 243
+    "index": 242
   },
   {
     "id": "zetaLup",
     "name": "豺狼座ζ",
     "constellation": "豺狼座",
     "color": "#ffe3a8",
-    "index": 244
+    "index": 243
   },
   {
     "id": "gammaPhe",
     "name": "凤凰座γ",
     "constellation": "凤凰座",
     "color": "#ff8f55",
-    "index": 245
+    "index": 244
   },
   {
     "id": "lambdaTau",
     "name": "金牛座λ",
     "constellation": "金牛座",
     "color": "#b7d4ff",
-    "index": 246
+    "index": 245
   },
   {
     "id": "nuCen",
     "name": "半人马座ν",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 247
+    "index": 246
   },
   {
     "id": "zetaPeg",
     "name": "飞马座ζ",
     "constellation": "飞马座",
     "color": "#b7d4ff",
-    "index": 248
+    "index": 247
   },
   {
     "id": "betaPav",
     "name": "孔雀四",
     "constellation": "孔雀座",
     "color": "#eef4ff",
-    "index": 249
+    "index": 248
   },
   {
     "id": "etaLup",
     "name": "豺狼座η",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 250
+    "index": 249
   },
   {
     "id": "alphaTri",
     "name": "三角一",
     "constellation": "三角座",
     "color": "#fff1c8",
-    "index": 251
+    "index": 250
   },
   {
     "id": "muHer",
     "name": "武仙座μ",
     "constellation": "武仙座",
     "color": "#ffe3a8",
-    "index": 252
+    "index": 251
   },
   {
     "id": "lambdaAql",
     "name": "天鹰座λ",
     "constellation": "天鹰座",
     "color": "#b7d4ff",
-    "index": 253
+    "index": 252
   },
   {
     "id": "zetaLeo",
     "name": "轩辕十五",
     "constellation": "狮子座",
     "color": "#fff1c8",
-    "index": 254
+    "index": 253
   },
   {
     "id": "sheliak",
     "name": "渐台二",
     "constellation": "天琴座",
     "color": "#c8dcff",
-    "index": 255
+    "index": 254
   },
   {
     "id": "lambdaUma",
     "name": "大熊座λ",
     "constellation": "大熊座",
     "color": "#eef4ff",
-    "index": 256
+    "index": 255
   },
   {
     "id": "kaffaljidhma",
     "name": "天囷二",
     "constellation": "鲸鱼座",
     "color": "#eef4ff",
-    "index": 257
+    "index": 256
   },
   {
     "id": "muCen",
     "name": "半人马座μ",
     "constellation": "半人马座",
     "color": "#b7d4ff",
-    "index": 258
+    "index": 257
   },
   {
     "id": "etaLeo",
     "name": "轩辕十三",
     "constellation": "狮子座",
     "color": "#eef4ff",
-    "index": 259
+    "index": 258
   },
   {
     "id": "sigmaCma",
     "name": "大犬座σ",
     "constellation": "大犬座",
     "color": "#ff8f55",
-    "index": 260
+    "index": 259
   },
   {
     "id": "nuUma",
     "name": "天璇增",
     "constellation": "大熊座",
     "color": "#ff8f55",
-    "index": 261
+    "index": 260
   },
   {
     "id": "epsilonGru",
     "name": "天鹤座ε",
     "constellation": "天鹤座",
     "color": "#eef4ff",
-    "index": 262
+    "index": 261
   },
   {
     "id": "nekkar",
     "name": "七公增五",
     "constellation": "牧夫座",
     "color": "#fff1c8",
-    "index": 263
+    "index": 262
   },
   {
     "id": "kappaCma",
     "name": "弧矢增",
     "constellation": "大犬座",
     "color": "#b7d4ff",
-    "index": 264
+    "index": 263
   },
   {
     "id": "gammaSge",
     "name": "天箭座γ",
     "constellation": "天箭座",
     "color": "#ff8f55",
-    "index": 265
+    "index": 264
   },
   {
     "id": "muPeg",
     "name": "飞马座μ",
     "constellation": "飞马座",
     "color": "#ff6d4a",
-    "index": 266
+    "index": 265
   },
   {
     "id": "altarf",
     "name": "柳宿增",
     "constellation": "巨蟹座",
     "color": "#ffc07a",
-    "index": 267
+    "index": 266
   },
   {
     "id": "phiVel",
     "name": "船帆座φ",
     "constellation": "船帆座",
     "color": "#b7d4ff",
-    "index": 268
+    "index": 267
   },
   {
     "id": "thetaPeg",
     "name": "飞马座θ",
     "constellation": "飞马座",
     "color": "#eef4ff",
-    "index": 269
+    "index": 268
   },
   {
     "id": "omicronLeo",
     "name": "轩辕十一",
     "constellation": "狮子座",
     "color": "#eef4ff",
-    "index": 270
+    "index": 269
   },
   {
     "id": "xiSgr",
     "name": "人马座ξ",
     "constellation": "人马座",
     "color": "#ffb56a",
-    "index": 271
+    "index": 270
   },
   {
     "id": "deltaEri",
     "name": "天园六",
     "constellation": "波江座",
     "color": "#ff8f55",
-    "index": 272
+    "index": 271
   },
   {
     "id": "ain",
     "name": "毕宿一",
     "constellation": "金牛座",
     "color": "#ffc07a",
-    "index": 273
+    "index": 272
   },
   {
     "id": "wasat",
     "name": "井宿四",
     "constellation": "双子座",
     "color": "#eef4ff",
-    "index": 274
+    "index": 273
   },
   {
     "id": "etaHer",
     "name": "天纪一",
     "constellation": "武仙座",
     "color": "#fff1c8",
-    "index": 275
+    "index": 274
   },
   {
     "id": "xiHya",
     "name": "长蛇座ξ",
     "constellation": "长蛇座",
     "color": "#ffe3a8",
-    "index": 276
+    "index": 275
   },
   {
     "id": "muSer",
     "name": "巨蛇座μ",
     "constellation": "巨蛇座",
     "color": "#eef4ff",
-    "index": 277
+    "index": 276
   },
   {
     "id": "xiSer",
     "name": "巨蛇座ξ",
     "constellation": "巨蛇座",
     "color": "#fff1c8",
-    "index": 278
+    "index": 277
   },
   {
     "id": "zetaLep",
     "name": "天兔座ζ",
     "constellation": "天兔座",
     "color": "#eef4ff",
-    "index": 279
+    "index": 278
   },
   {
     "id": "chiDra",
     "name": "天龙座χ",
     "constellation": "天龙座",
     "color": "#fff1c8",
-    "index": 280
+    "index": 279
   },
   {
     "id": "iotaLup",
     "name": "豺狼座ι",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 281
+    "index": 280
   },
   {
     "id": "deltaPav",
     "name": "孔雀六",
     "constellation": "孔雀座",
     "color": "#fff1c8",
-    "index": 282
+    "index": 281
   },
   {
     "id": "phiEri",
     "name": "波江座φ",
     "constellation": "波江座",
     "color": "#b7d4ff",
-    "index": 283
+    "index": 282
   },
   {
     "id": "kappaGem",
     "name": "双子座κ",
     "constellation": "双子座",
     "color": "#ffe3a8",
-    "index": 284
+    "index": 283
   },
   {
     "id": "kappaUma",
     "name": "大熊座κ",
     "constellation": "大熊座",
     "color": "#eef4ff",
-    "index": 285
+    "index": 284
   },
   {
     "id": "rhoBoo",
     "name": "七公增",
     "constellation": "牧夫座",
     "color": "#ffc07a",
-    "index": 286
+    "index": 285
   },
   {
     "id": "algedi",
     "name": "牛宿二",
     "constellation": "摩羯座",
     "color": "#fff1c8",
-    "index": 287
+    "index": 286
   },
   {
     "id": "lambdaGem",
     "name": "双子座λ",
     "constellation": "双子座",
     "color": "#eef4ff",
-    "index": 288
+    "index": 287
   },
   {
     "id": "tauOri",
     "name": "猎户座τ",
     "constellation": "猎户座",
     "color": "#b7d4ff",
-    "index": 289
+    "index": 288
   },
   {
     "id": "betaVir",
     "name": "室女座β",
     "constellation": "室女座",
     "color": "#fff1c8",
-    "index": 290
+    "index": 289
   },
   {
     "id": "fl51And",
     "name": "仙女座51号",
     "constellation": "仙女座",
     "color": "#ff8f55",
-    "index": 291
+    "index": 290
   },
   {
     "id": "gammaLep",
     "name": "厕增",
     "constellation": "天兔座",
     "color": "#fff1c8",
-    "index": 292
+    "index": 291
   },
   {
     "id": "psiVel",
     "name": "船帆座ψ",
     "constellation": "船帆座",
     "color": "#fff1c8",
-    "index": 293
+    "index": 292
   },
   {
     "id": "deltaAra",
     "name": "天坛座δ",
     "constellation": "天坛座",
     "color": "#b7d4ff",
-    "index": 294
+    "index": 293
   },
   {
     "id": "thetaGem",
     "name": "双子座θ",
     "constellation": "双子座",
     "color": "#eef4ff",
-    "index": 295
+    "index": 294
   },
   {
     "id": "omicronTau",
     "name": "金牛座ο",
     "constellation": "金牛座",
     "color": "#ffe3a8",
-    "index": 296
+    "index": 295
   },
   {
     "id": "lambdaHya",
     "name": "长蛇座λ",
     "constellation": "长蛇座",
     "color": "#ff8f55",
-    "index": 297
+    "index": 296
   },
   {
     "id": "zetaSco",
     "name": "尾宿二增",
     "constellation": "天蝎座",
     "color": "#c8dcff",
-    "index": 298
+    "index": 297
   },
   {
     "id": "alpherg",
     "name": "右更二",
     "constellation": "双鱼座",
     "color": "#fff1c8",
-    "index": 299
+    "index": 298
   },
   {
     "id": "omicronAnd",
     "name": "仙女座ο",
     "constellation": "仙女座",
     "color": "#b7d4ff",
-    "index": 300
+    "index": 299
   },
   {
     "id": "fl27Tau",
     "name": "金牛座27号",
     "constellation": "金牛座",
     "color": "#b7d4ff",
-    "index": 301
+    "index": 300
   },
   {
     "id": "atlas",
     "name": "昴宿增",
     "constellation": "金牛座",
     "color": "#c8dcff",
-    "index": 302
+    "index": 301
   },
   {
     "id": "rotanev",
     "name": "瓠瓜四",
     "constellation": "海豚座",
     "color": "#fff1c8",
-    "index": 303
+    "index": 302
   },
   {
     "id": "thetaAra",
     "name": "天坛座θ",
     "constellation": "天坛座",
     "color": "#b7d4ff",
-    "index": 304
+    "index": 303
   },
   {
     "id": "fl23UMa",
     "name": "大熊座23号",
     "constellation": "大熊座",
     "color": "#fff1c8",
-    "index": 305
+    "index": 304
   },
   {
     "id": "gammaTau",
     "name": "毕宿一",
     "constellation": "金牛座",
     "color": "#ffe3a8",
-    "index": 306
+    "index": 305
   },
   {
     "id": "betaSer",
     "name": "巨蛇β",
     "constellation": "巨蛇座",
     "color": "#eef4ff",
-    "index": 307
+    "index": 306
   },
   {
     "id": "thuban",
     "name": "右枢",
     "constellation": "天龙座",
     "color": "#eef4ff",
-    "index": 308
+    "index": 307
   },
   {
     "id": "nusakan",
     "name": "贯索三",
     "constellation": "北冕座",
     "color": "#eef4ff",
-    "index": 309
+    "index": 308
   },
   {
     "id": "pi4Ori",
     "name": "参宿π4",
     "constellation": "猎户座",
     "color": "#b7d4ff",
-    "index": 310
+    "index": 309
   },
   {
     "id": "deltaSge",
     "name": "天箭座δ",
     "constellation": "天箭座",
     "color": "#ff6d4a",
-    "index": 311
+    "index": 310
   },
   {
     "id": "nashira",
     "name": "垒壁阵三",
     "constellation": "摩羯座",
     "color": "#eef4ff",
-    "index": 312
+    "index": 311
   },
   {
     "id": "chiUma",
     "name": "大熊座χ",
     "constellation": "大熊座",
     "color": "#ff8f55",
-    "index": 313
+    "index": 312
   },
   {
     "id": "chiEri",
     "name": "波江座χ",
     "constellation": "波江座",
     "color": "#ffe3a8",
-    "index": 314
+    "index": 313
   },
   {
     "id": "zetaAur",
     "name": "五车四",
     "constellation": "御夫座",
     "color": "#ff8f55",
-    "index": 315
+    "index": 314
   },
   {
     "id": "electra",
     "name": "昴宿一",
     "constellation": "金牛座",
     "color": "#c8dcff",
-    "index": 316
+    "index": 315
   },
   {
     "id": "gammaPsc",
     "name": "霹雳一",
     "constellation": "双鱼座",
     "color": "#fff1c8",
-    "index": 317
+    "index": 316
   },
   {
     "id": "xiHer",
     "name": "武仙座ξ",
     "constellation": "武仙座",
     "color": "#ff8f55",
-    "index": 318
+    "index": 317
   },
   {
     "id": "alshain",
     "name": "河鼓三",
     "constellation": "天鹰座",
     "color": "#fff1c8",
-    "index": 319
+    "index": 318
   },
   {
     "id": "fl72Oph",
     "name": "蛇夫座72号",
     "constellation": "蛇夫座",
     "color": "#eef4ff",
-    "index": 320
+    "index": 319
   },
   {
     "id": "pi5Ori",
     "name": "参宿π5",
     "constellation": "猎户座",
     "color": "#b7d4ff",
-    "index": 321
+    "index": 320
   },
   {
     "id": "epsilonSer",
     "name": "巨蛇座ε",
     "constellation": "巨蛇座",
     "color": "#eef4ff",
-    "index": 322
+    "index": 321
   },
   {
     "id": "etaLep",
     "name": "天兔座η",
     "constellation": "天兔座",
     "color": "#fff1c8",
-    "index": 323
+    "index": 322
   },
   {
     "id": "epsilonEri",
     "name": "天园增",
     "constellation": "波江座",
     "color": "#ff8f55",
-    "index": 324
+    "index": 323
   },
   {
     "id": "batenKaitos",
     "name": "天仓一",
     "constellation": "鲸鱼座",
     "color": "#ffc07a",
-    "index": 325
+    "index": 324
   },
   {
     "id": "grumium",
     "name": "天棓一",
     "constellation": "天龙座",
     "color": "#ffc07a",
-    "index": 326
+    "index": 325
   },
   {
     "id": "betaMon",
     "name": "麒麟β",
     "constellation": "麒麟座",
     "color": "#b7d4ff",
-    "index": 327
+    "index": 326
   },
   {
     "id": "sualocin",
     "name": "瓠瓜一",
     "constellation": "海豚座",
     "color": "#b7d4ff",
-    "index": 328
+    "index": 327
   },
   {
     "id": "etaAra",
     "name": "天坛座η",
     "constellation": "天坛座",
     "color": "#ff8f55",
-    "index": 329
+    "index": 328
   },
   {
     "id": "deltaSer",
     "name": "巨蛇座δ",
     "constellation": "巨蛇座",
     "color": "#fff1c8",
-    "index": 330
+    "index": 329
   },
   {
     "id": "giausar",
     "name": "紫微右垣六",
     "constellation": "天龙座",
     "color": "#ffc07a",
-    "index": 331
+    "index": 330
   },
   {
     "id": "alrescha",
     "name": "外屏七",
     "constellation": "双鱼座",
     "color": "#eef4ff",
-    "index": 332
+    "index": 331
   },
   {
     "id": "gammaCrB",
     "name": "贯索五",
     "constellation": "北冕座",
     "color": "#c8dcff",
-    "index": 333
+    "index": 332
   },
   {
     "id": "sadachbia",
     "name": "坟墓一",
     "constellation": "宝瓶座",
     "color": "#eef4ff",
-    "index": 334
+    "index": 333
   },
   {
     "id": "muSgr",
     "name": "斗宿增二",
     "constellation": "人马座",
     "color": "#9ec4ff",
-    "index": 335
+    "index": 334
   },
   {
     "id": "deltaCol",
     "name": "天鸽座δ",
     "constellation": "天鸽座",
     "color": "#ffe3a8",
-    "index": 336
+    "index": 335
   },
   {
     "id": "gammaSer",
     "name": "巨蛇座γ",
     "constellation": "巨蛇座",
     "color": "#fff1c8",
-    "index": 337
+    "index": 336
   },
   {
     "id": "mesarthim",
     "name": "娄宿二",
     "constellation": "白羊座",
     "color": "#c8dcff",
-    "index": 338
+    "index": 337
   },
   {
     "id": "epsilonCol",
     "name": "天鸽座ε",
     "constellation": "天鸽座",
     "color": "#ff8f55",
-    "index": 339
+    "index": 338
   },
   {
     "id": "muLeo",
     "name": "轩辕十",
     "constellation": "狮子座",
     "color": "#ffc07a",
-    "index": 340
+    "index": 339
   },
   {
     "id": "iotaGru",
     "name": "天鹤座ι",
     "constellation": "天鹤座",
     "color": "#ff8f55",
-    "index": 341
+    "index": 340
   },
   {
     "id": "epsilonPhe",
     "name": "凤凰座ε",
     "constellation": "凤凰座",
     "color": "#ff8f55",
-    "index": 342
+    "index": 341
   },
   {
     "id": "piLup",
     "name": "豺狼座π",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 343
+    "index": 342
   },
   {
     "id": "epsilonHer",
     "name": "天纪四",
     "constellation": "武仙座",
     "color": "#eef4ff",
-    "index": 344
+    "index": 343
   },
   {
     "id": "kappaPhe",
     "name": "凤凰座κ",
     "constellation": "凤凰座",
     "color": "#eef4ff",
-    "index": 345
+    "index": 344
   },
   {
     "id": "deltaPhe",
     "name": "凤凰座δ",
     "constellation": "凤凰座",
     "color": "#ff8f55",
-    "index": 346
+    "index": 345
   },
   {
     "id": "asellusAustralis",
     "name": "鬼宿四",
     "constellation": "巨蟹座",
     "color": "#ffc07a",
-    "index": 347
+    "index": 346
   },
   {
     "id": "alphaMon",
     "name": "麒麟α",
     "constellation": "麒麟座",
     "color": "#ff8f55",
-    "index": 348
+    "index": 347
   },
   {
     "id": "zetaPhe",
     "name": "凤凰座ζ",
     "constellation": "凤凰座",
     "color": "#b7d4ff",
-    "index": 349
+    "index": 348
   },
   {
     "id": "fl3Pup",
     "name": "船尾座3号",
     "constellation": "船尾座",
     "color": "#eef4ff",
-    "index": 350
+    "index": 349
   },
   {
     "id": "mizarB",
     "name": "辅",
     "constellation": "大熊座",
     "color": "#eef4ff",
-    "index": 351
+    "index": 350
   },
   {
     "id": "etaCol",
     "name": "天鸽座η",
     "constellation": "天鸽座",
     "color": "#ff8f55",
-    "index": 352
+    "index": 351
   },
   {
     "id": "epsilonPav",
     "name": "孔雀七",
     "constellation": "孔雀座",
     "color": "#b7d4ff",
-    "index": 353
+    "index": 352
   },
   {
     "id": "chiLup",
     "name": "豺狼座χ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 354
+    "index": 353
   },
   {
     "id": "gammaMon",
     "name": "麒麟座γ",
     "constellation": "麒麟座",
     "color": "#ff8f55",
-    "index": 355
+    "index": 354
   },
   {
     "id": "iotaCnc",
     "name": "爟增",
     "constellation": "巨蟹座",
     "color": "#fff1c8",
-    "index": 356
+    "index": 355
   },
   {
     "id": "gammaTri",
     "name": "三角三",
     "constellation": "三角座",
     "color": "#eef4ff",
-    "index": 357
+    "index": 356
   },
   {
     "id": "rhoLup",
     "name": "豺狼座ρ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 358
+    "index": 357
   },
   {
     "id": "deltaCep",
     "name": "造父一",
     "constellation": "仙王座",
     "color": "#fff1c8",
-    "index": 359
+    "index": 358
   },
   {
     "id": "lambdaLup",
     "name": "豺狼座λ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 360
+    "index": 359
   },
   {
     "id": "kappaSer",
     "name": "巨蛇座κ",
     "constellation": "巨蛇座",
     "color": "#ff6d4a",
-    "index": 361
+    "index": 360
   },
   {
     "id": "betaCra",
     "name": "南冕β",
     "constellation": "南冕座",
     "color": "#ff8f55",
-    "index": 362
+    "index": 361
   },
   {
     "id": "alphaCra",
     "name": "南冕α",
     "constellation": "南冕座",
     "color": "#eef4ff",
-    "index": 363
+    "index": 362
   },
   {
     "id": "zetaGru",
     "name": "天鹤座ζ",
     "constellation": "天鹤座",
     "color": "#ffe3a8",
-    "index": 364
+    "index": 363
   },
   {
     "id": "muOri",
     "name": "参宿μ",
     "constellation": "猎户座",
     "color": "#eef4ff",
-    "index": 365
+    "index": 364
   },
   {
     "id": "iotaPsc",
     "name": "霹雳二",
     "constellation": "双鱼座",
     "color": "#eef4ff",
-    "index": 366
+    "index": 365
   },
   {
     "id": "thetaCrB",
     "name": "贯索一",
     "constellation": "北冕座",
     "color": "#c8dcff",
-    "index": 367
+    "index": 366
   },
   {
     "id": "deltaHya",
     "name": "柳宿四",
     "constellation": "长蛇座",
     "color": "#eef4ff",
-    "index": 368
+    "index": 367
   },
   {
     "id": "epsilonCrB",
     "name": "贯索七",
     "constellation": "北冕座",
     "color": "#ffc07a",
-    "index": 369
+    "index": 368
   },
   {
     "id": "deltaMon",
     "name": "麒麟座δ",
     "constellation": "麒麟座",
     "color": "#eef4ff",
-    "index": 370
+    "index": 369
   },
   {
     "id": "epsilonPsA",
     "name": "天钱增二",
     "constellation": "南鱼座",
     "color": "#b7d4ff",
-    "index": 371
+    "index": 370
   },
   {
     "id": "deltaPsA",
     "name": "羽林军二十一",
     "constellation": "南鱼座",
     "color": "#c8dcff",
-    "index": 372
+    "index": 371
   },
   {
     "id": "fl11Pup",
     "name": "船尾座11号",
     "constellation": "船尾座",
     "color": "#fff1c8",
-    "index": 373
+    "index": 372
   },
   {
     "id": "epsUmi",
     "name": "天枢增",
     "constellation": "小熊座",
     "color": "#eef4ff",
-    "index": 374
+    "index": 373
   },
   {
     "id": "thetaLup",
     "name": "豺狼座θ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 375
+    "index": 374
   },
   {
     "id": "gammaCra",
     "name": "南冕座γ",
     "constellation": "南冕座",
     "color": "#fff1c8",
-    "index": 376
+    "index": 375
   },
   {
     "id": "betaCom",
     "name": "后发β",
     "constellation": "后发座",
     "color": "#ffe3a8",
-    "index": 377
+    "index": 376
   },
   {
     "id": "omicronSer",
     "name": "巨蛇座ο",
     "constellation": "巨蛇座",
     "color": "#eef4ff",
-    "index": 378
+    "index": 377
   },
   {
     "id": "acubens",
     "name": "柳宿增二",
     "constellation": "巨蟹座",
     "color": "#eef4ff",
-    "index": 379
+    "index": 378
   },
   {
     "id": "chara",
     "name": "常陈二",
     "constellation": "猎犬座",
     "color": "#fff1c8",
-    "index": 380
+    "index": 379
   },
   {
     "id": "thetaPsc",
     "name": "霹雳三",
     "constellation": "双鱼座",
     "color": "#fff1c8",
-    "index": 381
+    "index": 380
   },
   {
     "id": "gammaDel",
     "name": "瓠瓜二",
     "constellation": "海豚座",
     "color": "#fff1c8",
-    "index": 382
+    "index": 381
   },
   {
     "id": "muLup",
     "name": "豺狼座μ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 383
+    "index": 382
   },
   {
     "id": "thetaGru",
     "name": "天鹤座θ",
     "constellation": "天鹤座",
     "color": "#fff1c8",
-    "index": 384
+    "index": 383
   },
   {
     "id": "betaPsA",
     "name": "天钱一",
     "constellation": "南鱼座",
     "color": "#eef4ff",
-    "index": 385
+    "index": 384
   },
   {
     "id": "deltaLyr",
     "name": "渐台增",
     "constellation": "天琴座",
     "color": "#c8dcff",
-    "index": 386
+    "index": 385
   },
   {
     "id": "zetaUmi",
     "name": "勾陈三",
     "constellation": "小熊座",
     "color": "#eef4ff",
-    "index": 387
+    "index": 386
   },
   {
     "id": "alphaCom",
     "name": "后发α",
     "constellation": "后发座",
     "color": "#fff1c8",
-    "index": 388
+    "index": 387
   },
   {
     "id": "nuSer",
     "name": "巨蛇座ν",
     "constellation": "巨蛇座",
     "color": "#eef4ff",
-    "index": 389
+    "index": 388
   },
   {
     "id": "omicronLup",
     "name": "豺狼座ο",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 390
+    "index": 389
   },
   {
     "id": "zetaLyr",
     "name": "渐台一",
     "constellation": "天琴座",
     "color": "#eef4ff",
-    "index": 391
+    "index": 390
   },
   {
     "id": "omegaLup",
     "name": "豺狼座ω",
     "constellation": "豺狼座",
     "color": "#ff8f55",
-    "index": 392
+    "index": 391
   },
   {
     "id": "yildun",
     "name": "勾陈二",
     "constellation": "小熊座",
     "color": "#eef4ff",
-    "index": 393
+    "index": 392
   },
   {
     "id": "fl2Lup",
     "name": "豺狼座2号",
     "constellation": "豺狼座",
     "color": "#ff8f55",
-    "index": 394
+    "index": 393
   },
   {
     "id": "gammaCom",
     "name": "后发座γ",
     "constellation": "后发座",
     "color": "#ff8f55",
-    "index": 395
+    "index": 394
   },
   {
     "id": "pi2Ori",
     "name": "参宿π2",
     "constellation": "猎户座",
     "color": "#eef4ff",
-    "index": 396
+    "index": 395
   },
   {
     "id": "gammaCol",
     "name": "天鸽座γ",
     "constellation": "天鸽座",
     "color": "#b7d4ff",
-    "index": 397
+    "index": 396
   },
   {
     "id": "etaPhe",
     "name": "凤凰座η",
     "constellation": "凤凰座",
     "color": "#eef4ff",
-    "index": 398
+    "index": 397
   },
   {
     "id": "zetaMon",
     "name": "麒麟座ζ",
     "constellation": "麒麟座",
     "color": "#ffe3a8",
-    "index": 399
+    "index": 398
   },
   {
     "id": "kappaCol",
     "name": "天鸽座κ",
     "constellation": "天鸽座",
     "color": "#ffe3a8",
-    "index": 400
+    "index": 399
   },
   {
     "id": "betaSge",
     "name": "天箭β",
     "constellation": "天箭座",
     "color": "#ffb56a",
-    "index": 401
+    "index": 400
   },
   {
     "id": "psiPhe",
     "name": "凤凰座ψ",
     "constellation": "凤凰座",
     "color": "#ff6d4a",
-    "index": 402
+    "index": 401
   },
   {
     "id": "epsilonMon",
     "name": "麒麟座ε",
     "constellation": "麒麟座",
     "color": "#eef4ff",
-    "index": 403
+    "index": 402
   },
   {
     "id": "chi1Ori",
     "name": "参宿χ1",
     "constellation": "猎户座",
     "color": "#ffe3a8",
-    "index": 404
+    "index": 403
   },
   {
     "id": "alphaSge",
     "name": "天箭α",
     "constellation": "天箭座",
     "color": "#ffe3a8",
-    "index": 405
+    "index": 404
   },
   {
     "id": "omicronPup",
     "name": "船尾座ο",
     "constellation": "船尾座",
     "color": "#b7d4ff",
-    "index": 406
+    "index": 405
   },
   {
     "id": "fl16Pup",
     "name": "船尾座16号",
     "constellation": "船尾座",
     "color": "#b7d4ff",
-    "index": 407
+    "index": 406
   },
   {
     "id": "nuOri",
     "name": "参宿ν",
     "constellation": "猎户座",
     "color": "#b7d4ff",
-    "index": 408
+    "index": 407
   },
   {
     "id": "lambdaSer",
     "name": "巨蛇座λ",
     "constellation": "巨蛇座",
     "color": "#ffe3a8",
-    "index": 409
+    "index": 408
   },
   {
     "id": "deltaDel",
     "name": "瓠瓜三",
     "constellation": "海豚座",
     "color": "#eef4ff",
-    "index": 410
+    "index": 409
   },
   {
     "id": "sigmaLup",
     "name": "豺狼座σ",
     "constellation": "豺狼座",
     "color": "#b7d4ff",
-    "index": 411
+    "index": 410
   },
   {
     "id": "xiOri",
     "name": "参宿ξ",
     "constellation": "猎户座",
     "color": "#b7d4ff",
-    "index": 412
+    "index": 411
   },
   {
     "id": "lambdaGru",
     "name": "天鹤座λ",
     "constellation": "天鹤座",
     "color": "#ff6d4a",
-    "index": 413
+    "index": 412
   },
   {
     "id": "pi6Ori",
     "name": "参宿π6",
     "constellation": "猎户座",
     "color": "#ff8f55",
-    "index": 414
+    "index": 413
   },
   {
     "id": "fl13Mon",
     "name": "麒麟座13号",
     "constellation": "麒麟座",
     "color": "#eef4ff",
-    "index": 415
+    "index": 414
   },
   {
     "id": "fl18Mon",
     "name": "麒麟座18号",
     "constellation": "麒麟座",
     "color": "#ff8f55",
-    "index": 416
+    "index": 415
   },
   {
     "id": "lambdaPsc",
     "name": "霹雳四",
     "constellation": "双鱼座",
     "color": "#eef4ff",
-    "index": 417
+    "index": 416
   },
   {
     "id": "deltaCrB",
     "name": "贯索六",
     "constellation": "北冕座",
     "color": "#fff1c8",
-    "index": 418
+    "index": 417
   },
   {
     "id": "asellusBorealis",
     "name": "鬼宿三",
     "constellation": "巨蟹座",
     "color": "#eef4ff",
-    "index": 419
+    "index": 418
   },
   {
     "id": "etaUmi",
     "name": "太子增",
     "constellation": "小熊座",
     "color": "#eef4ff",
-    "index": 420
+    "index": 419
   }
 ]

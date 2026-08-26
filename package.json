@@ -22,7 +22,6 @@
     "test": "vitest run",
     "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm astro:golden",
     "catalog:fixture": "node scripts/catalog/build-catalog.mjs",
-    "catalog:merge": "node scripts/catalog/merge-stars.mjs",
     "catalog:production": "node scripts/catalog/build-catalog.mjs --production",
     "gate:data": "node scripts/catalog/check-release-gate.mjs",
     "astro:golden": "node scripts/astronomy/check-golden.mjs",
