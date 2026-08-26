@@ -9,7 +9,7 @@
   margin-bottom: 8px;
   padding: 3px;
   border: 1px solid var(--color-border-muted);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   background: var(--color-field);
 }
 
@@ -20,7 +20,7 @@
   gap: 5px;
   min-height: 30px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-label);
   font: 600 11px var(--font-sans);
@@ -54,7 +54,7 @@
   min-height: 32px;
   padding: 4px 8px;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-toggle-text);
   font: 500 13px var(--font-sans);
@@ -82,7 +82,7 @@
 }
 
 .swatch {
-  width: 7px;
-  height: 7px;
+  width: var(--swatch-size);
+  height: var(--swatch-size);
   border-radius: 50%;
 }

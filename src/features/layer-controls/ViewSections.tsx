@@ -2,7 +2,7 @@ import { Crosshair, SlidersHorizontal } from 'lucide-react'
 import { quickViews } from '@/config/quickViews'
 import { useT } from '@/i18n'
 import type { MessageKey } from '@/i18n/types'
-import { SectionTitle } from '@/shared/ui'
+import { SectionTitle, ToggleButton } from '@/shared/ui'
 import styles from './layerControls.module.css'
 import type { SkyView } from '@/shared/types/sky'
 
@@ -49,9 +49,9 @@ export function QuickViewSection({
         {quickViews.map((preset) => {
           const label = t(`view.${preset.id}` as MessageKey)
           return (
-            <button
-              type="button"
+            <ToggleButton
               key={preset.id}
+              className={styles.quickView}
               aria-label={t('view.turnTo', { name: label })}
               onClick={() => onChange({
                 azimuth: preset.azimuth === 'current' ? view.azimuth : preset.azimuth,
@@ -60,7 +60,7 @@ export function QuickViewSection({
               })}
             >
               {label}
-            </button>
+            </ToggleButton>
           )
         })}
       </div>

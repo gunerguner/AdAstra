@@ -10,7 +10,6 @@
 .viewport canvas {
   z-index: 1;
   outline: none;
-  touch-action: none;
 }
 
 .grain {
@@ -31,17 +30,27 @@
   background: radial-gradient(circle at center, transparent 42%, var(--overlay-vignette) 100%);
 }
 
-.cardinal {
+.cardinal,
+.eclipticPole,
+.constellationName,
+.hover {
   position: absolute;
-  z-index: 6;
   top: 0;
   left: 0;
   pointer-events: none;
+}
+
+.cardinal,
+.eclipticPole,
+.constellationName {
+  transform: var(--overlay-park);
+}
+
+.cardinal {
+  z-index: 6;
   color: var(--overlay-label);
   font: 12px var(--font-mono);
   letter-spacing: 0.16em;
-  transform: translate3d(-999px, -999px, 0);
-  will-change: transform;
   text-shadow: var(--overlay-label-shadow);
   margin: -8px 0 0 -10px;
 }
@@ -51,18 +60,12 @@
 }
 
 .eclipticPole {
-  position: absolute;
   z-index: 6;
-  top: 0;
-  left: 0;
-  pointer-events: none;
   display: none;
   color: var(--overlay-ecliptic);
   font: 11px var(--font-sans);
   letter-spacing: 0.12em;
   text-shadow: var(--overlay-label-shadow);
-  transform: translate3d(-999px, -999px, 0);
-  will-change: transform;
   white-space: nowrap;
 }
 
@@ -103,27 +106,17 @@
 }
 
 .constellationName {
-  position: absolute;
   z-index: 6;
-  top: 0;
-  left: 0;
-  pointer-events: none;
   display: none;
   color: var(--overlay-constellation);
   font: 11px var(--font-sans);
   letter-spacing: 0.18em;
   text-shadow: var(--overlay-label-shadow);
-  transform: translate3d(-999px, -999px, 0);
-  will-change: transform;
   margin: -6px 0 0 -18px;
 }
 
 .hover {
-  position: absolute;
   z-index: 7;
-  top: 0;
-  left: 0;
-  pointer-events: none;
   display: none;
   padding: 3px 8px;
   color: var(--overlay-hover-fg);
@@ -134,9 +127,8 @@
   white-space: nowrap;
   text-shadow: none;
   box-shadow: var(--overlay-hover-shadow);
-  will-change: transform;
 }
 
 .fallback {
-  background: #050817;
+  background: var(--color-page);
 }

@@ -1,11 +1,3 @@
-.shell {
-  min-height: 100vh;
-  min-height: 100dvh;
-  overflow: hidden;
-  position: relative;
-  background: var(--app-bg);
-}
-
 .atmosphere {
   position: absolute;
   inset: auto 0 0;

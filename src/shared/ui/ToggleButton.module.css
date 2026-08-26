@@ -7,7 +7,7 @@
   background: var(--color-toggle);
   color: var(--color-toggle-text);
   font-size: 11px;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
   transition: 0.18s;
 }
 

@@ -1,27 +1,25 @@
 .dock {
+  --dock-dir: 1;
   position: absolute;
   z-index: 10;
   top: max(
-    calc(70px + var(--safe-top)),
-    calc((100dvh + 70px + var(--safe-top) - 156px - var(--safe-bottom)) / 2 - 56px)
+    calc(var(--topbar-offset) + var(--safe-top)),
+    calc((100dvh + var(--topbar-offset) + var(--safe-top) - var(--deck-offset) - var(--safe-bottom)) / 2 - var(--handle-size) / 2)
   );
+  right: 0;
   display: flex;
   align-items: flex-start;
-  max-height: calc(100dvh - 156px - var(--safe-bottom));
+  max-height: calc(100dvh - var(--deck-offset) - var(--safe-bottom));
   transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dock[data-side='right'] {
-  right: 0;
-  transform: translateX(calc(100% - 32px));
-  filter: drop-shadow(-10px 8px 28px rgba(2, 6, 18, 0.32));
+  transform: translateX(calc(var(--dock-dir) * (100% - var(--handle-width))));
+  filter: drop-shadow(calc(var(--dock-dir) * -10px) 8px 28px var(--color-shadow));
 }
 
 .dock[data-side='left'] {
+  --dock-dir: -1;
+  right: auto;
   left: 0;
   flex-direction: row-reverse;
-  transform: translateX(calc(-100% + 32px));
-  filter: drop-shadow(10px 8px 28px rgba(2, 6, 18, 0.32));
 }
 
 .open,
@@ -41,50 +39,49 @@
   z-index: 1;
   flex: none;
   align-self: flex-start;
-  width: 32px;
-  height: 112px;
+  width: var(--handle-width);
+  height: var(--handle-size);
   display: grid;
   place-items: center;
   color: var(--color-gold-soft);
-  background: color-mix(in srgb, var(--color-panel) 92%, rgba(236, 195, 120, calc(var(--ui-warmth, 0) * 0.16)));
+  background: color-mix(in srgb, var(--color-panel) 92%, color-mix(in srgb, var(--color-gold) calc(var(--ui-warmth, 0) * 16%), transparent));
   border: 1px solid var(--color-border);
   backdrop-filter: blur(var(--blur-panel));
+  box-shadow: inset calc(var(--dock-dir) * 1px) 0 0 color-mix(in srgb, var(--color-gold-soft) 16%, transparent);
   animation: handleBreath 5.2s ease-in-out infinite;
 }
 
 .dock[data-side='right'] .handle {
   margin-right: -1px;
   border-right: 0;
-  border-radius: 14px 0 0 14px;
-  box-shadow: inset 1px 0 0 rgba(245, 207, 136, 0.16);
+  border-radius: var(--radius-2xl) 0 0 var(--radius-2xl);
 }
 
 .dock[data-side='left'] .handle {
   margin-left: -1px;
   border-left: 0;
-  border-radius: 0 14px 14px 0;
-  box-shadow: inset -1px 0 0 rgba(245, 207, 136, 0.16);
+  border-radius: 0 var(--radius-2xl) var(--radius-2xl) 0;
 }
 
 .handle::before {
   content: '';
   position: absolute;
-}
-
-.dock[data-side='right'] .handle::before {
-  inset: -18px 0 -18px -14px;
+  inset-block: -18px;
+  inset-inline-end: 0;
+  inset-inline-start: -14px;
 }
 
 .dock[data-side='left'] .handle::before {
-  inset: -18px -14px -18px 0;
+  inset-inline-start: 0;
+  inset-inline-end: -14px;
 }
 
 .handleSpine {
   position: absolute;
-  top: 18px;
-  bottom: 18px;
+  inset-block: 18px;
+  inset-inline-start: 7px;
   width: 1px;
-  border-radius: 99px;
+  border-radius: var(--radius-full);
   background: linear-gradient(
     180deg,
     transparent,
@@ -96,40 +93,26 @@
   opacity: 0.55;
 }
 
-.dock[data-side='right'] .handleSpine {
-  left: 7px;
-}
-
 .dock[data-side='left'] .handleSpine {
-  right: 7px;
+  inset-inline-start: auto;
+  inset-inline-end: 7px;
 }
 
 .handle svg {
   position: relative;
-}
-
-.dock[data-side='right'] .handle svg {
-  margin-left: 4px;
+  margin-inline-start: 4px;
 }
 
 .dock[data-side='left'] .handle svg {
-  margin-right: 4px;
+  margin-inline-start: 0;
+  margin-inline-end: 4px;
 }
 
 .open .handle,
 .dock[data-pinned] .handle {
   animation: none;
   color: var(--color-gold);
-}
-
-.dock[data-side='right'].open .handle,
-.dock[data-side='right'][data-pinned] .handle {
-  box-shadow: inset 1px 0 0 rgba(245, 207, 136, 0.28);
-}
-
-.dock[data-side='left'].open .handle,
-.dock[data-side='left'][data-pinned] .handle {
-  box-shadow: inset -1px 0 0 rgba(245, 207, 136, 0.28);
+  box-shadow: inset calc(var(--dock-dir) * 1px) 0 0 color-mix(in srgb, var(--color-gold-soft) 28%, transparent);
 }
 
 .dock[data-pinned] .handle {
@@ -139,84 +122,42 @@
 .sheet {
   width: 292px;
   overflow: hidden;
-  transform: translateY(calc(-50% + 56px));
+  transform: translateY(calc(-50% + var(--handle-size) / 2));
 }
 
 .dock[data-side='right'] .sheet {
   border-right: 0;
-  border-radius: 16px 0 0 16px;
+  border-radius: var(--radius-3xl) 0 0 var(--radius-3xl);
 }
 
 .dock[data-side='left'] .sheet {
   width: 248px;
   border-left: 0;
-  border-radius: 0 16px 16px 0;
+  border-radius: 0 var(--radius-3xl) var(--radius-3xl) 0;
 }
 
 .scroll {
   overflow-y: auto;
-  max-height: calc(100dvh - 156px - var(--safe-bottom));
+  max-height: calc(100dvh - var(--deck-offset) - var(--safe-bottom));
 }
 
 @keyframes handleBreath {
   0%,
   100% {
     box-shadow:
-      inset 1px 0 0 rgba(245, 207, 136, 0.16),
-      -2px 0 12px rgba(236, 195, 120, 0.04);
+      inset calc(var(--dock-dir) * 1px) 0 0 color-mix(in srgb, var(--color-gold-soft) 16%, transparent),
+      calc(var(--dock-dir) * -2px) 0 12px color-mix(in srgb, var(--color-gold) 4%, transparent);
   }
   50% {
     box-shadow:
-      inset 1px 0 0 rgba(245, 207, 136, 0.42),
-      -4px 0 18px rgba(236, 195, 120, 0.2);
-  }
-}
-
-.dock[data-side='left'] .handle {
-  animation-name: handleBreathLeft;
-}
-
-@keyframes handleBreathLeft {
-  0%,
-  100% {
-    box-shadow:
-      inset -1px 0 0 rgba(245, 207, 136, 0.16),
-      2px 0 12px rgba(236, 195, 120, 0.04);
-  }
-  50% {
-    box-shadow:
-      inset -1px 0 0 rgba(245, 207, 136, 0.42),
-      4px 0 18px rgba(236, 195, 120, 0.2);
+      inset calc(var(--dock-dir) * 1px) 0 0 color-mix(in srgb, var(--color-gold-soft) 42%, transparent),
+      calc(var(--dock-dir) * -4px) 0 18px color-mix(in srgb, var(--color-gold) 20%, transparent);
   }
 }
 
 @media (max-width: 680px) {
-  .dock {
-    top: max(
-      calc(64px + var(--safe-top)),
-      calc((100dvh + 64px + var(--safe-top) - 132px - var(--safe-bottom)) / 2 - 48px)
-    );
-    max-height: calc(100dvh - 132px - var(--safe-bottom));
-  }
-
-  .handle {
-    width: 36px;
-    height: 96px;
-  }
-
   .sheet,
   .dock[data-side='left'] .sheet {
     width: min(292px, calc(100vw - 48px));
-    transform: translateY(calc(-50% + 48px));
-  }
-
-  .scroll {
-    max-height: calc(100dvh - 132px - var(--safe-bottom));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .handle {
-    animation: none;
   }
 }

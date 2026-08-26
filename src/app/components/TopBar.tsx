@@ -30,24 +30,6 @@ export default function TopBar({
         <span>AD ASTRA</span>
         <i />
         <small>{t('brand.tagline')}</small>
-        <div className={styles.lang} role="group" aria-label={t('brand.language')}>
-          <button
-            type="button"
-            className={locale === 'zh' ? styles.langActive : ''}
-            aria-pressed={locale === 'zh'}
-            onClick={() => setLocale('zh')}
-          >
-            {t('brand.langZh')}
-          </button>
-          <button
-            type="button"
-            className={locale === 'en' ? styles.langActive : ''}
-            aria-pressed={locale === 'en'}
-            onClick={() => setLocale('en')}
-          >
-            {t('brand.langEn')}
-          </button>
-        </div>
       </div>
       <div className={styles.status}>
         <label className={styles.stat}>
@@ -96,6 +78,24 @@ export default function TopBar({
           <span>{t('location.view')}</span>
           <strong>{Math.round(view.azimuth)}° · {Math.round(view.altitude)}°</strong>
         </div>
+      </div>
+      <div className={styles.lang} role="group" aria-label={t('brand.language')}>
+        <button
+          type="button"
+          className={locale === 'zh' ? styles.langActive : undefined}
+          aria-pressed={locale === 'zh'}
+          onClick={() => setLocale('zh')}
+        >
+          {t('brand.langZh')}
+        </button>
+        <button
+          type="button"
+          className={locale === 'en' ? styles.langActive : undefined}
+          aria-pressed={locale === 'en'}
+          onClick={() => setLocale('en')}
+        >
+          {t('brand.langEn')}
+        </button>
       </div>
     </header>
   )

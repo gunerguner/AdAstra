@@ -24,17 +24,13 @@
   gap: 5px;
 }
 
-.quickViews button {
-  border: 1px solid var(--color-border-muted);
-  background: var(--color-toggle);
-  color: var(--color-toggle-text);
+.quickView {
   padding: 7px 2px;
-  min-height: 32px;
   font-size: 10px;
-  border-radius: 3px;
+  text-align: center;
 }
 
-.quickViews button:hover {
+.quickView:hover {
   color: var(--color-gold-soft);
   border-color: var(--color-gold-border);
 }
@@ -42,7 +38,7 @@
 .swatch {
   display: inline-block;
   aspect-ratio: 1;
-  width: 7px;
+  width: var(--swatch-size);
   margin-inline-end: 5px;
   border-radius: 50%;
   vertical-align: 0;

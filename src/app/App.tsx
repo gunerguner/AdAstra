@@ -117,10 +117,7 @@ export default function App() {
   }
 
   return (
-    <main
-      className={styles.shell}
-      data-sky-phase={atmospherePhase}
-    >
+    <main className="app-shell">
       <Suspense fallback={<div className={styles.skyFallback} aria-busy="true" />}>
         {catalog ? (
           <SkyViewport
@@ -138,9 +135,7 @@ export default function App() {
             onAtmosphereChange={(state) => {
               const root = document.documentElement
               root.dataset.skyPhase = state.phase
-              ;(['daylight', 'twilight', 'warmth'] as const).forEach((key) => {
-                root.style.setProperty(`--ui-${key}`, state[key].toFixed(3))
-              })
+              root.style.setProperty('--ui-warmth', state.warmth.toFixed(3))
               setAtmospherePhase((current) => current === state.phase ? current : state.phase)
             }}
           >

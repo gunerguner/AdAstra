@@ -2,33 +2,21 @@
   position: absolute;
   z-index: 10;
   left: 50%;
-  bottom: calc(16px + var(--safe-bottom));
+  bottom: calc(var(--deck-inset) + var(--safe-bottom));
   transform: translateX(-50%);
   width: min(560px, calc(100vw - 360px));
   padding: 8px 12px 7px;
-  background: color-mix(in srgb, var(--color-deck) 88%, rgba(236, 195, 120, calc(var(--ui-warmth, 0) * 0.18)));
+  background: color-mix(in srgb, var(--color-deck) 88%, color-mix(in srgb, var(--color-gold) calc(var(--ui-warmth, 0) * 18%), transparent));
   border: 1px solid var(--color-border);
-  border-radius: 14px;
-  backdrop-filter: blur(20px);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(var(--blur-deck));
   box-shadow: 0 8px 22px rgba(2, 6, 18, 0.26);
 }
 
 .collapsed {
   width: min(380px, calc(100vw - 360px));
   padding: 6px 10px 6px;
-  border-radius: 16px;
-}
-
-.collapsed .label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  border-radius: var(--radius-3xl);
 }
 
 .collapsed .step {
@@ -150,11 +138,11 @@
   height: 26px;
   padding: 0 9px 0 8px;
   border: 1px solid color-mix(in srgb, var(--color-gold-border) 80%, transparent);
-  background: linear-gradient(180deg, rgba(245, 207, 136, 0.14), rgba(182, 128, 52, 0.08));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-gold-soft) 14%, transparent), rgba(182, 128, 52, 0.08));
   color: var(--color-gold-warm);
   font: 500 9px var(--font-mono);
   letter-spacing: 0.16em;
-  border-radius: 99px;
+  border-radius: var(--radius-full);
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -162,7 +150,7 @@
   color: var(--color-gold-soft);
   border-color: var(--color-gold);
   background: var(--color-gold-fill);
-  box-shadow: 0 0 18px rgba(236, 195, 120, 0.18);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-gold) 18%, transparent);
 }
 
 .nowDot {
@@ -171,8 +159,8 @@
   border-radius: 50%;
   background: var(--color-gold);
   box-shadow:
-    0 0 0 3px rgba(236, 195, 120, 0.14),
-    0 0 10px rgba(236, 195, 120, 0.55);
+    0 0 0 3px color-mix(in srgb, var(--color-gold) 14%, transparent),
+    0 0 10px color-mix(in srgb, var(--color-gold) 55%, transparent);
   animation: nowPulse 2.6s ease-in-out infinite;
 }
 
@@ -208,15 +196,15 @@
   position: absolute;
   inset: 4px 0 auto;
   height: 4px;
-  border-radius: 99px;
+  border-radius: var(--radius-full);
   pointer-events: none;
   background:
     linear-gradient(
       90deg,
       rgba(8, 14, 32, 0.95) 0%,
-      color-mix(in srgb, #81c8df 28%, #0b1a38) 18%,
-      color-mix(in srgb, #ecc378 calc(var(--ui-warmth, 0) * 70%), #2a4f86) 50%,
-      color-mix(in srgb, #81c8df 28%, #0b1a38) 82%,
+      color-mix(in srgb, var(--color-cyan) 28%, #0b1a38) 18%,
+      color-mix(in srgb, var(--color-gold) calc(var(--ui-warmth, 0) * 70%), #2a4f86) 50%,
+      color-mix(in srgb, var(--color-cyan) 28%, #0b1a38) 82%,
       rgba(8, 14, 32, 0.95) 100%
     );
   opacity: 0.9;
@@ -244,15 +232,15 @@
 
 @keyframes playPulse {
   50% {
-    box-shadow: 0 0 0 5px rgba(236, 195, 120, 0.16);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-gold) 16%, transparent);
   }
 }
 
 @keyframes nowPulse {
   50% {
     box-shadow:
-      0 0 0 5px rgba(236, 195, 120, 0.08),
-      0 0 14px rgba(236, 195, 120, 0.72);
+      0 0 0 5px color-mix(in srgb, var(--color-gold) 8%, transparent),
+      0 0 14px color-mix(in srgb, var(--color-gold) 72%, transparent);
   }
 }
 
@@ -269,18 +257,10 @@
 @media (max-width: 680px) {
   .deck {
     width: min(100% - 24px, 480px);
-    bottom: calc(8px + var(--safe-bottom));
     padding: 6px 10px 5px;
   }
 
   .collapsed {
     width: min(100% - 24px, 360px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .playing,
-  .nowDot {
-    animation: none;
   }
 }

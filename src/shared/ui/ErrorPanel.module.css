@@ -1,8 +1,8 @@
 .eyebrow {
   color: var(--color-label);
-  font: 9px var(--font-mono);
+  font: var(--type-eyebrow);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--letter-eyebrow);
   white-space: nowrap;
 }
 

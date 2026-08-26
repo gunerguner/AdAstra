@@ -10,7 +10,7 @@
   --color-gold: #ecc378;
   --color-gold-soft: #f5cf88;
   --color-gold-warm: #f3e2be;
-  --color-gold-border: rgba(245, 207, 136, 0.5);
+  --color-gold-border: color-mix(in srgb, var(--color-gold-soft) 50%, transparent);
   --color-gold-fill: rgba(182, 128, 52, 0.18);
   --color-cyan: #81c8df;
   --color-view: #c8a56e;
@@ -28,8 +28,6 @@
   --color-panel: rgba(7, 14, 34, 0.78);
   --color-topbar: rgba(4, 8, 23, 0.44);
   --color-deck: rgba(5, 12, 29, 0.82);
-  --ui-daylight: 0;
-  --ui-twilight: 0;
   --ui-warmth: 0;
   --color-card: rgba(8, 16, 37, 0.86);
   --color-control: rgba(14, 25, 53, 0.58);
@@ -37,25 +35,43 @@
   --color-field: rgba(93, 128, 169, 0.12);
   --color-toggle: rgba(12, 24, 50, 0.55);
   --color-toggle-text: #bdd0e4;
-  --color-tooltip: rgba(8, 16, 36, 0.78);
   --color-error-panel: rgba(12, 19, 39, 0.92);
-  --color-cardinal: rgba(210, 230, 245, 0.82);
-  --color-constellation: rgba(186, 198, 232, 0.72);
+  --color-chip: rgba(6, 12, 31, 0.45);
+  --color-shadow: rgba(2, 6, 18, 0.32);
   --overlay-label: rgba(210, 230, 245, 0.9);
   --overlay-label-shadow: 0 0 12px rgba(5, 10, 24, 0.92);
   --overlay-constellation: rgba(186, 198, 232, 0.78);
-  --overlay-north: #f5cf88;
+  --overlay-north: var(--color-gold-soft);
   --overlay-ecliptic: #f0a03a;
-  --overlay-hover-fg: #ecf5ff;
+  --overlay-hover-fg: var(--color-text);
   --overlay-hover-bg: rgba(8, 16, 36, 0.78);
-  --overlay-hover-border: rgba(173, 218, 255, 0.5);
+  --overlay-hover-border: var(--color-border-strong);
   --overlay-hover-shadow: 0 6px 16px rgba(4, 8, 20, 0.28);
   --overlay-grain: 0.2;
   --overlay-vignette: rgba(0, 1, 9, 0.54);
   --overlay-atmosphere: rgba(3, 5, 14, 0.5);
+  --overlay-park: translate3d(-999px, -999px, 0);
+  --blur-chrome: 18px;
+  --blur-deck: 20px;
   --blur-panel: 24px;
+  --radius-xs: 3px;
   --radius-sm: 4px;
   --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 14px;
+  --radius-3xl: 16px;
+  --radius-full: 999px;
+  --type-eyebrow: 9px var(--font-mono);
+  --letter-eyebrow: 0.12em;
+  --swatch-size: 7px;
+  /* Chrome offsets: 1080 compact labels, 940 hide view, 680 narrow. */
+  --topbar-offset: 70px;
+  --deck-offset: 156px;
+  --handle-size: 112px;
+  --handle-width: 32px;
+  --notice-offset: 118px;
+  --deck-inset: 16px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --app-bg:
@@ -80,4 +96,15 @@
   --overlay-grain: 0.04;
   --overlay-vignette: rgba(118, 156, 196, 0.16);
   --overlay-atmosphere: rgba(176, 202, 224, 0.06);
+}
+
+@media (max-width: 680px) {
+  :root {
+    --topbar-offset: 64px;
+    --deck-offset: 132px;
+    --handle-size: 96px;
+    --handle-width: 36px;
+    --notice-offset: 96px;
+    --deck-inset: 8px;
+  }
 }

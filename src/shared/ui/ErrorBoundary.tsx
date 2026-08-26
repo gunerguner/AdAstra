@@ -1,7 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
 import { ErrorPanel } from './ErrorPanel'
-import styles from './ErrorBoundary.module.css'
 
 type Props = {
   children: ReactNode
@@ -25,7 +24,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   override render() {
     if (!this.state.error) return this.props.children
     return (
-      <main className={styles.shell}>
+      <main className="app-shell">
         <ErrorPanel
           error={this.state.error}
           onRetry={() => this.setState({ error: null })}

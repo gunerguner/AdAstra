@@ -7,12 +7,11 @@
   padding: 17px;
   background: var(--color-card);
   border: 1px solid var(--color-gold-border);
-  box-shadow: 0 0 28px rgba(245, 207, 136, 0.14);
-  backdrop-filter: blur(18px);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--color-gold-soft) 14%, transparent);
+  backdrop-filter: blur(var(--blur-chrome));
   pointer-events: auto;
   display: none;
-  transform: translate3d(-999px, -999px, 0);
-  will-change: transform;
+  transform: var(--overlay-park);
 }
 
 .close {
@@ -28,14 +27,14 @@
   align-items: center;
   gap: 7px;
   color: var(--color-label);
-  font: 9px var(--font-mono);
+  font: var(--type-eyebrow);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--letter-eyebrow);
 }
 
 .swatch {
-  width: 7px;
-  height: 7px;
+  width: var(--swatch-size);
+  height: var(--swatch-size);
   border-radius: 50%;
   background: var(--color-gold-soft);
 }

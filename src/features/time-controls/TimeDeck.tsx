@@ -62,7 +62,7 @@ export default function TimeDeck({
     <footer className={`${styles.deck} ${open ? '' : styles.collapsed}`} aria-label={t('time.deck')}>
       <div className={styles.top}>
         <div className={styles.start}>
-          <div className={styles.label}>
+          <div className={`${styles.label} ${open ? '' : 'sr-only'}`}>
             <strong ref={clockRefs.yearLabel}>{playback.currentTime.getFullYear()}</strong>
             <span className={styles.phase}>
               <PhaseIcon phase={phase} />
