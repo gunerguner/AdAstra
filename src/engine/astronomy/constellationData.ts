@@ -20,7 +20,10 @@ export function buildConstellationStars(catalog: RuntimeCatalog): ConstellationS
   return constellationLines.map((line) => ({
     name: line.name,
     segments: line.segments.map((segment) =>
-      segment.map((id) => catalog.starById.get(id)).filter((star): star is Star => Boolean(star)),
+      segment.flatMap((id) => {
+        const star = catalog.starById.get(id)
+        return star ? [star] : []
+      }),
     ),
   }))
 }

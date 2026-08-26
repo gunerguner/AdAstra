@@ -53,7 +53,7 @@ export type RuntimeCatalog = {
 
 async function digestHex(buffer: ArrayBuffer) {
   const digest = await crypto.subtle.digest('SHA-256', buffer)
-  return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, '0')).join('')
+  return Array.from(new Uint8Array(digest), (value) => value.toString(16).padStart(2, '0')).join('')
 }
 
 export class CatalogService {
@@ -63,7 +63,7 @@ export class CatalogService {
     const manifestResponse = await fetchCatalog(`${this.root}/manifest.json`, { signal, cache: 'no-cache' })
     if (!manifestResponse.ok) throw catalogError(`无法加载星表清单（${manifestResponse.status}）`)
     const manifest = await manifestResponse.json() as DataManifest
-    const file = manifest.files[0]
+    const file = manifest.files.at(0)
     if (!file || file.layout.type !== 'float32-soa') throw catalogError('星表格式不受支持')
 
     const version = encodeURIComponent(manifest.catalogVersion)
@@ -107,7 +107,7 @@ export class CatalogService {
         decDeg: values[offset + 1],
         magnitude: values[offset + 2],
       }
-    }).sort((a, b) => a.magnitude - b.magnitude)
+    }).toSorted((a, b) => a.magnitude - b.magnitude)
     const starById = new Map(stars.map((star) => [star.id, star]))
     return {
       manifest,

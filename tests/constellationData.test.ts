@@ -30,7 +30,9 @@ describe('constellation data', () => {
   it('covers the planned constellation set with drawable segments', () => {
     expect(constellationLines).toHaveLength(44)
     const missing = constellationLines.flatMap((line) =>
-      line.segments.flatMap((segment) => segment.filter((id) => !starIds.has(id)).map((id) => `${line.name}:${id}`)),
+      line.segments.flatMap((segment) =>
+        segment.flatMap((id) => (starIds.has(id) ? [] : [`${line.name}:${id}`])),
+      ),
     )
     expect(missing).toEqual([])
     const undrawable = constellationLines.filter((line) =>

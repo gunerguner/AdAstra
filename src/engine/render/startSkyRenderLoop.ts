@@ -135,9 +135,7 @@ export function startSkyRenderLoop(options: {
     fillEqjHorizonMatrices(latest.utcMillis, latest.observer, uniforms.horizonMat, uniforms.eqjHorizonMat)
     uniforms.showBelow.value = latest.layers.showBelowHorizon ? 1 : 0
     const bodySnapshots = interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis)
-    const sun = bodySnapshots[0]?.id === 'sun'
-      ? bodySnapshots[0]
-      : bodySnapshots.find((body) => body.id === 'sun')
+    const sun = bodySnapshots.find((body) => body.id === 'sun')
     const sunAltitude = sun?.altitude ?? ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG
     const sunAzimuth = sun?.azimuth ?? 0
     if (sun) {

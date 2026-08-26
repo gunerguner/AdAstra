@@ -11,18 +11,16 @@ const formatterCache = new Map<string, Intl.DateTimeFormat>()
 
 function formatter(timeZone: string) {
   let value = formatterCache.get(timeZone)
-  if (!value) {
-    value = new Intl.DateTimeFormat('en-CA', {
-      timeZone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hourCycle: 'h23',
-    })
-    formatterCache.set(timeZone, value)
-  }
+  value ??= new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  })
+  if (!formatterCache.has(timeZone)) formatterCache.set(timeZone, value)
   return value
 }
 

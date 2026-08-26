@@ -25,9 +25,9 @@ function offlineShellPlugin(): Plugin {
     name: 'offline-shell',
     apply: 'build',
     async generateBundle(_options, bundle) {
-      const assets = Object.keys(bundle)
-        .filter((fileName) => fileName.startsWith('assets/'))
-        .map((fileName) => `/${fileName}`)
+      const assets = Object.keys(bundle).flatMap((fileName) =>
+        fileName.startsWith('assets/') ? [`/${fileName}`] : [],
+      )
       const precache = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg', '/favicon-32.png', '/icon-192.png', '/icon-512.png', '/apple-touch-icon.png', ...assets]
       const version = createHash('sha256').update(JSON.stringify(precache)).digest('hex').slice(0, 12)
       const template = await readFile(resolve(import.meta.dirname, 'scripts/pwa/service-worker.template.js'), 'utf8')
@@ -66,7 +66,7 @@ export default defineConfig({
     include: ['react', 'react-dom', 'three', 'astronomy-engine'],
   },
   build: {
-    target: 'es2022',
+    target: 'es2023',
     minify: 'oxc',
     cssMinify: 'lightningcss',
     sourcemap: false,

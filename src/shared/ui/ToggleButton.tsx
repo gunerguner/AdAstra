@@ -7,8 +7,13 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode
 }
 
+const VARIANT_CLASS = {
+  ecliptic: styles.ecliptic,
+  equator: styles.equator,
+} as const
+
 export default function ToggleButton({ pressed, variant, className, type = 'button', children, ...props }: Props) {
-  const variantClass = variant === 'ecliptic' ? styles.ecliptic : variant === 'equator' ? styles.equator : ''
+  const variantClass = variant ? VARIANT_CLASS[variant] : ''
   return (
     <button
       type={type}

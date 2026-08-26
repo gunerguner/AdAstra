@@ -11,8 +11,12 @@ type Props = {
   ref?: Ref<HTMLElement>
 }
 
+const BODY_CARD_KIND = { sun: 'sun', moon: 'moon' } as const
+
 export default function ObjectCard({ selected, onClose, ref }: Props) {
-  const kind = selected.type === 'star' ? 'star' : selected.id === 'sun' || selected.id === 'moon' ? selected.id : 'planet'
+  const kind = selected.type === 'star'
+    ? 'star'
+    : (BODY_CARD_KIND[selected.id as keyof typeof BODY_CARD_KIND] ?? 'planet')
   return (
     <aside className={styles.card} data-kind={kind} ref={ref}>
       <IconButton className={styles.close} onClick={onClose} aria-label="关闭详情"><X size={15} /></IconButton>

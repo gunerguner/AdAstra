@@ -21,7 +21,7 @@ export function createFrameStats(capacity = 45) {
     },
     snapshot(): FrameStatsSnapshot {
       if (filled === 0) return { count: 0, lastMs, averageMs: 0, p95Ms: 0 }
-      const ordered = Array.from(samples.subarray(0, filled)).sort((a, b) => a - b)
+      const ordered = Array.from(samples.subarray(0, filled)).toSorted((a, b) => a - b)
       const sum = ordered.reduce((total, sample) => total + sample, 0)
       const p95Index = Math.min(filled - 1, Math.floor(filled * 0.95))
       return {
