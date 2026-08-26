@@ -31,7 +31,8 @@ describe('CatalogService', () => {
         return new Response(JSON.stringify([{
           id: 'sirius',
           name: '天狼星',
-          constellation: '大犬座',
+          nameEn: 'Sirius',
+          constellation: 'CMa',
           color: '#c9e4ff',
           index: 0,
         }]))
@@ -42,7 +43,8 @@ describe('CatalogService', () => {
 
     const catalog = await new CatalogService('/data/v1').loadCoreCatalog()
     expect(catalog.stars).toHaveLength(1)
-    expect(catalog.starById.get('sirius')?.name).toBe('天狼星')
+    expect(catalog.starById.get('sirius')?.names).toEqual({ zh: '天狼星', en: 'Sirius' })
+    expect(catalog.starById.get('sirius')?.constellationId).toBe('CMa')
     expect(catalog.countStarsThroughMagnitude(-1.5)).toBe(0)
     expect(catalog.countStarsThroughMagnitude(-1)).toBe(1)
   })

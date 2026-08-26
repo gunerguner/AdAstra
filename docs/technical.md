@@ -73,6 +73,7 @@ flowchart LR
 | `src/engine/interaction` | 指针、视角约束、拾取、DOM overlay 投影 |
 | `src/engine/performance` | 帧统计、DPR、空闲降频 |
 | `src/workers` | `astronomy.worker.ts`：计算线程入口 |
+| `src/i18n` | 界面语言：中英词典、Locale 上下文。引擎不持有文案 |
 | `src/data` | 源码内静态数据：星座 YAML、城市、源星表 |
 | `src/config` | 默认图层、方位、播放倍率、时间轴窗口、快捷视角 |
 | `src/shared` | 跨目录类型、错误、无业务 UI |
@@ -81,6 +82,7 @@ flowchart LR
 
 ```text
 app / features
+    → i18n
     → engine/*（按需）
     → shared / config / data
 
@@ -99,6 +101,7 @@ engine/astronomy、clock、catalog
 - 只有 `engine/astronomy` 和 Worker 可以 `import 'astronomy-engine'`。界面和渲染层不直接调第三方星历。
 - `engine/render` 不推进时间、不创建 Worker。太阳系采样由 `SkyViewport` 注入的回调触发。
 - `shared`、`config`、`data` 不反向依赖 `engine` 或 `app`。
+- `engine` 不依赖 `i18n`。界面文案和天体显示名在 React 边界按当前语言解析；星表索引同时带中英名，切语言不重载星表。
 
 有意保留的耦合：`skyGeometry.ts` 用 Three.js 的 `Vector3` 做网格细分；`startSkyRenderLoop.ts` 编排一帧（矩阵、插值、overlay、`render`），装配发生在 `SkyViewport.tsx`。
 
@@ -141,7 +144,7 @@ simulationUtc = pausedAt + (performance.now - startedAt) * rate
 
 星表约 420 颗：全天 V≤3.0 亮星，外加著名星座棒状图顶点（V≤4.5）。按视星等从亮到暗排序。这是一份为辨认星座准备的亮星目录，不是全天巡天星表。太阳系天体不走这套筛选。
 
-每条恒星记录：J2000 赤经（时）、赤纬（度）、视星等。名称、星座、颜色在独立索引里。二进制是 `float32-soa`：构建脚本写入校验和与记录数，`CatalogService` 校验 HTTP 状态、字节长度、SHA-256 和条数后再解析。失败抛出可重试的 `AppError('catalog')`。
+每条恒星记录：J2000 赤经（时）、赤纬（度）、视星等。名称（中英）、星座 IAU 代码、颜色在独立索引里。二进制是 `float32-soa`：构建脚本写入校验和与记录数，`CatalogService` 校验 HTTP 状态、字节长度、SHA-256 和条数后再解析。失败抛出可重试的 `AppError('catalog')`。
 
 视星等筛选：CPU 二分得到「不暗于上限」的数量，再 `setDrawRange`。不重建几何、不重传整表。默认上限 `+5.5`。
 

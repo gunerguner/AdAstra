@@ -7,7 +7,6 @@ import { DEG_PER_HOUR, HOURS_PER_DAY } from '@/engine/coordinates/astroConstants
 
 export type BodySnapshot = {
   id: string
-  name: string
   altitude: number
   azimuth: number
   raHours: number
@@ -39,7 +38,6 @@ function slot(index: number): BodySnapshot {
   if (existing) return existing
   const created: BodySnapshot = {
     id: '',
-    name: '',
     altitude: 0,
     azimuth: 0,
     raHours: 0,

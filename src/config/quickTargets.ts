@@ -1,13 +1,13 @@
 export const solarQuickTargets = [
-  { id: 'sun', name: '太阳' },
-  { id: 'moon', name: '月亮' },
-  { id: 'mercury', name: '水星' },
-  { id: 'venus', name: '金星' },
-  { id: 'mars', name: '火星' },
-  { id: 'jupiter', name: '木星' },
-  { id: 'saturn', name: '土星' },
-  { id: 'uranus', name: '天王星' },
-  { id: 'neptune', name: '海王星' },
+  { id: 'sun' },
+  { id: 'moon' },
+  { id: 'mercury' },
+  { id: 'venus' },
+  { id: 'mars' },
+  { id: 'jupiter' },
+  { id: 'saturn' },
+  { id: 'uranus' },
+  { id: 'neptune' },
 ] as const
 
 export const brightestStarIds = [

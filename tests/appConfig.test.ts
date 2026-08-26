@@ -10,7 +10,7 @@ describe('application configuration', () => {
   it('uses custom coordinates while retaining the city time zone', () => {
     const observer = resolveObserver(cities[0], { latitude: 1, longitude: 2 })
     expect(observer).toMatchObject({
-      name: '自定义坐标',
+      custom: true,
       latitude: 1,
       longitude: 2,
       timeZone: cities[0].timeZone,

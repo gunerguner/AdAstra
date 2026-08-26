@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
   atmospherePhase,
-  atmospherePhaseLabel,
   atmosphereState,
 } from '../src/engine/render/atmosphereState'
 import {
@@ -49,10 +48,5 @@ describe('atmosphere state', () => {
     expect(zenith.sunDirY).toBeCloseTo(1, 5)
     const length = Math.hypot(east.sunDirX, east.sunDirY, east.sunDirZ)
     expect(length).toBeCloseTo(1, 5)
-  })
-
-  it('labels phases in Chinese', () => {
-    expect(atmospherePhaseLabel('civil')).toBe('民用曙暮光')
-    expect(atmospherePhaseLabel('night')).toBe('夜晚')
   })
 })

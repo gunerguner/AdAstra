@@ -3,8 +3,8 @@ import type { Star } from '@/shared/types/star'
 import { countStarsThroughMagnitude } from '@/shared/types/star'
 import { AppError, isAbortError, isAppError, toAppError } from '@/shared/errors/appError'
 
-function catalogError(message: string, cause?: unknown) {
-  return new AppError('catalog', message, { cause, retryable: true })
+function catalogError(message: string, cause?: unknown, params?: Record<string, string | number>) {
+  return new AppError('catalog', message, { cause, retryable: true, params })
 }
 
 async function fetchCatalog(url: string, init: RequestInit) {
@@ -12,7 +12,7 @@ async function fetchCatalog(url: string, init: RequestInit) {
     return await fetch(url, init)
   } catch (error) {
     if (isAbortError(error)) throw error
-    throw catalogError('无法连接星表服务', error)
+    throw catalogError('error.catalog.unreachable', error)
   }
 }
 
@@ -40,7 +40,12 @@ export type CatalogBuffer = {
   values: Float32Array
 }
 
-export type CatalogIndexEntry = Pick<Star, 'id' | 'name' | 'constellation' | 'color'> & {
+export type CatalogIndexEntry = {
+  id: string
+  name: string
+  nameEn: string
+  constellation: string
+  color: string
   index: number
 }
 
@@ -61,17 +66,17 @@ export class CatalogService {
 
   async loadCoreCatalogBuffer(signal?: AbortSignal): Promise<CatalogBuffer> {
     const manifestResponse = await fetchCatalog(`${this.root}/manifest.json`, { signal, cache: 'no-cache' })
-    if (!manifestResponse.ok) throw catalogError(`无法加载星表清单（${manifestResponse.status}）`)
+    if (!manifestResponse.ok) throw catalogError('error.catalog.manifestHttp', undefined, { status: manifestResponse.status })
     const manifest = await manifestResponse.json() as DataManifest
     const file = manifest.files.at(0)
-    if (!file || file.layout.type !== 'float32-soa') throw catalogError('星表格式不受支持')
+    if (!file || file.layout.type !== 'float32-soa') throw catalogError('error.catalog.unsupported')
 
     const version = encodeURIComponent(manifest.catalogVersion)
     const catalogResponse = await fetchCatalog(`${this.root}/${file.name}?v=${version}`, { signal, cache: 'force-cache' })
-    if (!catalogResponse.ok) throw catalogError(`无法加载核心星表（${catalogResponse.status}）`)
+    if (!catalogResponse.ok) throw catalogError('error.catalog.coreHttp', undefined, { status: catalogResponse.status })
     const buffer = await catalogResponse.arrayBuffer()
-    if (buffer.byteLength !== file.byteLength) throw catalogError('星表长度校验失败')
-    if (await digestHex(buffer) !== file.sha256) throw catalogError('星表完整性校验失败')
+    if (buffer.byteLength !== file.byteLength) throw catalogError('error.catalog.length')
+    if (await digestHex(buffer) !== file.sha256) throw catalogError('error.catalog.integrity')
     return { manifest, file, values: new Float32Array(buffer) }
   }
 
@@ -88,20 +93,20 @@ export class CatalogService {
     const { manifest, file, values } = await this.loadCoreCatalogBuffer(signal)
     const version = encodeURIComponent(manifest.catalogVersion)
     const indexResponse = await fetchCatalog(`${this.root}/${file.indexName}?v=${version}`, { signal, cache: 'force-cache' })
-    if (!indexResponse.ok) throw catalogError(`无法加载星表索引（${indexResponse.status}）`)
+    if (!indexResponse.ok) throw catalogError('error.catalog.indexHttp', undefined, { status: indexResponse.status })
     const index = await indexResponse.json() as CatalogIndexEntry[]
-    if (!Array.isArray(index) || index.length !== file.count) throw catalogError('星表索引数量校验失败')
-    if (values.length !== file.count * file.layout.floatsPerRecord) throw catalogError('星表记录数量校验失败')
+    if (!Array.isArray(index) || index.length !== file.count) throw catalogError('error.catalog.indexCount')
+    if (values.length !== file.count * file.layout.floatsPerRecord) throw catalogError('error.catalog.recordCount')
 
     const stars = index.map((entry) => {
       const offset = entry.index * file.layout.floatsPerRecord
-      if (!entry.id || !entry.name || !Number.isInteger(entry.index) || offset < 0 || offset >= values.length) {
-        throw catalogError('星表索引记录无效')
+      if (!entry.id || !entry.name || !entry.nameEn || !Number.isInteger(entry.index) || offset < 0 || offset >= values.length) {
+        throw catalogError('error.catalog.indexEntry')
       }
       return {
         id: entry.id,
-        name: entry.name,
-        constellation: entry.constellation,
+        names: { zh: entry.name, en: entry.nameEn },
+        constellationId: entry.constellation,
         color: entry.color,
         raHours: values[offset],
         decDeg: values[offset + 1],

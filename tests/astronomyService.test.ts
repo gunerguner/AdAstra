@@ -8,7 +8,6 @@ import { moonPhaseName } from '../src/engine/astronomy/moonPhaseName'
 function sample(overrides: Partial<BodySnapshot> = {}): BodySnapshot {
   return {
     id: 'moon',
-    name: '月亮',
     altitude: 10,
     azimuth: 350,
     raHours: 23.8,
@@ -71,10 +70,10 @@ describe('天体快照插值', () => {
 
 describe('月亮朔望月', () => {
   it('把朔望经度映射成月相名称', () => {
-    expect(moonPhaseName(0)).toBe('新月')
-    expect(moonPhaseName(90)).toBe('上弦月')
-    expect(moonPhaseName(180)).toBe('满月')
-    expect(moonPhaseName(270)).toBe('下弦月')
+    expect(moonPhaseName(0)).toBe('new')
+    expect(moonPhaseName(90)).toBe('firstQuarter')
+    expect(moonPhaseName(180)).toBe('full')
+    expect(moonPhaseName(270)).toBe('lastQuarter')
   })
 
   it('在已知新月日期给出接近 0 的朔望角', () => {
@@ -82,7 +81,7 @@ describe('月亮朔望月', () => {
     const synodic = MoonPhase(date)
     expect(Math.min(synodic, 360 - synodic)).toBeLessThan(8)
     const moon = astronomyService.getBodies(date, { latitude: 31.23, longitude: 121.47 }).find((body) => body.id === 'moon')
-    expect(moonPhaseName(moon?.synodicDeg ?? 0)).toBe('新月')
+    expect(moonPhaseName(moon?.synodicDeg ?? 0)).toBe('new')
     expect(astronomyService.getBodies(date, { latitude: 0, longitude: 0 }).map((body) => body.id)).toContain('uranus')
   })
 })

@@ -8,16 +8,19 @@ import '@fontsource/fraunces/600.css'
 import App from './app/App'
 import { ErrorBoundary } from './shared/ui'
 import { AppError, logAppError, toAppError } from './shared/errors/appError'
+import { LocaleProvider } from '@/i18n'
 import './styles/index.css'
 
 const root = document.getElementById('root')
-if (!root) throw new AppError('render', '找不到应用根节点')
+if (!root) throw new AppError('render', 'error.rootMissing')
 
 createRoot(root).render(
   <StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
+    <LocaleProvider>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </LocaleProvider>
   </StrictMode>,
 )
 
@@ -27,12 +30,12 @@ if ('serviceWorker' in navigator) {
       try {
         await navigator.serviceWorker.register('/service-worker.js')
       } catch (error) {
-        logAppError(toAppError(error, 'service-worker'), '离线缓存注册失败，将继续使用在线模式')
+        logAppError(toAppError(error, 'service-worker'), 'error.swRegister')
       }
     })
   } else {
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       registrations.forEach((registration) => registration.unregister())
-    }).catch((error) => logAppError(error, '注销开发环境 Service Worker'))
+    }).catch((error) => logAppError(error, 'error.swUnregisterDev'))
   }
 }

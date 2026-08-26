@@ -2,15 +2,16 @@
 import { equatorialUnit } from '@/engine/coordinates/skyMath'
 import { constellationLines } from '@/data/catalog'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
-import type { Star } from '@/shared/types/star'
+import type { LocalizedName, Star } from '@/shared/types/star'
 
 export type ConstellationStars = {
-  name: string
+  id: string
+  names: LocalizedName
   segments: Star[][]
 }
 
 export type ConstellationAnchor = {
-  name: string
+  id: string
   x: number
   y: number
   z: number
@@ -18,7 +19,8 @@ export type ConstellationAnchor = {
 
 export function buildConstellationStars(catalog: RuntimeCatalog): ConstellationStars[] {
   return constellationLines.map((line) => ({
-    name: line.name,
+    id: line.id,
+    names: line.names,
     segments: line.segments.map((segment) =>
       segment.flatMap((id) => {
         const star = catalog.starById.get(id)
@@ -41,6 +43,6 @@ export function buildConstellationAnchors(constellationStars: ConstellationStars
       { x: 0, y: 0, z: 0 },
     )
     const length = Math.hypot(x, y, z) || 1
-    return { name: line.name, x: x / length, y: y / length, z: z / length }
+    return { id: line.id, x: x / length, y: y / length, z: z / length }
   })
 }

@@ -52,18 +52,6 @@ export function atmospherePhase(sunAltitude: number, enabled: boolean): Atmosphe
   return 'day'
 }
 
-const ATMOSPHERE_PHASE_LABEL: Record<AtmospherePhase, string> = {
-  astronomical: '天文曙暮光',
-  nautical: '航海曙暮光',
-  civil: '民用曙暮光',
-  day: '白昼',
-  night: '夜晚',
-}
-
-export function atmospherePhaseLabel(phase: AtmospherePhase) {
-  return ATMOSPHERE_PHASE_LABEL[phase]
-}
-
 /** 由太阳高度得到昼夜混合系数。天文曙暮光以下全夜，DAYLIGHT_FULL 左右白天。 */
 export function atmosphereState(sunAltitude: number, sunAzimuth: number, enabled: boolean): AtmosphereState {
   if (!enabled) {

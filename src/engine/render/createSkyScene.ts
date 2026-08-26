@@ -50,10 +50,7 @@ export function createSkyScene(options: {
   renderer.setAnimationLoop(null)
   renderer.domElement.tabIndex = 0
   renderer.domElement.setAttribute('role', 'application')
-  renderer.domElement.setAttribute(
-    'aria-label',
-    '实时星空画布。使用方向键旋转视角，加号和减号缩放。',
-  )
+  renderer.domElement.setAttribute('aria-label', '')
   mount.appendChild(renderer.domElement)
 
   const skyDome = createFullscreenLayer(makeSkyDomeMaterial(sharedUniforms), -1)

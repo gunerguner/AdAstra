@@ -1,9 +1,9 @@
 export const playbackSpeeds = [
-  { value: 1, label: '实时' },
-  { value: 60, label: '1 分钟/秒' },
-  { value: 300, label: '5 分钟/秒' },
-  { value: 3600, label: '1 小时/秒' },
-  { value: 86400, label: '1 天/秒' },
+  { value: 1, id: 'realtime' },
+  { value: 60, id: 'minute' },
+  { value: 300, id: 'fiveMinute' },
+  { value: 3600, id: 'hour' },
+  { value: 86400, id: 'day' },
 ] as const
 
 export const defaultPlaybackSpeed = 300

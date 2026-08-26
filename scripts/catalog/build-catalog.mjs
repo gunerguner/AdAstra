@@ -42,6 +42,7 @@ const rows = source.stars
   .map((row) => ({
     id: String(row.id),
     name: String(row.name),
+    nameEn: String(row.nameEn),
     constellation: String(row.constellation),
     color: String(row.color),
     raHours: Number(row.raHours),
@@ -51,7 +52,7 @@ const rows = source.stars
     properMotionDec: Number(row.properMotionDec ?? 0),
   }))
   .map((row) => {
-    if (!row.id || !row.name || !row.constellation || !row.color || !Number.isFinite(row.raHours) || !Number.isFinite(row.decDeg) || !Number.isFinite(row.magnitude)) {
+    if (!row.id || !row.name || !row.nameEn || !row.constellation || !row.color || !Number.isFinite(row.raHours) || !Number.isFinite(row.decDeg) || !Number.isFinite(row.magnitude)) {
       throw new Error(`星表记录无效: ${row.id || 'unknown'}`)
     }
     if (ids.has(row.id)) throw new Error(`星表 id 重复: ${row.id}`)
@@ -67,7 +68,7 @@ const numericBuffer = new Float32Array(rows.length * floatsPerStar)
 rows.forEach((row, index) => {
   numericBuffer.set([row.raHours, row.decDeg, row.magnitude, row.properMotionRa, row.properMotionDec], index * floatsPerStar)
 })
-const idIndex = rows.map(({ id, name, constellation, color }, index) => ({ id, name, constellation, color, index }))
+const idIndex = rows.map(({ id, name, nameEn, constellation, color }, index) => ({ id, name, nameEn, constellation, color, index }))
 const bytes = new Uint8Array(numericBuffer.buffer)
 const sha256 = createHash('sha256').update(bytes).digest('hex')
 const indexJson = JSON.stringify(idIndex, null, 2)

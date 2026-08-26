@@ -11,8 +11,8 @@ const identityCamera = {
 
 const star: Star = {
   id: 'sirius',
-  name: '天狼星',
-  constellation: '大犬座',
+  names: { zh: '天狼星', en: 'Sirius' },
+  constellationId: 'CMa',
   raHours: 12,
   decDeg: -90,
   magnitude: -1.46,
@@ -21,7 +21,6 @@ const star: Star = {
 
 const body: BodySnapshot = {
   id: 'jupiter',
-  name: '木星',
   altitude: 0,
   azimuth: 0,
   raHours: 12,
@@ -77,7 +76,6 @@ describe('skyPicker', () => {
   it('点击更靠近行星时不会被太阳光晕抢走', () => {
     const sun: BodySnapshot = {
       id: 'sun',
-      name: '太阳',
       altitude: 20,
       azimuth: 0,
       raHours: 12,
@@ -89,7 +87,6 @@ describe('skyPicker', () => {
     const venus: BodySnapshot = {
       ...body,
       id: 'venus',
-      name: '金星',
     }
     const hit = pick({
       bodies: [sun, venus],
@@ -100,7 +97,6 @@ describe('skyPicker', () => {
   it('点击太阳本体时仍能选中太阳', () => {
     const sun: BodySnapshot = {
       id: 'sun',
-      name: '太阳',
       altitude: 20,
       azimuth: 0,
       raHours: 12,
@@ -112,7 +108,6 @@ describe('skyPicker', () => {
     const venus: BodySnapshot = {
       ...body,
       id: 'venus',
-      name: '金星',
     }
     const hit = pick({
       ndcX: -0.215,

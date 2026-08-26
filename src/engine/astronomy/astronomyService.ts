@@ -6,27 +6,26 @@ import type { BodySnapshot } from './bodyInterpolation'
 export type { BodySnapshot, BodySnapshotWindow } from './bodyInterpolation'
 
 const bodyDefinitions = [
-  [Body.Sun, 'sun', '太阳'],
-  [Body.Moon, 'moon', '月亮'],
-  [Body.Mercury, 'mercury', '水星'],
-  [Body.Venus, 'venus', '金星'],
-  [Body.Mars, 'mars', '火星'],
-  [Body.Jupiter, 'jupiter', '木星'],
-  [Body.Saturn, 'saturn', '土星'],
-  [Body.Uranus, 'uranus', '天王星'],
-  [Body.Neptune, 'neptune', '海王星'],
+  [Body.Sun, 'sun'],
+  [Body.Moon, 'moon'],
+  [Body.Mercury, 'mercury'],
+  [Body.Venus, 'venus'],
+  [Body.Mars, 'mars'],
+  [Body.Jupiter, 'jupiter'],
+  [Body.Saturn, 'saturn'],
+  [Body.Uranus, 'uranus'],
+  [Body.Neptune, 'neptune'],
 ] as const
 
 export class AstronomyService {
   getBodies(date: Date, observer: Observer): BodySnapshot[] {
     const site = new AstronomyObserver(observer.latitude, observer.longitude, 0)
-    return bodyDefinitions.map(([body, id, name]) => {
+    return bodyDefinitions.map(([body, id]) => {
       const equatorial = Equator(body, date, site, true, true)
       const horizontal = Horizon(date, site, equatorial.ra, equatorial.dec, 'normal')
       const light = Illumination(body, date)
       return {
         id,
-        name,
         altitude: horizontal.altitude,
         azimuth: horizontal.azimuth,
         raHours: equatorial.ra,

@@ -18,7 +18,7 @@ export type SkyOverlayRefs = {
   constellationNameRefs: RefObject<Record<string, HTMLDivElement | null>>
   eclipticPoleRefs: RefObject<Record<string, HTMLDivElement | null>>
   hoverRef: RefObject<HTMLDivElement | null>
-  hoverTargetRef: RefObject<{ id: string; name: string; type: 'star' | 'body' } | null>
+  hoverTargetRef: RefObject<{ id: string; type: 'star' | 'body' } | null>
   objectCardRef?: RefObject<HTMLElement | null>
   selectedRef: RefObject<SelectedSkyObject | null>
 }
@@ -129,7 +129,7 @@ export function createSkyOverlayUpdater(options: {
       }
 
       constellationAnchors.forEach((anchor) => {
-        const node = overlays.constellationNameRefs.current[anchor.name]
+        const node = overlays.constellationNameRefs.current[anchor.id]
         if (!node) return
         if (!frame.layers.constellationLines) {
           hideOverlay(node)

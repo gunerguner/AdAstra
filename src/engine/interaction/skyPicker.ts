@@ -46,7 +46,6 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
   if (!input.layers.bodies) return null
   let best: {
     id: string
-    name: string
     magnitude: number
     altitude: number
     azimuth: number
@@ -74,7 +73,6 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
     if (best && (distance > best.distance || (distance === best.distance && priority < best.priority))) continue
     best = {
       id: item.id,
-      name: item.name,
       magnitude: item.magnitude,
       phaseFraction: item.phaseFraction,
       synodicDeg: item.synodicDeg,
@@ -86,13 +84,12 @@ function pickBody(input: PickInput): SelectedSkyObject | null {
   if (!best) return null
   return {
     id: best.id,
-    name: best.name,
     type: 'body',
     magnitude: best.magnitude,
     altitude: best.altitude,
     azimuth: best.azimuth,
     phaseFraction: best.phaseFraction,
-    phaseName: best.id === 'moon' && best.synodicDeg != null ? moonPhaseName(best.synodicDeg) : undefined,
+    phaseKey: best.id === 'moon' && best.synodicDeg != null ? moonPhaseName(best.synodicDeg) : undefined,
   }
 }
 
@@ -169,10 +166,9 @@ function pickStar(input: PickInput): SelectedSkyObject | null {
   if (!best) return null
   return {
     id: best.star.id,
-    name: best.star.name,
     type: 'star',
     magnitude: best.star.magnitude,
-    constellation: best.star.constellation,
+    constellationId: best.star.constellationId,
     altitude: best.altitude,
     azimuth: best.azimuth,
   }

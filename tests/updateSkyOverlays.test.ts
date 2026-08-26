@@ -32,12 +32,12 @@ function overlays(partial: Partial<{
   hover: HTMLElement
   card: HTMLElement
   selected: SelectedSkyObject | null
-  hoverTarget: { id: string; name: string; type: 'star' | 'body' } | null
+  hoverTarget: { id: string; type: 'star' | 'body' } | null
 }> = {}): SkyOverlayRefs {
   return {
     cardinalRefs: ref<Record<string, HTMLDivElement | null>>({}),
     constellationNameRefs: ref<Record<string, HTMLDivElement | null>>({
-      Orion: (partial.constellation ?? null) as HTMLDivElement | null,
+      Ori: (partial.constellation ?? null) as HTMLDivElement | null,
     }),
     eclipticPoleRefs: ref<Record<string, HTMLDivElement | null>>({
       north: (partial.pole ?? null) as HTMLDivElement | null,
@@ -55,7 +55,7 @@ function updater(overlayRefs: SkyOverlayRefs) {
     uniforms: { horizonMat: identityMat(), eqjHorizonMat: identityMat() },
     scratch: { horizon: { x: 0, y: 0, z: 0 }, projected: new Vector3() },
     starById: new Map<string, Star>(),
-    constellationAnchors: [{ name: 'Orion', x: 0, y: 0.45, z: -0.89 }],
+    constellationAnchors: [{ id: 'Ori', x: 0, y: 0.45, z: -0.89 }],
     overlays: overlayRefs,
   })
 }
@@ -75,7 +75,6 @@ function frame(layers: Partial<LayerState> = {}, bodySnapshots: BodySnapshot[] =
 
 const polarBody: BodySnapshot = {
   id: 'moon',
-  name: '月亮',
   altitude: 90,
   azimuth: 0,
   raHours: 0,
@@ -100,7 +99,7 @@ describe('updateSkyOverlays', () => {
       uniforms: { horizonMat: identityMat(), eqjHorizonMat: identityMat() },
       scratch: { horizon: { x: 0, y: 0, z: 0 }, projected: new Vector3() },
       starById: new Map(),
-      constellationAnchors: [{ name: 'Orion', x: 0, y: 0.01, z: -1 }],
+      constellationAnchors: [{ id: 'Ori', x: 0, y: 0.01, z: -1 }],
       overlays: overlayRefs,
     })
     sky.update(frame())
@@ -117,7 +116,6 @@ describe('updateSkyOverlays', () => {
     const hover = overlayNode()
     const selected: SelectedSkyObject = {
       id: 'moon',
-      name: '月亮',
       type: 'body',
       altitude: 12,
       azimuth: 80,
@@ -125,7 +123,7 @@ describe('updateSkyOverlays', () => {
     const overlayRefs = overlays({
       hover,
       selected,
-      hoverTarget: { id: 'moon', name: '月亮', type: 'body' },
+      hoverTarget: { id: 'moon', type: 'body' },
     })
     updater(overlayRefs).update(frame())
     expect(hover.style.display).toBe('none')
@@ -136,7 +134,7 @@ describe('updateSkyOverlays', () => {
     const hover = overlayNode()
     const overlayRefs = overlays({
       hover,
-      hoverTarget: { id: 'moon', name: '月亮', type: 'body' },
+      hoverTarget: { id: 'moon', type: 'body' },
     })
     updater(overlayRefs).update(frame({}, [polarBody]))
     expect(hover.style.display).toBe('none')
@@ -147,7 +145,6 @@ describe('updateSkyOverlays', () => {
     const card = overlayNode()
     const selected: SelectedSkyObject = {
       id: 'moon',
-      name: '月亮',
       type: 'body',
       altitude: 90,
       azimuth: 0,

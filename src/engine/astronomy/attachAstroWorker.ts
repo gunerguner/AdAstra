@@ -19,14 +19,14 @@ export function attachAstroWorker(handlers: {
   worker.onmessage = (event: MessageEvent<AstroWorkerResponse>) => {
     if (event.data.generation !== bodyGeneration) return
     if (event.data.type === 'error') {
-      handlers.onError(new AppError('worker', event.data.message, { retryable: true }))
+      handlers.onError(new AppError('worker', 'error.worker.failed', { retryable: true, cause: event.data.message }))
       return
     }
     handlers.onSnapshot(event.data.window)
   }
   worker.onerror = (event) => {
     event.preventDefault()
-    handlers.onError(new AppError('worker', '天体计算线程异常', { cause: event.error, retryable: true }))
+    handlers.onError(new AppError('worker', 'error.worker.thread', { cause: event.error, retryable: true }))
   }
 
   return {

@@ -40,23 +40,21 @@ function selectedFromTarget(
     if (!body) return null
     return {
       id: body.id,
-      name: body.name,
       type: 'body',
       magnitude: body.magnitude,
       altitude: pose.altitude,
       azimuth: pose.azimuth,
       phaseFraction: body.phaseFraction,
-      phaseName: body.id === 'moon' && body.synodicDeg != null ? moonPhaseName(body.synodicDeg) : undefined,
+      phaseKey: body.id === 'moon' && body.synodicDeg != null ? moonPhaseName(body.synodicDeg) : undefined,
     }
   }
   const star = input.starById.get(input.id)
   if (!star) return null
   return {
     id: star.id,
-    name: star.name,
     type: 'star',
     magnitude: star.magnitude,
-    constellation: star.constellation,
+    constellationId: star.constellationId,
     altitude: pose.altitude,
     azimuth: pose.azimuth,
   }

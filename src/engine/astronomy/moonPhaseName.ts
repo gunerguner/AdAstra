@@ -1,13 +1,22 @@
-/** 月相：朔望角 → 中文名。 */
+/** 月相：朔望角 → 稳定键。界面再按语言显示。 */
 import { wrapDegrees } from '@/shared/math'
 
-const phaseNames = ['新月', '娥眉月', '上弦月', '盈凸月', '满月', '亏凸月', '下弦月', '残月'] as const
+export const moonPhaseKeys = [
+  'new',
+  'waxingCrescent',
+  'firstQuarter',
+  'waxingGibbous',
+  'full',
+  'waningGibbous',
+  'lastQuarter',
+  'waningCrescent',
+] as const
 
-export type MoonPhaseName = (typeof phaseNames)[number]
+export type MoonPhaseKey = (typeof moonPhaseKeys)[number]
 
-const MOON_PHASE_STEP_DEG = 360 / phaseNames.length
+const MOON_PHASE_STEP_DEG = 360 / moonPhaseKeys.length
 
-export function moonPhaseName(synodicDeg: number): MoonPhaseName {
-  const index = Math.round(wrapDegrees(synodicDeg) / MOON_PHASE_STEP_DEG) % phaseNames.length
-  return phaseNames[index]
+export function moonPhaseName(synodicDeg: number): MoonPhaseKey {
+  const index = Math.round(wrapDegrees(synodicDeg) / MOON_PHASE_STEP_DEG) % moonPhaseKeys.length
+  return moonPhaseKeys[index]
 }

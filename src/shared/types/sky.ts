@@ -3,24 +3,22 @@ import type { Observer } from './observer'
 
 /** 当前选中或悬停的天空对象（恒星或太阳系天体）。方位/高度为地平坐标，单位度。 */
 export type SelectedSkyObject = {
-  /** 星表 id 或天体 id，如 `HIP 32349`、`moon`。 */
+  /** 星表 id 或天体 id，如 `sirius`、`moon`。 */
   id: string
-  /** 界面显示名。 */
-  name: string
   /** `star` 来自静态星表；`body` 来自太阳系快照。 */
   type: 'star' | 'body'
   /** 视星等，越小越亮。 */
   magnitude?: number
-  /** 所属星座名；仅恒星有。 */
-  constellation?: string
+  /** 所属星座 IAU 代码；仅恒星有。 */
+  constellationId?: string
   /** 高度角（度）：0 在地平，90 在天顶，负值在地下。 */
   altitude: number
   /** 方位角（度）：0 北，90 东，180 南，270 西。 */
   azimuth: number
   /** 被照亮比例 0–1；月亮用于月相，行星也可有。 */
   phaseFraction?: number
-  /** 月相中文名，如「满月」；仅月亮有。 */
-  phaseName?: string
+  /** 月相键，如 `full`；仅月亮有。界面再翻译。 */
+  phaseKey?: string
 }
 
 /** 各图层显隐。由控制面板写入，渲染循环每帧读取。 */

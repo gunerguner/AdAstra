@@ -26,12 +26,12 @@ self.onmessage = (event: MessageEvent<AstroWorkerRequest>) => {
     }
     if (request.generation !== latestGeneration) return
     self.postMessage(response)
-  } catch (error) {
+  } catch {
     if (request.generation !== latestGeneration) return
     const response: AstroWorkerResponse = {
       type: 'error',
       generation: request.generation,
-      message: error instanceof Error ? error.message : '天体计算失败',
+      message: 'error.worker.failed',
     }
     self.postMessage(response)
   }

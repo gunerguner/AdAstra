@@ -39,12 +39,6 @@ export const bodyAppearance: Record<string, {
   neptune: { color: '#6f8fe0', size: 8, priority: 16, atlasIndex: 8, spriteScale: 1 },
 }
 
-const BODY_KIND_LABEL: Record<string, string> = { sun: '太阳', moon: '月亮' }
-
-export function bodyKindLabel(id: string) {
-  return BODY_KIND_LABEL[id] ?? '行星'
-}
-
 export function bodyVisualScale(id: string, magnitude: number) {
   if (id === 'sun' || id === 'moon') return 1
   return clamp((1.6 - magnitude) / 3.8, 0.7, 1.55)

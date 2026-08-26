@@ -1,5 +1,7 @@
 import { Crosshair, SlidersHorizontal } from 'lucide-react'
 import { quickViews } from '@/config/quickViews'
+import { useT } from '@/i18n'
+import type { MessageKey } from '@/i18n/types'
 import { SectionTitle } from '@/shared/ui'
 import styles from './layerControls.module.css'
 import type { SkyView } from '@/shared/types/sky'
@@ -11,11 +13,12 @@ export function MagnitudeSection({
   magnitudeLimit: number
   onChange: (value: number) => void
 }) {
+  const t = useT()
   const labelId = 'magnitude-limit-label'
   return (
     <section className={styles.section}>
       <SectionTitle icon={<SlidersHorizontal size={14} />} trailing={`≤ ${magnitudeLimit.toFixed(1)}`}>
-        <span id={labelId}>视星等</span>
+        <span id={labelId}>{t('view.magnitude')}</span>
       </SectionTitle>
       <input
         className={styles.range}
@@ -38,24 +41,28 @@ export function QuickViewSection({
   view: SkyView
   onChange: (view: SkyView) => void
 }) {
+  const t = useT()
   return (
     <section className={styles.section}>
-      <SectionTitle icon={<Crosshair size={14} />}>视角</SectionTitle>
+      <SectionTitle icon={<Crosshair size={14} />}>{t('view.title')}</SectionTitle>
       <div className={styles.quickViews}>
-        {quickViews.map((preset) => (
-          <button
-            type="button"
-            key={preset.label}
-            aria-label={`转向${preset.label}`}
-            onClick={() => onChange({
-              azimuth: preset.azimuth === 'current' ? view.azimuth : preset.azimuth,
-              altitude: preset.altitude,
-              fov: view.fov,
-            })}
-          >
-            {preset.label}
-          </button>
-        ))}
+        {quickViews.map((preset) => {
+          const label = t(`view.${preset.id}` as MessageKey)
+          return (
+            <button
+              type="button"
+              key={preset.id}
+              aria-label={t('view.turnTo', { name: label })}
+              onClick={() => onChange({
+                azimuth: preset.azimuth === 'current' ? view.azimuth : preset.azimuth,
+                altitude: preset.altitude,
+                fov: view.fov,
+              })}
+            >
+              {label}
+            </button>
+          )
+        })}
       </div>
     </section>
   )

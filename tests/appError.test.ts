@@ -12,7 +12,7 @@ describe('统一错误处理', () => {
     const error = toAppError(new Error('worker exploded'), 'worker')
     expect(error).toBeInstanceOf(AppError)
     expect(error.code).toBe('worker')
-    expect(error.message).toBe('worker exploded')
+    expect(error.message).toBe('error.unknown.message')
   })
 
   it('识别取消请求，避免当成界面故障', () => {

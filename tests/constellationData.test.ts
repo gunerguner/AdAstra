@@ -19,10 +19,11 @@ describe('constellation data', () => {
 
   it('normalizes each constellation label anchor', () => {
     const anchors = buildConstellationAnchors([{
-      name: '测试星座',
+      id: 'Tes',
+      names: { zh: '测试星座', en: 'Test' },
       segments: [[
-        { id: 'a', name: 'A', raHours: 0, decDeg: 0, magnitude: 1, constellation: '测试', color: '#fff' },
-        { id: 'b', name: 'B', raHours: 6, decDeg: 0, magnitude: 1, constellation: '测试', color: '#fff' },
+        { id: 'a', names: { zh: 'A', en: 'A' }, raHours: 0, decDeg: 0, magnitude: 1, constellationId: 'Tes', color: '#fff' },
+        { id: 'b', names: { zh: 'B', en: 'B' }, raHours: 6, decDeg: 0, magnitude: 1, constellationId: 'Tes', color: '#fff' },
       ]],
     }])
     expect(Math.hypot(anchors[0].x, anchors[0].y, anchors[0].z)).toBeCloseTo(1, 6)
@@ -32,13 +33,13 @@ describe('constellation data', () => {
     expect(constellationLines).toHaveLength(57)
     const missing = constellationLines.flatMap((line) =>
       line.segments.flatMap((segment) =>
-        segment.flatMap((id) => (starIds.has(id) ? [] : [`${line.name}:${id}`])),
+        segment.flatMap((id) => (starIds.has(id) ? [] : [`${line.id}:${id}`])),
       ),
     )
     expect(missing).toEqual([])
     const undrawable = constellationLines.filter((line) =>
       line.segments.every((segment) => segment.length < 2),
-    ).map((line) => line.name)
+    ).map((line) => line.id)
     expect(undrawable).toEqual([])
   })
 
@@ -53,9 +54,9 @@ describe('constellation data', () => {
   })
 
   it('uses common stick-figure edges instead of crossing chords', () => {
-    const edgesOf = (name: string) => {
-      const line = constellationLines.find((item) => item.name === name)
-      if (!line) throw new Error(name)
+    const edgesOf = (id: string) => {
+      const line = constellationLines.find((item) => item.id === id)
+      if (!line) throw new Error(id)
       const edges = new Set<string>()
       for (const segment of line.segments) {
         for (let index = 0; index < segment.length - 1; index += 1) {
@@ -66,18 +67,18 @@ describe('constellation data', () => {
       return edges
     }
 
-    const taurus = edgesOf('金牛座')
+    const taurus = edgesOf('Tau')
     expect(taurus.has('ain|elnath')).toBe(true)
     expect(taurus.has('ain|aldebaran')).toBe(true)
     expect(taurus.has('aldebaran|zetaTau')).toBe(true)
     expect(taurus.has('aldebaran|elnath')).toBe(false)
 
-    const auriga = edgesOf('御夫座')
+    const auriga = edgesOf('Aur')
     expect(auriga.has('elnath|hassaleh')).toBe(true)
     expect(auriga.has('elnath|mahasim')).toBe(true)
     expect(auriga.has('hassaleh|mahasim')).toBe(false)
 
-    const orion = edgesOf('猎户座')
+    const orion = edgesOf('Ori')
     expect(orion.has('bellatrix|betelgeuse')).toBe(false)
     expect(orion.has('bellatrix|pi3Ori')).toBe(true)
     expect(orion.has('pi3Ori|pi4Ori')).toBe(true)
@@ -88,14 +89,14 @@ describe('constellation data', () => {
     expect(orion.has('alnilam|alnitak')).toBe(true)
     expect(orion.has('alnitak|betelgeuse')).toBe(true)
 
-    const ursaMajor = edgesOf('大熊座')
+    const ursaMajor = edgesOf('UMa')
     expect(ursaMajor.has('dubhe|merak')).toBe(true)
     expect(ursaMajor.has('megrez|phecda')).toBe(true)
     expect(ursaMajor.has('alkaid|mizar')).toBe(true)
     expect(ursaMajor.has('dubhe|megrez')).toBe(true)
     expect(ursaMajor.has('dubhe|iotaUma')).toBe(false)
 
-    const ursaMinor = edgesOf('小熊座')
+    const ursaMinor = edgesOf('UMi')
     expect(ursaMinor.has('polaris|yildun')).toBe(true)
     expect(ursaMinor.has('epsUmi|zetaUmi')).toBe(true)
     expect(ursaMinor.has('kochab|zetaUmi')).toBe(true)
@@ -103,24 +104,24 @@ describe('constellation data', () => {
     expect(ursaMinor.has('etaUmi|pherkad')).toBe(true)
     expect(ursaMinor.has('etaUmi|kochab')).toBe(false)
 
-    const leo = edgesOf('狮子座')
+    const leo = edgesOf('Leo')
     expect(leo.has('thetaLeo|zosma')).toBe(true)
 
-    const draco = edgesOf('天龙座')
+    const draco = edgesOf('Dra')
     expect(draco.has('grumium|zetaDra')).toBe(true)
     expect(draco.has('rastaban|zetaDra')).toBe(false)
     expect(draco.has('etaDra|zetaDra')).toBe(true)
 
-    const hydra = edgesOf('长蛇座')
+    const hydra = edgesOf('Hya')
     expect(hydra.has('alphard|lambdaHya')).toBe(true)
     expect(hydra.has('lambdaHya|nuHya')).toBe(true)
     expect(hydra.has('gammaHya|nuHya')).toBe(false)
 
-    const cepheus = edgesOf('仙王座')
+    const cepheus = edgesOf('Cep')
     expect(cepheus.has('alderamin|alfirk')).toBe(true)
     expect(cepheus.has('errai|zetaCep')).toBe(false)
 
-    const grus = edgesOf('天鹤座')
+    const grus = edgesOf('Gru')
     expect(grus.has('alnair|gammaGru')).toBe(true)
     expect(grus.has('alnair|betaGru')).toBe(true)
     expect(grus.has('betaGru|gammaGru')).toBe(false)

@@ -20,6 +20,7 @@ import { useObserver } from './hooks/useObserver'
 import { useLayerState } from './hooks/useLayerState'
 import { useSkyView } from './hooks/useSkyView'
 import { usePlayback } from './hooks/usePlayback'
+import { skyObjectLabel, useLocale } from '@/i18n'
 import styles from './App.module.css'
 
 const SkyViewport = lazy(() => import('@/features/sky-viewer/SkyViewport'))
@@ -30,6 +31,7 @@ function formatSignedAltitude(degrees: number) {
 }
 
 export default function App() {
+  const { locale, t } = useLocale()
   const { catalog, catalogError, retry } = useCatalog()
   const location = useObserver()
   const { observer } = location
@@ -66,6 +68,10 @@ export default function App() {
   const dismissNotice = useCallback(() => setNotice(null), [])
   const [bodyEpoch, setBodyEpoch] = useState(0)
   const bodyMagnitudes = useMemo(() => {
+    void bodyEpoch
+    void playback.currentTime
+    void observer.latitude
+    void observer.longitude
     const magnitudes: Record<string, number> = {}
     for (const body of interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)) {
       magnitudes[body.id] = body.magnitude
@@ -94,7 +100,7 @@ export default function App() {
       view: latest.view,
     })
     if (!result) {
-      setNotice(type === 'body' ? '太阳系位置还在计算，请稍后再试' : null)
+      setNotice(type === 'body' ? t('notice.bodyPending') : null)
       return
     }
     if (!result.belowHorizon) {
@@ -103,7 +109,10 @@ export default function App() {
     setSelected(result.selected)
     latest.wake?.()
     setNotice(result.belowHorizon
-      ? `${result.selected.name}目前在地平线以下（${formatSignedAltitude(result.targetAltitude)}）`
+      ? t('notice.belowHorizon', {
+        name: skyObjectLabel(result.selected, catalog, locale, t),
+        altitude: formatSignedAltitude(result.targetAltitude),
+      })
       : null)
   }
 
@@ -136,13 +145,13 @@ export default function App() {
             }}
           >
             {selected && (
-              <ObjectCard selected={selected} onClose={() => setSelected(null)} ref={objectCardRef} />
+              <ObjectCard selected={selected} catalog={catalog} onClose={() => setSelected(null)} ref={objectCardRef} />
             )}
           </SkyViewport>
         ) : catalogError ? (
           <ErrorPanel error={catalogError} onRetry={retry} />
         ) : (
-          <LoadingPanel message="正在加载星表…" />
+          <LoadingPanel message={t('loading.catalog')} />
         )}
       </Suspense>
 
@@ -164,8 +173,8 @@ export default function App() {
         <HoverDock
           side="left"
           panelId="sky-quick-nav"
-          handleLabel="快速定位"
-          handleLabelPinned="收起快速定位"
+          handleLabel={t('nav.title')}
+          handleLabelPinned={t('nav.collapse')}
           handleIcon={<LocateFixed size={15} strokeWidth={1.65} />}
         >
           <QuickNav catalog={catalog} bodyMagnitudes={bodyMagnitudes} onLocate={locateTarget} />

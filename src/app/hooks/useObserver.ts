@@ -7,8 +7,8 @@ export function resolveObserver(
   manualPosition: { latitude: number; longitude: number } | null,
 ) {
   return manualPosition
-    ? { ...city, ...manualPosition, name: '自定义坐标' }
-    : city
+    ? { ...city, ...manualPosition, custom: true as const }
+    : { ...city, custom: false as const }
 }
 
 export function useObserver() {

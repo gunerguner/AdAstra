@@ -1,6 +1,8 @@
 source: fixture-bright-stars
 constellations:
-  - name: 猎户座
+  - id: Ori
+    name: 猎户座
+    nameEn: Orion
     segments:
       - [ meissa, betelgeuse ]
       - [ meissa, bellatrix ]
@@ -14,36 +16,52 @@ constellations:
       - [ pi2Ori, pi3Ori ]
       - [ betelgeuse, muOri, nuOri, chi1Ori ]
       - [ alnilam, iotaOri ]
-  - name: 大熊座
+  - id: UMa
+    name: 大熊座
+    nameEn: Ursa Major
     segments:
       - [ dubhe, merak, phecda, megrez, alioth, mizar, alkaid ]
       - [ dubhe, megrez ]
-  - name: 小熊座
+  - id: UMi
+    name: 小熊座
+    nameEn: Ursa Minor
     segments:
       - [ polaris, yildun, epsUmi, zetaUmi ]
       - [ zetaUmi, kochab, pherkad, etaUmi, zetaUmi ]
-  - name: 仙后座
+  - id: Cas
+    name: 仙后座
+    nameEn: Cassiopeia
     segments:
       - [ caph, schedar, gammaCas, ruchbah, segin ]
-  - name: 天鹅座
+  - id: Cyg
+    name: 天鹅座
+    nameEn: Cygnus
     segments:
       - [ deneb, sadr, albireo ]
       - [ deltaCyg, sadr, gienahCyg ]
-  - name: 天琴座
+  - id: Lyr
+    name: 天琴座
+    nameEn: Lyra
     segments:
       - [ vega, zetaLyr, deltaLyr, vega ]
       - [ zetaLyr, sheliak, sulafat, deltaLyr ]
-  - name: 天鹰座
+  - id: Aql
+    name: 天鹰座
+    nameEn: Aquila
     segments:
       - [ tarazed, altair, alshain ]
       - [ altair, deltaAql ]
       - [ zetaAql, altair ]
-  - name: 狮子座
+  - id: Leo
+    name: 狮子座
+    nameEn: Leo
     segments:
       - [ rasElased, muLeo, zetaLeo, algieba, etaLeo, regulus ]
       - [ regulus, thetaLeo, denebola, zosma, algieba ]
       - [ thetaLeo, zosma ]
-  - name: 天蝎座
+  - id: Sco
+    name: 天蝎座
+    nameEn: Scorpius
     segments:
       - [ piSco, dschubba, betaSco ]
       - [
@@ -61,55 +79,81 @@ constellations:
           shaula
         ]
       - [ kappaSco, upsilonSco ]
-  - name: 金牛座
+  - id: Tau
+    name: 金牛座
+    nameEn: Taurus
     segments:
       - [ electra, alcyone, atlas ]
       - [ elnath, ain, aldebaran, zetaTau ]
-  - name: 双子座
+  - id: Gem
+    name: 双子座
+    nameEn: Gemini
     segments:
       - [ castor, pollux ]
       - [ castor, mebsuta, tejat, propus ]
       - [ pollux, wasat, alhena ]
-  - name: 室女座
+  - id: Vir
+    name: 室女座
+    nameEn: Virgo
     segments:
       - [ vindemiatrix, zauwaken, porrima, spica ]
       - [ porrima, heze ]
-  - name: 牧夫座
+  - id: Boo
+    name: 牧夫座
+    nameEn: Boötes
     segments:
       - [ seginus, nekkar, izar, arcturus, rhoBoo, seginus ]
       - [ arcturus, muphrid ]
-  - name: 仙女座
+  - id: And
+    name: 仙女座
+    nameEn: Andromeda
     segments:
       - [ alpheratz, deltaAnd, mirach, alamak ]
-  - name: 飞马座
+  - id: Peg
+    name: 飞马座
+    nameEn: Pegasus
     segments:
       - [ markab, scheat, alpheratz, algenib, markab ]
       - [ markab, enif ]
-  - name: 英仙座
+  - id: Per
+    name: 英仙座
+    nameEn: Perseus
     segments:
       - [ gammaPer, mirfak, deltaPer, epsilonPer, atik ]
       - [ mirfak, algol ]
-  - name: 御夫座
+  - id: Aur
+    name: 御夫座
+    nameEn: Auriga
     segments:
       - [ capella, menkalinan, mahasim, elnath, hassaleh, capella ]
       - [ capella, almaaz ]
-  - name: 大犬座
+  - id: CMa
+    name: 大犬座
+    nameEn: Canis Major
     segments:
       - [ mirzam, sirius, wezen, adhara ]
       - [ wezen, aludra ]
-  - name: 小犬座
+  - id: CMi
+    name: 小犬座
+    nameEn: Canis Minor
     segments:
       - [ procyon, gomeisa ]
-  - name: 南十字座
+  - id: Cru
+    name: 南十字座
+    nameEn: Crux
     segments:
       - [ gacrux, acrux ]
       - [ mimosa, deltaCru ]
-  - name: 半人马座
+  - id: Cen
+    name: 半人马座
+    nameEn: Centaurus
     segments:
       - [ rigilKentaurus, hadar ]
       - [ hadar, epsilonCen, gammaCen, menkent ]
       - [ gammaCen, iotaCen ]
-  - name: 人马座
+  - id: Sgr
+    name: 人马座
+    nameEn: Sagittarius
     segments:
       - [
           kausBorealis,
@@ -122,125 +166,195 @@ constellations:
         ]
       - [ nunki, albaldah, kausBorealis ]
       - [ kausMedia, gamma2Sgr ]
-  - name: 白羊座
+  - id: Ari
+    name: 白羊座
+    nameEn: Aries
     segments:
       - [ hamal, sheratan, mesarthim ]
-  - name: 巨蟹座
+  - id: Cnc
+    name: 巨蟹座
+    nameEn: Cancer
     segments:
       - [ iotaCnc, asellusBorealis, asellusAustralis, acubens ]
       - [ asellusAustralis, altarf ]
-  - name: 北冕座
+  - id: CrB
+    name: 北冕座
+    nameEn: Corona Borealis
     segments:
       - [ thetaCrB, nusakan, alphecca, gammaCrB, deltaCrB, epsilonCrB ]
-  - name: 武仙座
+  - id: Her
+    name: 武仙座
+    nameEn: Hercules
     segments:
       - [ zetaHer, etaHer, piHer, epsilonHer, zetaHer ]
       - [ zetaHer, kornephoros ]
       - [ piHer, rasalgethi ]
-  - name: 天龙座
+  - id: Dra
+    name: 天龙座
+    nameEn: Draco
     segments:
       - [ etamin, rastaban, grumium, etamin ]
       - [ grumium, zetaDra, etaDra, thuban, giausar ]
-  - name: 长蛇座
+  - id: Hya
+    name: 长蛇座
+    nameEn: Hydra
     segments:
       - [ deltaHya, epsilonHya, zetaHya, sigmaHya ]
       - [ zetaHya, alphard, lambdaHya, nuHya, xiHya, gammaHya, piHya ]
-  - name: 蛇夫座
+  - id: Oph
+    name: 蛇夫座
+    nameEn: Ophiuchus
     segments:
       - [ rasalhague, cebrai, sabik ]
       - [ yedPrior, zetaOph, sabik ]
-  - name: 船底座
+  - id: Car
+    name: 船底座
+    nameEn: Carina
     segments:
       - [ canopus, avior, aspidiske, thetaCar, miaplacidus ]
-  - name: 波江座
+  - id: Eri
+    name: 波江座
+    nameEn: Eridanus
     segments:
       - [ cursa, zaurak, acamar ]
       - [ acamar, phiEri, chiEri, achernar ]
-  - name: 鲸鱼座
+  - id: Cet
+    name: 鲸鱼座
+    nameEn: Cetus
     segments:
       - [ menkar, kaffaljidhma, mira, batenKaitos, denebKaitos ]
-  - name: 南鱼座
+  - id: PsA
+    name: 南鱼座
+    nameEn: Piscis Austrinus
     segments:
       - [ epsilonPsA, fomalhaut, deltaPsA, betaPsA, epsilonPsA ]
-  - name: 南三角座
+  - id: TrA
+    name: 南三角座
+    nameEn: Triangulum Australe
     segments:
       - [ atria, betaTra, gammaTra, atria ]
-  - name: 孔雀座
+  - id: Pav
+    name: 孔雀座
+    nameEn: Pavo
     segments:
       - [ peacock, betaPav, deltaPav, peacock ]
-  - name: 仙王座
+  - id: Cep
+    name: 仙王座
+    nameEn: Cepheus
     segments:
       - [ alderamin, alfirk, errai ]
       - [ alderamin, zetaCep, deltaCep ]
-  - name: 天秤座
+  - id: Lib
+    name: 天秤座
+    nameEn: Libra
     segments:
       - [ zubenelgenubi, zubeneschamali, sigmaLib, zubenelgenubi ]
-  - name: 摩羯座
+  - id: Cap
+    name: 摩羯座
+    nameEn: Capricornus
     segments:
       - [ algedi, dabih, nashira, denebAlgedi, algedi ]
-  - name: 宝瓶座
+  - id: Aqr
+    name: 宝瓶座
+    nameEn: Aquarius
     segments:
       - [ sadalsuud, sadalmelik, sadachbia, skat ]
-  - name: 双鱼座
+  - id: Psc
+    name: 双鱼座
+    nameEn: Pisces
     segments:
       - [ gammaPsc, thetaPsc, iotaPsc, lambdaPsc, gammaPsc ]
       - [ alpherg, alrescha ]
-  - name: 海豚座
+  - id: Del
+    name: 海豚座
+    nameEn: Delphinus
     segments:
       - [ sualocin, rotanev, deltaDel, gammaDel, sualocin ]
-  - name: 天兔座
+  - id: Lep
+    name: 天兔座
+    nameEn: Lepus
     segments:
       - [ arneb, nihal, epsilonLep, arneb ]
-  - name: 乌鸦座
+  - id: Crv
+    name: 乌鸦座
+    nameEn: Corvus
     segments:
       - [ gienahCrv, minkar, kraz, algorab, gienahCrv ]
-  - name: 猎犬座
+  - id: CVn
+    name: 猎犬座
+    nameEn: Canes Venatici
     segments:
       - [ corCaroli, chara ]
-  - name: 三角座
+  - id: Tri
+    name: 三角座
+    nameEn: Triangulum
     segments:
       - [ alphaTri, betaTri, gammaTri, alphaTri ]
-  - name: 巨蛇座
+  - id: Ser
+    name: 巨蛇座
+    nameEn: Serpens
     segments:
       - [ gammaSer, betaSer, deltaSer, alphaSer, epsilonSer ]
       - [ nuSer, xiSer, etaSer ]
-  - name: 船尾座
+  - id: Pup
+    name: 船尾座
+    nameEn: Puppis
     segments:
       - [ piPup, naos, sigmaPup, piPup ]
       - [ naos, rhoPup ]
-  - name: 船帆座
+  - id: Vel
+    name: 船帆座
+    nameEn: Vela
     segments:
       - [ regor, deltaVel, kappaVel ]
       - [ lambdaVel, deltaVel, muVel ]
-  - name: 豺狼座
+  - id: Lup
+    name: 豺狼座
+    nameEn: Lupus
     segments:
       - [ alphaLup, betaLup, gammaLup, deltaLup ]
       - [ gammaLup, etaLup ]
-  - name: 天鸽座
+  - id: Col
+    name: 天鸽座
+    nameEn: Columba
     segments:
       - [ alphaCol, betaCol, etaCol ]
       - [ betaCol, deltaCol ]
-  - name: 麒麟座
+  - id: Mon
+    name: 麒麟座
+    nameEn: Monoceros
     segments:
       - [ gammaMon, betaMon, deltaMon, zetaMon ]
-  - name: 南冕座
+  - id: CrA
+    name: 南冕座
+    nameEn: Corona Australis
     segments:
       - [ alphaCra, betaCra, gammaCra ]
-  - name: 后发座
+  - id: Com
+    name: 后发座
+    nameEn: Coma Berenices
     segments:
       - [ gammaCom, betaCom, alphaCom, gammaCom ]
-  - name: 天箭座
+  - id: Sge
+    name: 天箭座
+    nameEn: Sagitta
     segments:
       - [ gammaSge, deltaSge, alphaSge ]
       - [ betaSge, deltaSge ]
-  - name: 凤凰座
+  - id: Phe
+    name: 凤凰座
+    nameEn: Phoenix
     segments:
       - [ ankaa, betaPhe, gammaPhe, ankaa ]
-  - name: 天鹤座
+  - id: Gru
+    name: 天鹤座
+    nameEn: Grus
     segments:
       - [ gammaGru, alnair, betaGru ]
       - [ alnair, epsilonGru ]
-  - name: 天坛座
+  - id: Ara
+    name: 天坛座
+    nameEn: Ara
     segments:
       - [ alphaAra, betaAra, deltaAra ]
       - [ betaAra, zetaAra ]

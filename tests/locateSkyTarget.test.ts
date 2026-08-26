@@ -19,8 +19,8 @@ const view: SkyView = { azimuth: 180, altitude: 0, fov: SKY_FOV_DEG }
 function star(id: string, raHours: number, decDeg: number): Star {
   return {
     id,
-    name: id,
-    constellation: '测试',
+    names: { zh: id, en: id },
+    constellationId: 'Tes',
     raHours,
     decDeg,
     magnitude: 0.1,
@@ -28,10 +28,9 @@ function star(id: string, raHours: number, decDeg: number): Star {
   }
 }
 
-function body(id: string, name: string, raHours: number, decDeg: number): BodySnapshot {
+function body(id: string, raHours: number, decDeg: number): BodySnapshot {
   return {
     id,
-    name,
     altitude: 0,
     azimuth: 0,
     raHours,
@@ -81,7 +80,7 @@ describe('locateSkyTarget', () => {
     expect(result?.targetAltitude).toBeCloseTo(90, 4)
     expect(result?.altitude).toBeGreaterThan(0)
     expect(result?.altitude).toBeLessThan(80)
-    expect(result?.selected.name).toBe('zenith')
+    expect(result?.selected.id).toBe('zenith')
   })
 
   it('does not rotate when a star is below the horizon', () => {
@@ -103,7 +102,7 @@ describe('locateSkyTarget', () => {
   })
 
   it('uses solar-system snapshots for body pose', () => {
-    const mars = body('mars', '火星', lst, 0)
+    const mars = body('mars', lst, 0)
     const result = locateSkyTarget({
       id: 'mars',
       type: 'body',
@@ -115,7 +114,7 @@ describe('locateSkyTarget', () => {
     })
     expect(result?.belowHorizon).toBe(false)
     expect(result?.targetAltitude).toBeCloseTo(90, 4)
-    expect(result?.selected.name).toBe('火星')
+    expect(result?.selected.id).toBe('mars')
   })
 
   it('returns null when the target is missing', () => {

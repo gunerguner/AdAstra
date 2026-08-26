@@ -3,6 +3,8 @@ import { Orbit, Star } from 'lucide-react'
 import { brightestStarIds, solarQuickTargets } from '@/config/quickTargets'
 import { bodyAppearance } from '@/engine/render/bodyAppearance'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
+import { localizedName, useLocale } from '@/i18n'
+import type { MessageKey } from '@/i18n/types'
 import styles from './quickNav.module.css'
 
 type Tab = 'bodies' | 'stars'
@@ -19,6 +21,7 @@ function formatMagnitude(value: number) {
 }
 
 export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
+  const { locale, t } = useLocale()
   const [tab, setTab] = useState<Tab>('bodies')
   const stars = brightestStarIds.flatMap((id) => {
     const star = catalog.starById.get(id)
@@ -27,7 +30,7 @@ export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
 
   return (
     <section className={styles.section}>
-      <div className={styles.tabs} role="tablist" aria-label="快速定位">
+      <div className={styles.tabs} role="tablist" aria-label={t('nav.title')}>
         <button
           type="button"
           role="tab"
@@ -35,7 +38,7 @@ export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
           onClick={() => setTab('bodies')}
         >
           <Orbit size={13} />
-          太阳系
+          {t('nav.bodies')}
         </button>
         <button
           type="button"
@@ -44,7 +47,7 @@ export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
           onClick={() => setTab('stars')}
         >
           <Star size={13} />
-          亮星
+          {t('nav.stars')}
         </button>
       </div>
       {tab === 'bodies' ? (
@@ -55,7 +58,7 @@ export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
               <li key={body.id}>
                 <button type="button" className={styles.item} onClick={() => onLocate(body.id, 'body')}>
                   <i className={styles.swatch} style={{ background: bodyAppearance[body.id]?.color }} aria-hidden="true" />
-                  <span>{body.name}</span>
+                  <span>{t(`bodies.${body.id}` as MessageKey)}</span>
                   <small>{magnitude == null ? '—' : formatMagnitude(magnitude)}</small>
                 </button>
               </li>
@@ -68,7 +71,7 @@ export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
             <li key={star.id}>
               <button type="button" className={styles.item} onClick={() => onLocate(star.id, 'star')}>
                 <i className={styles.swatch} style={{ background: star.color }} aria-hidden="true" />
-                <span>{star.name}</span>
+                <span>{localizedName(star.names, locale)}</span>
                 <small>{formatMagnitude(star.magnitude)}</small>
               </button>
             </li>

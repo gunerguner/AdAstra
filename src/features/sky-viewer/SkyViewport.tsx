@@ -12,6 +12,8 @@ import { SkyViewController } from '@/engine/interaction/SkyViewController'
 import { ErrorPanel } from '@/shared/ui'
 import { cardinals } from '@/config/cardinals'
 import { eclipticPoles } from '@/config/eclipticPoles'
+import { localizedName, skyObjectLabel, useLocale } from '@/i18n'
+import type { MessageKey } from '@/i18n/types'
 import styles from './skyViewer.module.css'
 
 type Props = {
@@ -39,12 +41,17 @@ export default function SkyViewport({
   onAtmosphereChange,
   children,
 }: Props) {
+  const { locale, t } = useLocale()
+  const localeRef = useRef(locale)
+  const tRef = useRef(t)
+  localeRef.current = locale
+  tRef.current = t
   const mountRef = useRef<HTMLDivElement>(null)
   const hoverRef = useRef<HTMLDivElement>(null)
   const cardinalRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const constellationNameRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const eclipticPoleRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const hoverTargetRef = useRef<{ id: string; name: string; type: 'star' | 'body' } | null>(null)
+  const hoverTargetRef = useRef<{ id: string; type: 'star' | 'body' } | null>(null)
   const selectedRef = useRef<SelectedSkyObject | null>(selected ?? null)
   selectedRef.current = selected ?? null
   const [viewportError, setViewportError] = useState<AppError | null>(null)
@@ -78,7 +85,7 @@ export default function SkyViewport({
     }
 
     if (!document.createElement('canvas').getContext('webgl2')) {
-      reportError(new AppError('webgl', '当前浏览器不支持 WebGL2 星空渲染。'), 'webgl')
+      reportError(new AppError('webgl', 'error.webgl.unsupported'), 'webgl')
       worker.terminate()
       return
     }
@@ -91,6 +98,7 @@ export default function SkyViewport({
       worker.terminate()
       return
     }
+    ctx.renderer.domElement.setAttribute('aria-label', tRef.current('sky.canvasLabel'))
 
     const resizeObserver = new ResizeObserver(ctx.resize)
     resizeObserver.observe(mount)
@@ -112,8 +120,8 @@ export default function SkyViewport({
       (hit) => {
         const hoverNode = hoverRef.current
         if (hit && hoverNode) {
-          hoverTargetRef.current = { id: hit.id, name: hit.name, type: hit.type }
-          hoverNode.textContent = hit.name
+          hoverTargetRef.current = { id: hit.id, type: hit.type }
+          hoverNode.textContent = skyObjectLabel(hit, catalog, localeRef.current, tRef.current)
           ctx.renderer.domElement.style.cursor = 'pointer'
         } else hideHover()
       },
@@ -150,6 +158,15 @@ export default function SkyViewport({
     }
   }, [catalog, objectCardRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars])
 
+  useEffect(() => {
+    const canvas = mountRef.current?.querySelector('canvas')
+    canvas?.setAttribute('aria-label', t('sky.canvasLabel'))
+    const hover = hoverTargetRef.current
+    if (hover && hoverRef.current) {
+      hoverRef.current.textContent = skyObjectLabel(hover, catalog, locale, t)
+    }
+  }, [catalog, locale, t])
+
   return (
     <div className={`${styles.viewport} ${viewportError?.code === 'webgl' ? styles.fallback : ''}`} ref={mountRef}>
       {viewportError && (
@@ -169,7 +186,7 @@ export default function SkyViewport({
             cardinalRefs.current[cardinal.id] = node
           }}
         >
-          {cardinal.label}
+          {t(`cardinals.${cardinal.id}` as MessageKey)}
         </div>
       ))}
       {eclipticPoles.map((pole) => (
@@ -181,18 +198,18 @@ export default function SkyViewport({
           }}
         >
           <span className={styles.eclipticPoleCross} aria-hidden="true" />
-          <span className={styles.eclipticPoleLabel}>{pole.label}</span>
+          <span className={styles.eclipticPoleLabel}>{t(`ecliptic.${pole.id}` as MessageKey)}</span>
         </div>
       ))}
       {constellationStars.map((line) => (
         <div
-          key={line.name}
+          key={line.id}
           className={styles.constellationName}
           ref={(node) => {
-            constellationNameRefs.current[line.name] = node
+            constellationNameRefs.current[line.id] = node
           }}
         >
-          {line.name}
+          {localizedName(line.names, locale)}
         </div>
       ))}
       {children}

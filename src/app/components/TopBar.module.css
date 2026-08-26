@@ -48,6 +48,29 @@
   font-size: 11px;
 }
 
+.lang {
+  display: flex;
+  margin-left: 4px;
+  border: 1px solid var(--color-border-muted);
+  background: rgba(6, 12, 31, 0.45);
+}
+
+.lang button {
+  min-width: 28px;
+  padding: 3px 7px;
+  border: 0;
+  background: transparent;
+  color: var(--color-label);
+  font: 10px var(--font-mono);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.langActive {
+  color: var(--color-text);
+  background: rgba(245, 207, 136, 0.12);
+}
+
 .status {
   display: flex;
   align-items: stretch;
