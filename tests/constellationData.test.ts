@@ -28,7 +28,7 @@ describe('constellation data', () => {
   })
 
   it('covers the planned constellation set with drawable segments', () => {
-    expect(constellationLines).toHaveLength(44)
+    expect(constellationLines).toHaveLength(57)
     const missing = constellationLines.flatMap((line) =>
       line.segments.flatMap((segment) =>
         segment.flatMap((id) => (starIds.has(id) ? [] : [`${line.name}:${id}`])),
@@ -67,7 +67,30 @@ describe('constellation data', () => {
     expect(auriga.has('hassaleh|mahasim')).toBe(false)
 
     const orion = edgesOf('猎户座')
-    expect(orion.has('bellatrix|betelgeuse')).toBe(true)
+    expect(orion.has('bellatrix|betelgeuse')).toBe(false)
+    expect(orion.has('bellatrix|pi3Ori')).toBe(true)
+    expect(orion.has('pi3Ori|pi4Ori')).toBe(true)
+    expect(orion.has('pi4Ori|pi5Ori')).toBe(true)
+    expect(orion.has('alnilam|iotaOri')).toBe(true)
+    expect(orion.has('alnitak|etaOri')).toBe(false)
+    expect(orion.has('betelgeuse|muOri')).toBe(true)
+    expect(orion.has('alnilam|alnitak')).toBe(true)
+    expect(orion.has('alnitak|betelgeuse')).toBe(true)
+
+    const ursaMajor = edgesOf('大熊座')
+    expect(ursaMajor.has('dubhe|merak')).toBe(true)
+    expect(ursaMajor.has('megrez|phecda')).toBe(true)
+    expect(ursaMajor.has('alkaid|mizar')).toBe(true)
+    expect(ursaMajor.has('dubhe|megrez')).toBe(true)
+    expect(ursaMajor.has('dubhe|iotaUma')).toBe(false)
+
+    const ursaMinor = edgesOf('小熊座')
+    expect(ursaMinor.has('polaris|yildun')).toBe(true)
+    expect(ursaMinor.has('epsUmi|zetaUmi')).toBe(true)
+    expect(ursaMinor.has('kochab|zetaUmi')).toBe(true)
+    expect(ursaMinor.has('kochab|pherkad')).toBe(true)
+    expect(ursaMinor.has('etaUmi|pherkad')).toBe(true)
+    expect(ursaMinor.has('etaUmi|kochab')).toBe(false)
 
     const leo = edgesOf('狮子座')
     expect(leo.has('thetaLeo|zosma')).toBe(true)
@@ -75,5 +98,20 @@ describe('constellation data', () => {
     const draco = edgesOf('天龙座')
     expect(draco.has('grumium|zetaDra')).toBe(true)
     expect(draco.has('rastaban|zetaDra')).toBe(false)
+    expect(draco.has('etaDra|zetaDra')).toBe(true)
+
+    const hydra = edgesOf('长蛇座')
+    expect(hydra.has('alphard|lambdaHya')).toBe(true)
+    expect(hydra.has('lambdaHya|nuHya')).toBe(true)
+    expect(hydra.has('gammaHya|nuHya')).toBe(false)
+
+    const cepheus = edgesOf('仙王座')
+    expect(cepheus.has('alderamin|alfirk')).toBe(true)
+    expect(cepheus.has('errai|zetaCep')).toBe(false)
+
+    const grus = edgesOf('天鹤座')
+    expect(grus.has('alnair|gammaGru')).toBe(true)
+    expect(grus.has('alnair|betaGru')).toBe(true)
+    expect(grus.has('betaGru|gammaGru')).toBe(false)
   })
 })

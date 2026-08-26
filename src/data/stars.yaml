@@ -203,12 +203,26 @@ stars:
     decDeg: -1.202
     magnitude: 1.69
     color: "#9ec4ff"
+  - id: alnair
+    name: 鹤一
+    constellation: 天鹤座
+    raHours: 22.1372
+    decDeg: -46.961
+    magnitude: 1.73
+    color: "#b7d4ff"
   - id: alnitak
     name: 参宿一
     constellation: 猎户座
     raHours: 5.6793
     decDeg: -1.943
     magnitude: 1.74
+    color: "#9ec4ff"
+  - id: regor
+    name: 十字架增
+    constellation: 船帆座
+    raHours: 8.1589
+    decDeg: -47.337
+    magnitude: 1.75
     color: "#9ec4ff"
   - id: alioth
     name: 玉衡
@@ -287,6 +301,13 @@ stars:
     decDeg: 16.399
     magnitude: 1.92
     color: "#eef4ff"
+  - id: deltaVel
+    name: 船帆δ
+    constellation: 船帆座
+    raHours: 8.7451
+    decDeg: -54.709
+    magnitude: 1.93
+    color: "#eef4ff"
   - id: peacock
     name: 孔雀十一
     constellation: 孔雀座
@@ -322,6 +343,13 @@ stars:
     decDeg: 23.463
     magnitude: 2
     color: "#ffc07a"
+  - id: denebKaitos
+    name: 土司空
+    constellation: 鲸鱼座
+    raHours: 0.7265
+    decDeg: -17.987
+    magnitude: 2.04
+    color: "#ffc07a"
   - id: nunki
     name: 斗宿四
     constellation: 人马座
@@ -343,6 +371,27 @@ stars:
     decDeg: 35.621
     magnitude: 2.06
     color: "#ffb56a"
+  - id: menkent
+    name: 库楼三
+    constellation: 半人马座
+    raHours: 14.1115
+    decDeg: -36.369
+    magnitude: 2.06
+    color: "#ff8f55"
+  - id: saiph
+    name: 参宿六
+    constellation: 猎户座
+    raHours: 5.796
+    decDeg: -9.67
+    magnitude: 2.07
+    color: "#a9cbff"
+  - id: betaGru
+    name: 鹤增
+    constellation: 天鹤座
+    raHours: 22.7111
+    decDeg: -46.885
+    magnitude: 2.07
+    color: "#ff6d4a"
   - id: rasalhague
     name: 候
     constellation: 蛇夫座
@@ -371,13 +420,6 @@ stars:
     decDeg: 42.33
     magnitude: 2.1
     color: "#ffc07a"
-  - id: denebola
-    name: 五帝座一
-    constellation: 狮子座
-    raHours: 11.8177
-    decDeg: 14.572
-    magnitude: 2.14
-    color: "#eef4ff"
   - id: algol
     name: 大陵五
     constellation: 英仙座
@@ -385,13 +427,13 @@ stars:
     decDeg: 40.956
     magnitude: 2.12
     color: "#c8dcff"
-  - id: denebKaitos
-    name: 土司空
-    constellation: 鲸鱼座
-    raHours: 0.7265
-    decDeg: -17.987
-    magnitude: 2.04
-    color: "#ffc07a"
+  - id: denebola
+    name: 五帝座一
+    constellation: 狮子座
+    raHours: 11.8177
+    decDeg: 14.572
+    magnitude: 2.14
+    color: "#eef4ff"
   - id: sadr
     name: 天津一
     constellation: 天鹅座
@@ -399,26 +441,33 @@ stars:
     decDeg: 40.257
     magnitude: 2.2
     color: "#fff1c8"
-  - id: caph
-    name: 王良一
-    constellation: 仙后座
-    raHours: 0.1529
-    decDeg: 59.15
-    magnitude: 2.27
+  - id: gammaCen
+    name: 库楼二
+    constellation: 半人马座
+    raHours: 12.692
+    decDeg: -48.96
+    magnitude: 2.2
+    color: "#eef4ff"
+  - id: aspidiske
+    name: 海石二
+    constellation: 船底座
+    raHours: 9.2848
+    decDeg: -59.275
+    magnitude: 2.21
     color: "#fff1c8"
+  - id: naos
+    name: 弧矢增二十二
+    constellation: 船尾座
+    raHours: 8.0597
+    decDeg: -40.003
+    magnitude: 2.21
+    color: "#b7d4ff"
   - id: schedar
     name: 王良四
     constellation: 仙后座
     raHours: 0.6751
     decDeg: 56.537
     magnitude: 2.23
-    color: "#ffc07a"
-  - id: epsilonSco
-    name: 尾宿二
-    constellation: 天蝎座
-    raHours: 16.8361
-    decDeg: -34.293
-    magnitude: 2.29
     color: "#ffc07a"
   - id: mintaka
     name: 参宿三
@@ -448,6 +497,34 @@ stars:
     decDeg: 51.609
     magnitude: 2.23
     color: "#ffc07a"
+  - id: lambdaVel
+    name: 船帆λ
+    constellation: 船帆座
+    raHours: 9.1333
+    decDeg: -43.433
+    magnitude: 2.23
+    color: "#ff8f55"
+  - id: gammaDra
+    name: 天棓一
+    constellation: 天龙座
+    raHours: 17.9434
+    decDeg: 51.489
+    magnitude: 2.24
+    color: "#ff8f55"
+  - id: caph
+    name: 王良一
+    constellation: 仙后座
+    raHours: 0.1529
+    decDeg: 59.15
+    magnitude: 2.27
+    color: "#fff1c8"
+  - id: epsilonSco
+    name: 尾宿二
+    constellation: 天蝎座
+    raHours: 16.8361
+    decDeg: -34.293
+    magnitude: 2.29
+    color: "#ffc07a"
   - id: dschubba
     name: 心宿一
     constellation: 天蝎座
@@ -455,13 +532,27 @@ stars:
     decDeg: -22.622
     magnitude: 2.29
     color: "#b7d4ff"
-  - id: merak
-    name: 天璇
-    constellation: 大熊座
-    raHours: 11.0307
-    decDeg: 56.382
-    magnitude: 2.37
-    color: "#dce8ff"
+  - id: epsilonCen
+    name: 库楼增
+    constellation: 半人马座
+    raHours: 13.6648
+    decDeg: -53.466
+    magnitude: 2.29
+    color: "#b7d4ff"
+  - id: alphaLup
+    name: 豺狼一
+    constellation: 豺狼座
+    raHours: 14.6988
+    decDeg: -47.388
+    magnitude: 2.3
+    color: "#b7d4ff"
+  - id: etaCen
+    name: 库楼增三
+    constellation: 半人马座
+    raHours: 14.5918
+    decDeg: -42.158
+    magnitude: 2.33
+    color: "#b7d4ff"
   - id: izar
     name: 七公六
     constellation: 牧夫座
@@ -469,12 +560,26 @@ stars:
     decDeg: 27.074
     magnitude: 2.35
     color: "#ffc07a"
+  - id: merak
+    name: 天璇
+    constellation: 大熊座
+    raHours: 11.0307
+    decDeg: 56.382
+    magnitude: 2.37
+    color: "#dce8ff"
   - id: enif
     name: 危宿三
     constellation: 飞马座
     raHours: 21.7365
     decDeg: 9.875
     magnitude: 2.38
+    color: "#ff8f55"
+  - id: ankaa
+    name: 天钩一
+    constellation: 凤凰座
+    raHours: 0.438
+    decDeg: -42.305
+    magnitude: 2.4
     color: "#ff8f55"
   - id: phecda
     name: 天玑
@@ -483,6 +588,13 @@ stars:
     decDeg: 53.695
     magnitude: 2.41
     color: "#e4eeff"
+  - id: kappaSco
+    name: 尾宿七
+    constellation: 天蝎座
+    raHours: 17.7081
+    decDeg: -39.03
+    magnitude: 2.41
+    color: "#b7d4ff"
   - id: scheat
     name: 室宿二
     constellation: 飞马座
@@ -490,12 +602,40 @@ stars:
     decDeg: 28.083
     magnitude: 2.42
     color: "#ff8f55"
+  - id: sabik
+    name: 宋
+    constellation: 蛇夫座
+    raHours: 17.1729
+    decDeg: -15.725
+    magnitude: 2.43
+    color: "#eef4ff"
   - id: aludra
     name: 弧矢二
     constellation: 大犬座
     raHours: 7.4016
     decDeg: -29.303
     magnitude: 2.45
+    color: "#b7d4ff"
+  - id: alderamin
+    name: 天钩五
+    constellation: 仙王座
+    raHours: 21.3096
+    decDeg: 62.586
+    magnitude: 2.46
+    color: "#eef4ff"
+  - id: gammaCas
+    name: 策
+    constellation: 仙后座
+    raHours: 0.9451
+    decDeg: 60.717
+    magnitude: 2.47
+    color: "#c8dcff"
+  - id: kappaVel
+    name: 船帆κ
+    constellation: 船帆座
+    raHours: 9.3686
+    decDeg: -55.011
+    magnitude: 2.47
     color: "#b7d4ff"
   - id: gienahCyg
     name: 天津九
@@ -518,6 +658,13 @@ stars:
     decDeg: 4.09
     magnitude: 2.53
     color: "#ff8f55"
+  - id: zetaCen
+    name: 库楼增二
+    constellation: 半人马座
+    raHours: 13.9257
+    decDeg: -47.288
+    magnitude: 2.55
+    color: "#b7d4ff"
   - id: zosma
     name: 西上相
     constellation: 狮子座
@@ -525,202 +672,48 @@ stars:
     decDeg: 20.524
     magnitude: 2.56
     color: "#eef4ff"
-  - id: sabik
-    name: 宋
+  - id: zetaOph
+    name: 宋增
     constellation: 蛇夫座
-    raHours: 17.1729
-    decDeg: -15.725
-    magnitude: 2.43
-    color: "#eef4ff"
-  - id: deltaCyg
-    name: 天津二
-    constellation: 天鹅座
-    raHours: 19.7496
-    decDeg: 45.131
-    magnitude: 2.87
-    color: "#c8dcff"
-  - id: gammaCas
-    name: 策
-    constellation: 仙后座
-    raHours: 0.9451
-    decDeg: 60.717
-    magnitude: 2.47
-    color: "#c8dcff"
-  - id: ruchbah
-    name: 阁道三
-    constellation: 仙后座
-    raHours: 1.4302
-    decDeg: 60.235
-    magnitude: 2.68
-    color: "#eef4ff"
-  - id: segin
-    name: 阁道二
-    constellation: 仙后座
-    raHours: 1.9066
-    decDeg: 63.67
-    magnitude: 3.38
-    color: "#c8dcff"
-  - id: saiph
-    name: 参宿六
-    constellation: 猎户座
-    raHours: 5.796
-    decDeg: -9.67
-    magnitude: 2.07
-    color: "#a9cbff"
-  - id: meissa
-    name: 觜宿一
-    constellation: 猎户座
-    raHours: 5.5856
-    decDeg: 9.934
-    magnitude: 3.39
-    color: "#c8dcff"
-  - id: megrez
-    name: 天权
-    constellation: 大熊座
-    raHours: 12.2571
-    decDeg: 57.033
-    magnitude: 3.31
-    color: "#edf4ff"
-  - id: pherkad
-    name: 太子
-    constellation: 小熊座
-    raHours: 15.3455
-    decDeg: 71.834
-    magnitude: 3
-    color: "#eef4ff"
-  - id: yildun
-    name: 勾陈二
-    constellation: 小熊座
-    raHours: 17.5369
-    decDeg: 86.587
-    magnitude: 4.35
-    color: "#eef4ff"
-  - id: epsUmi
-    name: 天枢增
-    constellation: 小熊座
-    raHours: 16.7661
-    decDeg: 82.037
-    magnitude: 4.21
-    color: "#eef4ff"
-  - id: zetaUmi
-    name: 勾陈三
-    constellation: 小熊座
-    raHours: 15.7343
-    decDeg: 77.795
-    magnitude: 4.32
-    color: "#eef4ff"
-  - id: etaUmi
-    name: 太子增
-    constellation: 小熊座
-    raHours: 16.2859
-    decDeg: 75.755
-    magnitude: 4.95
-    color: "#eef4ff"
-  - id: albireo
-    name: 辇道增七
-    constellation: 天鹅座
-    raHours: 19.512
-    decDeg: 27.96
-    magnitude: 3.05
-    color: "#ffc07a"
-  - id: sheliak
-    name: 渐台二
-    constellation: 天琴座
-    raHours: 18.8347
-    decDeg: 33.363
-    magnitude: 3.45
-    color: "#c8dcff"
-  - id: sulafat
-    name: 渐台三
-    constellation: 天琴座
-    raHours: 18.9824
-    decDeg: 32.69
-    magnitude: 3.25
-    color: "#c8dcff"
-  - id: zetaLyr
-    name: 渐台一
-    constellation: 天琴座
-    raHours: 18.7462
-    decDeg: 37.605
-    magnitude: 4.34
-    color: "#eef4ff"
-  - id: deltaLyr
-    name: 渐台增
-    constellation: 天琴座
-    raHours: 18.915
-    decDeg: 36.898
-    magnitude: 4.3
-    color: "#c8dcff"
-  - id: tarazed
-    name: 河鼓二
-    constellation: 天鹰座
-    raHours: 19.7705
-    decDeg: 10.613
-    magnitude: 2.72
-    color: "#ffc07a"
-  - id: alshain
-    name: 河鼓三
-    constellation: 天鹰座
-    raHours: 19.9214
-    decDeg: 6.407
-    magnitude: 3.71
-    color: "#fff1c8"
-  - id: deltaAql
-    name: 右旗三
-    constellation: 天鹰座
-    raHours: 19.4249
-    decDeg: 3.115
-    magnitude: 3.36
-    color: "#fff1c8"
-  - id: zetaAql
-    name: 天市左垣十一
-    constellation: 天鹰座
-    raHours: 19.0874
-    decDeg: 13.863
-    magnitude: 2.99
-    color: "#eef4ff"
-  - id: rasElased
-    name: 轩辕十一
-    constellation: 狮子座
-    raHours: 9.7642
-    decDeg: 23.774
-    magnitude: 2.98
-    color: "#fff1c8"
-  - id: muLeo
-    name: 轩辕十
-    constellation: 狮子座
-    raHours: 9.8794
-    decDeg: 26.007
-    magnitude: 3.88
-    color: "#ffc07a"
-  - id: zetaLeo
-    name: 轩辕十五
-    constellation: 狮子座
-    raHours: 10.2782
-    decDeg: 23.417
-    magnitude: 3.44
-    color: "#fff1c8"
-  - id: etaLeo
-    name: 轩辕十三
-    constellation: 狮子座
-    raHours: 10.1222
-    decDeg: 16.763
-    magnitude: 3.49
-    color: "#eef4ff"
-  - id: thetaLeo
-    name: 西次相
-    constellation: 狮子座
-    raHours: 11.237
-    decDeg: 15.43
-    magnitude: 3.33
-    color: "#eef4ff"
-  - id: piSco
-    name: 房宿四
-    constellation: 天蝎座
-    raHours: 15.982
-    decDeg: -26.114
-    magnitude: 2.89
+    raHours: 16.6193
+    decDeg: -10.567
+    magnitude: 2.56
     color: "#b7d4ff"
+  - id: arneb
+    name: 厕一
+    constellation: 天兔座
+    raHours: 5.5455
+    decDeg: -17.822
+    magnitude: 2.58
+    color: "#fff1c8"
+  - id: deltaCen
+    name: 半人马δ
+    constellation: 半人马座
+    raHours: 12.1393
+    decDeg: -50.722
+    magnitude: 2.58
+    color: "#b7d4ff"
+  - id: gienahCrv
+    name: 轸宿一
+    constellation: 乌鸦座
+    raHours: 12.2634
+    decDeg: -17.542
+    magnitude: 2.59
+    color: "#b7d4ff"
+  - id: ascella
+    name: 斗宿六
+    constellation: 人马座
+    raHours: 19.0435
+    decDeg: -29.88
+    magnitude: 2.6
+    color: "#eef4ff"
+  - id: zubeneschamali
+    name: 氐宿四
+    constellation: 天秤座
+    raHours: 15.2835
+    decDeg: -9.383
+    magnitude: 2.61
+    color: "#c8dcff"
   - id: betaSco
     name: 房宿三
     constellation: 天蝎座
@@ -728,54 +721,61 @@ stars:
     decDeg: -19.805
     magnitude: 2.62
     color: "#b7d4ff"
-  - id: sigmaSco
-    name: 心宿三
-    constellation: 天蝎座
-    raHours: 16.3571
-    decDeg: -25.593
-    magnitude: 2.89
-    color: "#b7d4ff"
-  - id: tauSco
-    name: 心宿增
-    constellation: 天蝎座
-    raHours: 16.5981
-    decDeg: -28.216
-    magnitude: 2.82
-    color: "#b7d4ff"
-  - id: muSco
-    name: 尾宿一
-    constellation: 天蝎座
-    raHours: 16.8645
-    decDeg: -38.048
-    magnitude: 3
-    color: "#b7d4ff"
-  - id: zetaSco
-    name: 尾宿二增
-    constellation: 天蝎座
-    raHours: 16.901
-    decDeg: -42.362
-    magnitude: 3.62
-    color: "#c8dcff"
-  - id: etaSco
-    name: 尾宿三
-    constellation: 天蝎座
-    raHours: 17.2043
-    decDeg: -43.239
-    magnitude: 3.33
+  - id: mahasim
+    name: 五车四
+    constellation: 御夫座
+    raHours: 5.995
+    decDeg: 37.213
+    magnitude: 2.62
+    color: "#eef4ff"
+  - id: alphaSer
+    name: 巨蛇一
+    constellation: 巨蛇座
+    raHours: 15.7378
+    decDeg: 6.426
+    magnitude: 2.63
+    color: "#ff8f55"
+  - id: sheratan
+    name: 娄宿一
+    constellation: 白羊座
+    raHours: 1.9106
+    decDeg: 20.808
+    magnitude: 2.64
+    color: "#eef4ff"
+  - id: kraz
+    name: 轸宿四
+    constellation: 乌鸦座
+    raHours: 12.5731
+    decDeg: -23.397
+    magnitude: 2.65
     color: "#fff1c8"
-  - id: iotaSco
-    name: 尾宿六
-    constellation: 天蝎座
-    raHours: 17.7934
-    decDeg: -40.127
-    magnitude: 2.99
-    color: "#c8dcff"
-  - id: kappaSco
-    name: 尾宿七
-    constellation: 天蝎座
-    raHours: 17.7081
-    decDeg: -39.03
-    magnitude: 2.41
+  - id: alphaCol
+    name: 天鸽α
+    constellation: 天鸽座
+    raHours: 5.6608
+    decDeg: -34.074
+    magnitude: 2.65
+    color: "#b7d4ff"
+  - id: ruchbah
+    name: 阁道三
+    constellation: 仙后座
+    raHours: 1.4302
+    decDeg: 60.235
+    magnitude: 2.68
+    color: "#eef4ff"
+  - id: muphrid
+    name: 七公增七
+    constellation: 牧夫座
+    raHours: 13.9114
+    decDeg: 18.398
+    magnitude: 2.68
+    color: "#fff1c8"
+  - id: betaLup
+    name: 豺狼β
+    constellation: 豺狼座
+    raHours: 14.9755
+    decDeg: -43.134
+    magnitude: 2.68
     color: "#b7d4ff"
   - id: upsilonSco
     name: 尾宿五增
@@ -784,76 +784,62 @@ stars:
     decDeg: -37.296
     magnitude: 2.69
     color: "#b7d4ff"
-  - id: ain
-    name: 毕宿一
-    constellation: 金牛座
-    raHours: 4.4769
-    decDeg: 19.18
-    magnitude: 3.53
+  - id: hassaleh
+    name: 五车一
+    constellation: 御夫座
+    raHours: 4.975
+    decDeg: 33.166
+    magnitude: 2.69
     color: "#ffc07a"
-  - id: zetaTau
-    name: 天关
-    constellation: 金牛座
-    raHours: 5.6274
-    decDeg: 21.143
-    magnitude: 3.03
+  - id: alphaMus
+    name: 苍蝇一
+    constellation: 苍蝇座
+    raHours: 12.6197
+    decDeg: -69.136
+    magnitude: 2.69
     color: "#b7d4ff"
-  - id: alcyone
-    name: 昴宿六
-    constellation: 金牛座
-    raHours: 3.7914
-    decDeg: 24.105
-    magnitude: 2.87
-    color: "#c8dcff"
-  - id: atlas
-    name: 昴宿增
-    constellation: 金牛座
-    raHours: 3.8107
-    decDeg: 24.053
-    magnitude: 3.63
-    color: "#c8dcff"
-  - id: electra
-    name: 昴宿一
-    constellation: 金牛座
-    raHours: 3.7479
-    decDeg: 24.113
-    magnitude: 3.7
-    color: "#c8dcff"
-  - id: mizarB
-    name: 辅
-    constellation: 大熊座
-    raHours: 13.4202
-    decDeg: 54.908
-    magnitude: 3.95
-    color: "#eef4ff"
-  - id: wasat
-    name: 井宿四
-    constellation: 双子座
-    raHours: 7.333
-    decDeg: 21.982
-    magnitude: 3.53
-    color: "#eef4ff"
-  - id: mebsuta
-    name: 井宿五
-    constellation: 双子座
-    raHours: 6.7322
-    decDeg: 25.131
-    magnitude: 2.98
-    color: "#fff1c8"
-  - id: tejat
-    name: 井宿二
-    constellation: 双子座
-    raHours: 6.3827
-    decDeg: 22.514
-    magnitude: 2.87
+  - id: iotaAur
+    name: 御夫座ι
+    constellation: 御夫座
+    raHours: 4.9499
+    decDeg: 33.166
+    magnitude: 2.69
     color: "#ff8f55"
-  - id: propus
-    name: 井宿一
-    constellation: 双子座
-    raHours: 6.2475
-    decDeg: 22.507
-    magnitude: 3.31
+  - id: muVel
+    name: 船帆μ
+    constellation: 船帆座
+    raHours: 10.7795
+    decDeg: -49.42
+    magnitude: 2.69
+    color: "#ffe3a8"
+  - id: kausMedia
+    name: 箕宿二
+    constellation: 人马座
+    raHours: 18.349
+    decDeg: -29.828
+    magnitude: 2.7
+    color: "#ffc07a"
+  - id: piPup
+    name: 船尾座π
+    constellation: 船尾座
+    raHours: 7.2857
+    decDeg: -37.097
+    magnitude: 2.71
     color: "#ff8f55"
+  - id: tarazed
+    name: 河鼓二
+    constellation: 天鹰座
+    raHours: 19.7705
+    decDeg: 10.613
+    magnitude: 2.72
+    color: "#ffc07a"
+  - id: etaDra
+    name: 右枢增
+    constellation: 天龙座
+    raHours: 16.3999
+    decDeg: 61.514
+    magnitude: 2.73
+    color: "#ffe3a8"
   - id: porrima
     name: 太微右垣四
     constellation: 室女座
@@ -861,6 +847,153 @@ stars:
     decDeg: -1.45
     magnitude: 2.74
     color: "#fff1c8"
+  - id: yedPrior
+    name: 天市右垣十一
+    constellation: 蛇夫座
+    raHours: 16.2391
+    decDeg: -3.694
+    magnitude: 2.74
+    color: "#ff8f55"
+  - id: zubenelgenubi
+    name: 氐宿一
+    constellation: 天秤座
+    raHours: 14.8479
+    decDeg: -16.042
+    magnitude: 2.75
+    color: "#eef4ff"
+  - id: iotaCen
+    name: 半人马ι
+    constellation: 半人马座
+    raHours: 13.3434
+    decDeg: -36.712
+    magnitude: 2.75
+    color: "#eef4ff"
+  - id: iotaOri
+    name: 参宿ι
+    constellation: 猎户座
+    raHours: 5.5906
+    decDeg: -5.91
+    magnitude: 2.75
+    color: "#b7d4ff"
+  - id: thetaCar
+    name: 南船三
+    constellation: 船底座
+    raHours: 10.7159
+    decDeg: -64.394
+    magnitude: 2.76
+    color: "#b7d4ff"
+  - id: kornephoros
+    name: 天市右垣一
+    constellation: 武仙座
+    raHours: 16.5037
+    decDeg: 21.49
+    magnitude: 2.77
+    color: "#fff1c8"
+  - id: cebrai
+    name: 宗正
+    constellation: 蛇夫座
+    raHours: 17.7245
+    decDeg: 4.567
+    magnitude: 2.77
+    color: "#ffc07a"
+  - id: rasalgethi
+    name: 帝座
+    constellation: 武仙座
+    raHours: 17.2441
+    decDeg: 14.39
+    magnitude: 2.78
+    color: "#ff6d4a"
+  - id: rastaban
+    name: 天棓三
+    constellation: 天龙座
+    raHours: 17.5072
+    decDeg: 52.301
+    magnitude: 2.79
+    color: "#fff1c8"
+  - id: cursa
+    name: 玉井三
+    constellation: 波江座
+    raHours: 5.1308
+    decDeg: -5.086
+    magnitude: 2.79
+    color: "#eef4ff"
+  - id: deltaCru
+    name: 十字架四
+    constellation: 南十字座
+    raHours: 12.2524
+    decDeg: -58.749
+    magnitude: 2.8
+    color: "#b7d4ff"
+  - id: gammaLup
+    name: 豺狼座γ
+    constellation: 豺狼座
+    raHours: 15.5857
+    decDeg: -41.167
+    magnitude: 2.8
+    color: "#b7d4ff"
+  - id: kausBorealis
+    name: 箕宿一
+    constellation: 人马座
+    raHours: 18.4662
+    decDeg: -25.421
+    magnitude: 2.81
+    color: "#ffc07a"
+  - id: zetaHer
+    name: 天纪二
+    constellation: 武仙座
+    raHours: 16.6881
+    decDeg: 31.603
+    magnitude: 2.81
+    color: "#fff1c8"
+  - id: tauSco
+    name: 心宿增
+    constellation: 天蝎座
+    raHours: 16.5981
+    decDeg: -28.216
+    magnitude: 2.82
+    color: "#b7d4ff"
+  - id: betaHyi
+    name: 水蛇二
+    constellation: 水蛇座
+    raHours: 0.4276
+    decDeg: -77.255
+    magnitude: 2.82
+    color: "#ffe3a8"
+  - id: algenib
+    name: 壁宿二
+    constellation: 飞马座
+    raHours: 0.2206
+    decDeg: 15.184
+    magnitude: 2.83
+    color: "#b7d4ff"
+  - id: rhoPup
+    name: 船尾座ρ
+    constellation: 船尾座
+    raHours: 8.1258
+    decDeg: -24.304
+    magnitude: 2.83
+    color: "#fff1c8"
+  - id: nihal
+    name: 厕二
+    constellation: 天兔座
+    raHours: 5.4708
+    decDeg: -20.769
+    magnitude: 2.84
+    color: "#fff1c8"
+  - id: betaAra
+    name: 天坛座β
+    constellation: 天坛座
+    raHours: 17.4217
+    decDeg: -55.53
+    magnitude: 2.84
+    color: "#ff8f55"
+  - id: alphaAra
+    name: 天坛α
+    constellation: 天坛座
+    raHours: 17.5307
+    decDeg: -49.876
+    magnitude: 2.84
+    color: "#b7d4ff"
   - id: vindemiatrix
     name: 太微左垣四
     constellation: 室女座
@@ -868,6 +1001,685 @@ stars:
     decDeg: 10.959
     magnitude: 2.85
     color: "#fff1c8"
+  - id: atik
+    name: 卷舌六
+    constellation: 英仙座
+    raHours: 3.9022
+    decDeg: 31.883
+    magnitude: 2.85
+    color: "#b7d4ff"
+  - id: betaTra
+    name: 三角形一
+    constellation: 南三角座
+    raHours: 15.9189
+    decDeg: -63.431
+    magnitude: 2.85
+    color: "#fff1c8"
+  - id: denebAlgedi
+    name: 垒壁阵四
+    constellation: 摩羯座
+    raHours: 21.784
+    decDeg: -16.127
+    magnitude: 2.85
+    color: "#eef4ff"
+  - id: alphaHyi
+    name: 水蛇座α
+    constellation: 水蛇座
+    raHours: 1.9794
+    decDeg: -61.57
+    magnitude: 2.86
+    color: "#fff1c8"
+  - id: deltaCyg
+    name: 天津二
+    constellation: 天鹅座
+    raHours: 19.7496
+    decDeg: 45.131
+    magnitude: 2.87
+    color: "#c8dcff"
+  - id: alcyone
+    name: 昴宿六
+    constellation: 金牛座
+    raHours: 3.7914
+    decDeg: 24.105
+    magnitude: 2.87
+    color: "#c8dcff"
+  - id: tejat
+    name: 井宿二
+    constellation: 双子座
+    raHours: 6.3827
+    decDeg: 22.514
+    magnitude: 2.87
+    color: "#ff8f55"
+  - id: alphaTuc
+    name: 杜鹃一
+    constellation: 杜鹃座
+    raHours: 22.3084
+    decDeg: -60.259
+    magnitude: 2.87
+    color: "#ff8f55"
+  - id: acamar
+    name: 天园六
+    constellation: 波江座
+    raHours: 2.971
+    decDeg: -40.305
+    magnitude: 2.88
+    color: "#eef4ff"
+  - id: piSco
+    name: 房宿四
+    constellation: 天蝎座
+    raHours: 15.982
+    decDeg: -26.114
+    magnitude: 2.89
+    color: "#b7d4ff"
+  - id: sigmaSco
+    name: 心宿三
+    constellation: 天蝎座
+    raHours: 16.3571
+    decDeg: -25.593
+    magnitude: 2.89
+    color: "#b7d4ff"
+  - id: gomeisa
+    name: 南河二
+    constellation: 小犬座
+    raHours: 7.4525
+    decDeg: 8.289
+    magnitude: 2.89
+    color: "#c8dcff"
+  - id: albaldah
+    name: 斗宿二
+    constellation: 人马座
+    raHours: 19.1627
+    decDeg: -21.024
+    magnitude: 2.89
+    color: "#fff1c8"
+  - id: gammaTra
+    name: 三角形二
+    constellation: 南三角座
+    raHours: 15.3152
+    decDeg: -68.68
+    magnitude: 2.89
+    color: "#eef4ff"
+  - id: corCaroli
+    name: 常陈一
+    constellation: 猎犬座
+    raHours: 12.9338
+    decDeg: 38.318
+    magnitude: 2.89
+    color: "#eef4ff"
+  - id: epsilonPer
+    name: 天船五
+    constellation: 英仙座
+    raHours: 3.9827
+    decDeg: 40.01
+    magnitude: 2.9
+    color: "#c8dcff"
+  - id: sadalsuud
+    name: 虚宿一
+    constellation: 宝瓶座
+    raHours: 21.5259
+    decDeg: -5.571
+    magnitude: 2.91
+    color: "#fff1c8"
+  - id: upsilonCar
+    name: 船底座υ
+    constellation: 船底座
+    raHours: 9.785
+    decDeg: -65.072
+    magnitude: 2.92
+    color: "#eef4ff"
+  - id: gammaPer
+    name: 天船二
+    constellation: 英仙座
+    raHours: 3.081
+    decDeg: 53.506
+    magnitude: 2.93
+    color: "#fff1c8"
+  - id: etaPeg
+    name: 室宿增
+    constellation: 飞马座
+    raHours: 22.7167
+    decDeg: 30.221
+    magnitude: 2.93
+    color: "#ffe3a8"
+  - id: algorab
+    name: 轸宿三
+    constellation: 乌鸦座
+    raHours: 12.4977
+    decDeg: -16.515
+    magnitude: 2.94
+    color: "#eef4ff"
+  - id: tauPup
+    name: 船尾座τ
+    constellation: 船尾座
+    raHours: 6.8323
+    decDeg: -50.614
+    magnitude: 2.94
+    color: "#ff8f55"
+  - id: zaurak
+    name: 天园一
+    constellation: 波江座
+    raHours: 3.9672
+    decDeg: -13.508
+    magnitude: 2.95
+    color: "#ff8f55"
+  - id: sadalmelik
+    name: 危宿一
+    constellation: 宝瓶座
+    raHours: 22.0964
+    decDeg: -0.32
+    magnitude: 2.96
+    color: "#fff1c8"
+  - id: rasElased
+    name: 轩辕十一
+    constellation: 狮子座
+    raHours: 9.7642
+    decDeg: 23.774
+    magnitude: 2.98
+    color: "#fff1c8"
+  - id: mebsuta
+    name: 井宿五
+    constellation: 双子座
+    raHours: 6.7322
+    decDeg: 25.131
+    magnitude: 2.98
+    color: "#fff1c8"
+  - id: gamma2Sgr
+    name: 箕宿增
+    constellation: 人马座
+    raHours: 18.0968
+    decDeg: -30.424
+    magnitude: 2.98
+    color: "#ff8f55"
+  - id: zetaAql
+    name: 天市左垣十一
+    constellation: 天鹰座
+    raHours: 19.0874
+    decDeg: 13.863
+    magnitude: 2.99
+    color: "#eef4ff"
+  - id: iotaSco
+    name: 尾宿六
+    constellation: 天蝎座
+    raHours: 17.7934
+    decDeg: -40.127
+    magnitude: 2.99
+    color: "#c8dcff"
+  - id: almaaz
+    name: 柱一
+    constellation: 御夫座
+    raHours: 5.0327
+    decDeg: 43.823
+    magnitude: 2.99
+    color: "#fff1c8"
+  - id: gammaHya
+    name: 星宿增
+    constellation: 长蛇座
+    raHours: 13.3153
+    decDeg: -23.171
+    magnitude: 2.99
+    color: "#ffe3a8"
+  - id: pherkad
+    name: 太子
+    constellation: 小熊座
+    raHours: 15.3455
+    decDeg: 71.834
+    magnitude: 3
+    color: "#eef4ff"
+  - id: muSco
+    name: 尾宿一
+    constellation: 天蝎座
+    raHours: 16.8645
+    decDeg: -38.048
+    magnitude: 3
+    color: "#b7d4ff"
+  - id: mira
+    name: 刍藁增二
+    constellation: 鲸鱼座
+    raHours: 2.3225
+    decDeg: -2.977
+    magnitude: 3
+    color: "#ff8f55"
+  - id: minkar
+    name: 轸宿二
+    constellation: 乌鸦座
+    raHours: 12.1687
+    decDeg: -22.619
+    magnitude: 3
+    color: "#ffc07a"
+  - id: gammaGru
+    name: 鹤二
+    constellation: 天鹤座
+    raHours: 21.8988
+    decDeg: -37.365
+    magnitude: 3
+    color: "#b7d4ff"
+  - id: psiUma
+    name: 大熊座ψ
+    constellation: 大熊座
+    raHours: 11.1611
+    decDeg: 44.499
+    magnitude: 3
+    color: "#ff8f55"
+  - id: betaTri
+    name: 三角二
+    constellation: 三角座
+    raHours: 2.159
+    decDeg: 34.987
+    magnitude: 3
+    color: "#eef4ff"
+  - id: deltaPer
+    name: 天船四
+    constellation: 英仙座
+    raHours: 3.7154
+    decDeg: 47.788
+    magnitude: 3.01
+    color: "#c8dcff"
+  - id: zetaCma
+    name: 弧矢二
+    constellation: 大犬座
+    raHours: 6.3386
+    decDeg: -30.063
+    magnitude: 3.02
+    color: "#b7d4ff"
+  - id: zetaTau
+    name: 天关
+    constellation: 金牛座
+    raHours: 5.6274
+    decDeg: 21.143
+    magnitude: 3.03
+    color: "#b7d4ff"
+  - id: seginus
+    name: 招摇
+    constellation: 牧夫座
+    raHours: 14.5307
+    decDeg: 38.308
+    magnitude: 3.03
+    color: "#eef4ff"
+  - id: albireo
+    name: 辇道增七
+    constellation: 天鹅座
+    raHours: 19.512
+    decDeg: 27.96
+    magnitude: 3.05
+    color: "#ffc07a"
+  - id: dabih
+    name: 牛宿一
+    constellation: 摩羯座
+    raHours: 20.3502
+    decDeg: -14.781
+    magnitude: 3.05
+    color: "#fff1c8"
+  - id: muUma
+    name: 大熊座μ
+    constellation: 大熊座
+    raHours: 10.3722
+    decDeg: 41.499
+    magnitude: 3.06
+    color: "#ff6d4a"
+  - id: deltaDra
+    name: 天棓二
+    constellation: 天龙座
+    raHours: 19.2092
+    decDeg: 67.661
+    magnitude: 3.07
+    color: "#ffe3a8"
+  - id: etaSgr
+    name: 箕宿二
+    constellation: 人马座
+    raHours: 18.2938
+    decDeg: -36.761
+    magnitude: 3.1
+    color: "#ff6d4a"
+  - id: zetaHya
+    name: 柳宿六
+    constellation: 长蛇座
+    raHours: 8.9222
+    decDeg: 5.945
+    magnitude: 3.11
+    color: "#fff1c8"
+  - id: nuHya
+    name: 长蛇座ν
+    constellation: 长蛇座
+    raHours: 10.8271
+    decDeg: -16.194
+    magnitude: 3.11
+    color: "#ff8f55"
+  - id: lambdaCen
+    name: 半人马座λ
+    constellation: 半人马座
+    raHours: 11.5964
+    decDeg: -63.02
+    magnitude: 3.11
+    color: "#b7d4ff"
+  - id: iotaUma
+    name: 大熊座ι
+    constellation: 大熊座
+    raHours: 8.9869
+    decDeg: 48.042
+    magnitude: 3.12
+    color: "#eef4ff"
+  - id: zetaAra
+    name: 天坛座ζ
+    constellation: 天坛座
+    raHours: 16.977
+    decDeg: -55.99
+    magnitude: 3.12
+    color: "#ff8f55"
+  - id: deltaHer
+    name: 天市右垣三
+    constellation: 武仙座
+    raHours: 17.2505
+    decDeg: 24.84
+    magnitude: 3.12
+    color: "#eef4ff"
+  - id: betaCol
+    name: 天鸽β
+    constellation: 天鸽座
+    raHours: 5.8493
+    decDeg: -35.769
+    magnitude: 3.12
+    color: "#ff8f55"
+  - id: kappaCen
+    name: 半人马座κ
+    constellation: 半人马座
+    raHours: 14.986
+    decDeg: -42.104
+    magnitude: 3.13
+    color: "#b7d4ff"
+  - id: piHer
+    name: 天纪三
+    constellation: 武仙座
+    raHours: 17.2505
+    decDeg: 36.809
+    magnitude: 3.16
+    color: "#ffc07a"
+  - id: phiSgr
+    name: 斗宿三
+    constellation: 人马座
+    raHours: 18.7609
+    decDeg: -26.991
+    magnitude: 3.17
+    color: "#c8dcff"
+  - id: zetaDra
+    name: 天棓二
+    constellation: 天龙座
+    raHours: 17.1465
+    decDeg: 65.715
+    magnitude: 3.17
+    color: "#c8dcff"
+  - id: thetaUma
+    name: 大熊座θ
+    constellation: 大熊座
+    raHours: 9.5479
+    decDeg: 51.679
+    magnitude: 3.17
+    color: "#fff1c8"
+  - id: nuPup
+    name: 船尾座ν
+    constellation: 船尾座
+    raHours: 6.6294
+    decDeg: -43.196
+    magnitude: 3.17
+    color: "#b7d4ff"
+  - id: etaAur
+    name: 御夫座η
+    constellation: 御夫座
+    raHours: 5.1086
+    decDeg: 41.235
+    magnitude: 3.18
+    color: "#b7d4ff"
+  - id: epsilonLep
+    name: 厕三
+    constellation: 天兔座
+    raHours: 5.091
+    decDeg: -22.371
+    magnitude: 3.19
+    color: "#ffc07a"
+  - id: kappaOph
+    name: 蛇夫座κ
+    constellation: 蛇夫座
+    raHours: 16.9612
+    decDeg: 9.375
+    magnitude: 3.19
+    color: "#ff8f55"
+  - id: pi3Ori
+    name: 参宿π3
+    constellation: 猎户座
+    raHours: 4.8306
+    decDeg: 6.961
+    magnitude: 3.19
+    color: "#fff1c8"
+  - id: errai
+    name: 少卫增八
+    constellation: 仙王座
+    raHours: 23.6557
+    decDeg: 77.632
+    magnitude: 3.21
+    color: "#ffc07a"
+  - id: zetaCyg
+    name: 天津增
+    constellation: 天鹅座
+    raHours: 21.2156
+    decDeg: 30.227
+    magnitude: 3.21
+    color: "#ffe3a8"
+  - id: deltaLup
+    name: 豺狼座δ
+    constellation: 豺狼座
+    raHours: 15.3562
+    decDeg: -40.647
+    magnitude: 3.22
+    color: "#b7d4ff"
+  - id: alfirk
+    name: 天钩三
+    constellation: 仙王座
+    raHours: 21.4776
+    decDeg: 70.561
+    magnitude: 3.23
+    color: "#b7d4ff"
+  - id: epsilonOph
+    name: 蛇夫座ε
+    constellation: 蛇夫座
+    raHours: 16.3053
+    decDeg: -4.693
+    magnitude: 3.23
+    color: "#ffe3a8"
+  - id: etaSer
+    name: 巨蛇座η
+    constellation: 巨蛇座
+    raHours: 18.3553
+    decDeg: -2.897
+    magnitude: 3.23
+    color: "#ff8f55"
+  - id: thetaAql
+    name: 天鹰座θ
+    constellation: 天鹰座
+    raHours: 20.1884
+    decDeg: -0.821
+    magnitude: 3.24
+    color: "#b7d4ff"
+  - id: sulafat
+    name: 渐台三
+    constellation: 天琴座
+    raHours: 18.9824
+    decDeg: 32.69
+    magnitude: 3.25
+    color: "#c8dcff"
+  - id: sigmaHya
+    name: 星宿增
+    constellation: 长蛇座
+    raHours: 8.6453
+    decDeg: 3.341
+    magnitude: 3.25
+    color: "#ffc07a"
+  - id: sigmaPup
+    name: 船尾座σ
+    constellation: 船尾座
+    raHours: 7.4872
+    decDeg: -43.302
+    magnitude: 3.25
+    color: "#ff8f55"
+  - id: piHya
+    name: 长蛇座π
+    constellation: 长蛇座
+    raHours: 14.1062
+    decDeg: -26.682
+    magnitude: 3.25
+    color: "#ff8f55"
+  - id: deltaAnd
+    name: 奎宿五
+    constellation: 仙女座
+    raHours: 0.6551
+    decDeg: 30.861
+    magnitude: 3.27
+    color: "#ffc07a"
+  - id: skat
+    name: 羽林军二十六
+    constellation: 宝瓶座
+    raHours: 22.9108
+    decDeg: -15.821
+    magnitude: 3.27
+    color: "#eef4ff"
+  - id: thetaOph
+    name: 蛇夫座θ
+    constellation: 蛇夫座
+    raHours: 17.3668
+    decDeg: -24.999
+    magnitude: 3.27
+    color: "#b7d4ff"
+  - id: sigmaLib
+    name: 折威七
+    constellation: 天秤座
+    raHours: 15.0678
+    decDeg: -25.282
+    magnitude: 3.29
+    color: "#ff8f55"
+  - id: iotaDra
+    name: 天龙座ι
+    constellation: 天龙座
+    raHours: 15.4155
+    decDeg: 58.966
+    magnitude: 3.29
+    color: "#ff8f55"
+  - id: muLep
+    name: 天兔座μ
+    constellation: 天兔座
+    raHours: 5.2155
+    decDeg: -16.205
+    magnitude: 3.29
+    color: "#b7d4ff"
+  - id: megrez
+    name: 天权
+    constellation: 大熊座
+    raHours: 12.2571
+    decDeg: 57.033
+    magnitude: 3.31
+    color: "#edf4ff"
+  - id: propus
+    name: 井宿一
+    constellation: 双子座
+    raHours: 6.2475
+    decDeg: 22.507
+    magnitude: 3.31
+    color: "#ff8f55"
+  - id: gammaAra
+    name: 天坛座γ
+    constellation: 天坛座
+    raHours: 17.4232
+    decDeg: -56.378
+    magnitude: 3.31
+    color: "#b7d4ff"
+  - id: betaPhe
+    name: 凤凰β
+    constellation: 凤凰座
+    raHours: 1.1014
+    decDeg: -46.718
+    magnitude: 3.32
+    color: "#ffe3a8"
+  - id: tauSgr
+    name: 斗宿增
+    constellation: 人马座
+    raHours: 19.1157
+    decDeg: -27.67
+    magnitude: 3.32
+    color: "#ff8f55"
+  - id: nuOph
+    name: 蛇夫座ν
+    constellation: 蛇夫座
+    raHours: 17.9838
+    decDeg: -9.773
+    magnitude: 3.32
+    color: "#ff8f55"
+  - id: thetaLeo
+    name: 西次相
+    constellation: 狮子座
+    raHours: 11.237
+    decDeg: 15.43
+    magnitude: 3.33
+    color: "#eef4ff"
+  - id: etaSco
+    name: 尾宿三
+    constellation: 天蝎座
+    raHours: 17.2043
+    decDeg: -43.239
+    magnitude: 3.33
+    color: "#fff1c8"
+  - id: xiPup
+    name: 船尾座ξ
+    constellation: 船尾座
+    raHours: 7.8216
+    decDeg: -24.86
+    magnitude: 3.34
+    color: "#ffb56a"
+  - id: zetaCep
+    name: 造父增
+    constellation: 仙王座
+    raHours: 22.1809
+    decDeg: 58.201
+    magnitude: 3.35
+    color: "#ff8f55"
+  - id: xiGem
+    name: 井宿增
+    constellation: 双子座
+    raHours: 6.7548
+    decDeg: 12.896
+    magnitude: 3.35
+    color: "#fff1c8"
+  - id: etaOri
+    name: 参宿增
+    constellation: 猎户座
+    raHours: 5.4079
+    decDeg: -2.397
+    magnitude: 3.35
+    color: "#b7d4ff"
+  - id: omicronUma
+    name: 大熊座ο
+    constellation: 大熊座
+    raHours: 8.5045
+    decDeg: 60.718
+    magnitude: 3.35
+    color: "#ffe3a8"
+  - id: deltaAql
+    name: 右旗三
+    constellation: 天鹰座
+    raHours: 19.4249
+    decDeg: 3.115
+    magnitude: 3.36
+    color: "#fff1c8"
+  - id: epsilonLup
+    name: 豺狼座ε
+    constellation: 豺狼座
+    raHours: 15.378
+    decDeg: -44.69
+    magnitude: 3.37
+    color: "#b7d4ff"
+  - id: segin
+    name: 阁道二
+    constellation: 仙后座
+    raHours: 1.9066
+    decDeg: 63.67
+    magnitude: 3.38
+    color: "#c8dcff"
   - id: zauwaken
     name: 东次将
     constellation: 室女座
@@ -882,307 +1694,6 @@ stars:
     decDeg: -0.596
     magnitude: 3.38
     color: "#eef4ff"
-  - id: nekkar
-    name: 七公增五
-    constellation: 牧夫座
-    raHours: 15.0324
-    decDeg: 40.39
-    magnitude: 3.5
-    color: "#fff1c8"
-  - id: seginus
-    name: 招摇
-    constellation: 牧夫座
-    raHours: 14.5307
-    decDeg: 38.308
-    magnitude: 3.03
-    color: "#eef4ff"
-  - id: muphrid
-    name: 七公增七
-    constellation: 牧夫座
-    raHours: 13.9114
-    decDeg: 18.398
-    magnitude: 2.68
-    color: "#fff1c8"
-  - id: rhoBoo
-    name: 七公增
-    constellation: 牧夫座
-    raHours: 14.5305
-    decDeg: 30.371
-    magnitude: 3.58
-    color: "#ffc07a"
-  - id: deltaAnd
-    name: 奎宿五
-    constellation: 仙女座
-    raHours: 0.6551
-    decDeg: 30.861
-    magnitude: 3.27
-    color: "#ffc07a"
-  - id: algenib
-    name: 壁宿二
-    constellation: 飞马座
-    raHours: 0.2206
-    decDeg: 15.184
-    magnitude: 2.83
-    color: "#b7d4ff"
-  - id: gammaPer
-    name: 天船二
-    constellation: 英仙座
-    raHours: 3.081
-    decDeg: 53.506
-    magnitude: 2.93
-    color: "#fff1c8"
-  - id: deltaPer
-    name: 天船四
-    constellation: 英仙座
-    raHours: 3.7154
-    decDeg: 47.788
-    magnitude: 3.01
-    color: "#c8dcff"
-  - id: epsilonPer
-    name: 天船五
-    constellation: 英仙座
-    raHours: 3.9827
-    decDeg: 40.01
-    magnitude: 2.9
-    color: "#c8dcff"
-  - id: atik
-    name: 卷舌六
-    constellation: 英仙座
-    raHours: 3.9022
-    decDeg: 31.883
-    magnitude: 2.85
-    color: "#b7d4ff"
-  - id: hassaleh
-    name: 五车一
-    constellation: 御夫座
-    raHours: 4.975
-    decDeg: 33.166
-    magnitude: 2.69
-    color: "#ffc07a"
-  - id: almaaz
-    name: 柱一
-    constellation: 御夫座
-    raHours: 5.0327
-    decDeg: 43.823
-    magnitude: 2.99
-    color: "#fff1c8"
-  - id: mahasim
-    name: 五车四
-    constellation: 御夫座
-    raHours: 5.995
-    decDeg: 37.213
-    magnitude: 2.62
-    color: "#eef4ff"
-  - id: gomeisa
-    name: 南河二
-    constellation: 小犬座
-    raHours: 7.4525
-    decDeg: 8.289
-    magnitude: 2.89
-    color: "#c8dcff"
-  - id: deltaCru
-    name: 十字架四
-    constellation: 南十字座
-    raHours: 12.2524
-    decDeg: -58.749
-    magnitude: 2.8
-    color: "#b7d4ff"
-  - id: kausMedia
-    name: 箕宿二
-    constellation: 人马座
-    raHours: 18.349
-    decDeg: -29.828
-    magnitude: 2.7
-    color: "#ffc07a"
-  - id: kausBorealis
-    name: 箕宿一
-    constellation: 人马座
-    raHours: 18.4662
-    decDeg: -25.421
-    magnitude: 2.81
-    color: "#ffc07a"
-  - id: ascella
-    name: 斗宿六
-    constellation: 人马座
-    raHours: 19.0435
-    decDeg: -29.88
-    magnitude: 2.6
-    color: "#eef4ff"
-  - id: albaldah
-    name: 斗宿二
-    constellation: 人马座
-    raHours: 19.1627
-    decDeg: -21.024
-    magnitude: 2.89
-    color: "#fff1c8"
-  - id: phiSgr
-    name: 斗宿三
-    constellation: 人马座
-    raHours: 18.7609
-    decDeg: -26.991
-    magnitude: 3.17
-    color: "#c8dcff"
-  - id: sheratan
-    name: 娄宿一
-    constellation: 白羊座
-    raHours: 1.9106
-    decDeg: 20.808
-    magnitude: 2.64
-    color: "#eef4ff"
-  - id: mesarthim
-    name: 娄宿二
-    constellation: 白羊座
-    raHours: 1.9106
-    decDeg: 19.294
-    magnitude: 3.86
-    color: "#c8dcff"
-  - id: altarf
-    name: 柳宿增
-    constellation: 巨蟹座
-    raHours: 8.275
-    decDeg: 9.185
-    magnitude: 3.52
-    color: "#ffc07a"
-  - id: acubens
-    name: 柳宿增二
-    constellation: 巨蟹座
-    raHours: 8.9748
-    decDeg: 11.858
-    magnitude: 4.25
-    color: "#eef4ff"
-  - id: asellusAustralis
-    name: 鬼宿四
-    constellation: 巨蟹座
-    raHours: 8.7448
-    decDeg: 18.154
-    magnitude: 3.94
-    color: "#ffc07a"
-  - id: asellusBorealis
-    name: 鬼宿三
-    constellation: 巨蟹座
-    raHours: 8.7214
-    decDeg: 21.469
-    magnitude: 4.66
-    color: "#eef4ff"
-  - id: iotaCnc
-    name: 爟增
-    constellation: 巨蟹座
-    raHours: 8.7784
-    decDeg: 28.765
-    magnitude: 4.03
-    color: "#fff1c8"
-  - id: nusakan
-    name: 贯索三
-    constellation: 北冕座
-    raHours: 15.463
-    decDeg: 29.106
-    magnitude: 3.68
-    color: "#eef4ff"
-  - id: gammaCrB
-    name: 贯索五
-    constellation: 北冕座
-    raHours: 15.7124
-    decDeg: 26.295
-    magnitude: 3.84
-    color: "#c8dcff"
-  - id: deltaCrB
-    name: 贯索六
-    constellation: 北冕座
-    raHours: 15.8266
-    decDeg: 26.068
-    magnitude: 4.63
-    color: "#fff1c8"
-  - id: epsilonCrB
-    name: 贯索七
-    constellation: 北冕座
-    raHours: 15.9598
-    decDeg: 26.878
-    magnitude: 4.15
-    color: "#ffc07a"
-  - id: thetaCrB
-    name: 贯索一
-    constellation: 北冕座
-    raHours: 15.5484
-    decDeg: 31.359
-    magnitude: 4.14
-    color: "#c8dcff"
-  - id: kornephoros
-    name: 天市右垣一
-    constellation: 武仙座
-    raHours: 16.5037
-    decDeg: 21.49
-    magnitude: 2.77
-    color: "#fff1c8"
-  - id: zetaHer
-    name: 天纪二
-    constellation: 武仙座
-    raHours: 16.6881
-    decDeg: 31.603
-    magnitude: 2.81
-    color: "#fff1c8"
-  - id: etaHer
-    name: 天纪一
-    constellation: 武仙座
-    raHours: 16.7149
-    decDeg: 38.922
-    magnitude: 3.53
-    color: "#fff1c8"
-  - id: piHer
-    name: 天纪三
-    constellation: 武仙座
-    raHours: 17.2505
-    decDeg: 36.809
-    magnitude: 3.16
-    color: "#ffc07a"
-  - id: epsilonHer
-    name: 天纪四
-    constellation: 武仙座
-    raHours: 17.004
-    decDeg: 30.926
-    magnitude: 3.92
-    color: "#eef4ff"
-  - id: rastaban
-    name: 天棓三
-    constellation: 天龙座
-    raHours: 17.5072
-    decDeg: 52.301
-    magnitude: 2.79
-    color: "#fff1c8"
-  - id: grumium
-    name: 天棓一
-    constellation: 天龙座
-    raHours: 17.8931
-    decDeg: 56.872
-    magnitude: 3.75
-    color: "#ffc07a"
-  - id: zetaDra
-    name: 天棓二
-    constellation: 天龙座
-    raHours: 17.1465
-    decDeg: 65.715
-    magnitude: 3.17
-    color: "#c8dcff"
-  - id: thuban
-    name: 右枢
-    constellation: 天龙座
-    raHours: 14.0732
-    decDeg: 64.376
-    magnitude: 3.67
-    color: "#eef4ff"
-  - id: giausar
-    name: 紫微右垣六
-    constellation: 天龙座
-    raHours: 11.5234
-    decDeg: 69.331
-    magnitude: 3.82
-    color: "#ffc07a"
-  - id: zetaHya
-    name: 柳宿六
-    constellation: 长蛇座
-    raHours: 8.9222
-    decDeg: 5.945
-    magnitude: 3.11
-    color: "#fff1c8"
   - id: epsilonHya
     name: 柳宿五
     constellation: 长蛇座
@@ -1190,75 +1701,103 @@ stars:
     decDeg: 6.419
     magnitude: 3.38
     color: "#fff1c8"
-  - id: deltaHya
-    name: 柳宿四
-    constellation: 长蛇座
-    raHours: 8.6276
-    decDeg: 5.703
-    magnitude: 4.14
-    color: "#eef4ff"
-  - id: sigmaHya
-    name: 星宿增
-    constellation: 长蛇座
-    raHours: 8.6453
-    decDeg: 3.341
-    magnitude: 3.25
-    color: "#ffc07a"
-  - id: cebrai
-    name: 宗正
-    constellation: 蛇夫座
-    raHours: 17.7245
-    decDeg: 4.567
-    magnitude: 2.77
-    color: "#ffc07a"
-  - id: yedPrior
-    name: 天市右垣十一
-    constellation: 蛇夫座
-    raHours: 16.2391
-    decDeg: -3.694
-    magnitude: 2.74
+  - id: meissa
+    name: 觜宿一
+    constellation: 猎户座
+    raHours: 5.5856
+    decDeg: 9.934
+    magnitude: 3.39
+    color: "#c8dcff"
+  - id: zetaLup
+    name: 豺狼座ζ
+    constellation: 豺狼座
+    raHours: 15.2048
+    decDeg: -52.099
+    magnitude: 3.41
+    color: "#ffe3a8"
+  - id: gammaPhe
+    name: 凤凰座γ
+    constellation: 凤凰座
+    raHours: 1.4728
+    decDeg: -43.318
+    magnitude: 3.41
     color: "#ff8f55"
-  - id: zetaOph
-    name: 宋增
-    constellation: 蛇夫座
-    raHours: 16.6193
-    decDeg: -10.567
-    magnitude: 2.56
+  - id: lambdaTau
+    name: 金牛座λ
+    constellation: 金牛座
+    raHours: 4.0113
+    decDeg: 12.49
+    magnitude: 3.41
     color: "#b7d4ff"
-  - id: aspidiske
-    name: 海石二
-    constellation: 船底座
-    raHours: 9.2848
-    decDeg: -59.275
-    magnitude: 2.21
+  - id: nuCen
+    name: 半人马座ν
+    constellation: 半人马座
+    raHours: 13.8251
+    decDeg: -41.688
+    magnitude: 3.41
+    color: "#b7d4ff"
+  - id: zetaPeg
+    name: 飞马座ζ
+    constellation: 飞马座
+    raHours: 22.691
+    decDeg: 10.831
+    magnitude: 3.41
+    color: "#b7d4ff"
+  - id: betaPav
+    name: 孔雀四
+    constellation: 孔雀座
+    raHours: 20.7493
+    decDeg: -66.207
+    magnitude: 3.42
+    color: "#eef4ff"
+  - id: etaLup
+    name: 豺狼座η
+    constellation: 豺狼座
+    raHours: 16.002
+    decDeg: -38.397
+    magnitude: 3.42
+    color: "#b7d4ff"
+  - id: alphaTri
+    name: 三角一
+    constellation: 三角座
+    raHours: 1.8847
+    decDeg: 29.579
+    magnitude: 3.42
     color: "#fff1c8"
-  - id: thetaCar
-    name: 南船三
-    constellation: 船底座
-    raHours: 10.7159
-    decDeg: -64.394
-    magnitude: 2.76
+  - id: muHer
+    name: 武仙座μ
+    constellation: 武仙座
+    raHours: 17.7744
+    decDeg: 27.722
+    magnitude: 3.42
+    color: "#ffe3a8"
+  - id: lambdaAql
+    name: 天鹰座λ
+    constellation: 天鹰座
+    raHours: 19.1042
+    decDeg: -4.882
+    magnitude: 3.43
     color: "#b7d4ff"
-  - id: cursa
-    name: 玉井三
-    constellation: 波江座
-    raHours: 5.1308
-    decDeg: -5.086
-    magnitude: 2.79
-    color: "#eef4ff"
-  - id: zaurak
-    name: 天园一
-    constellation: 波江座
-    raHours: 3.9672
-    decDeg: -13.508
-    magnitude: 2.95
-    color: "#ff8f55"
-  - id: acamar
-    name: 天园六
-    constellation: 波江座
-    raHours: 2.971
-    decDeg: -40.305
-    magnitude: 2.88
+  - id: zetaLeo
+    name: 轩辕十五
+    constellation: 狮子座
+    raHours: 10.2782
+    decDeg: 23.417
+    magnitude: 3.44
+    color: "#fff1c8"
+  - id: sheliak
+    name: 渐台二
+    constellation: 天琴座
+    raHours: 18.8347
+    decDeg: 33.363
+    magnitude: 3.45
+    color: "#c8dcff"
+  - id: lambdaUma
+    name: 大熊座λ
+    constellation: 大熊座
+    raHours: 10.285
+    decDeg: 42.914
+    magnitude: 3.45
     color: "#eef4ff"
   - id: kaffaljidhma
     name: 天囷二
@@ -1267,12 +1806,474 @@ stars:
     decDeg: 3.236
     magnitude: 3.47
     color: "#eef4ff"
-  - id: mira
-    name: 刍藁增二
-    constellation: 鲸鱼座
-    raHours: 2.3225
-    decDeg: -2.977
-    magnitude: 3
+  - id: muCen
+    name: 半人马座μ
+    constellation: 半人马座
+    raHours: 13.8269
+    decDeg: -42.474
+    magnitude: 3.47
+    color: "#b7d4ff"
+  - id: etaLeo
+    name: 轩辕十三
+    constellation: 狮子座
+    raHours: 10.1222
+    decDeg: 16.763
+    magnitude: 3.49
+    color: "#eef4ff"
+  - id: sigmaCma
+    name: 大犬座σ
+    constellation: 大犬座
+    raHours: 7.0287
+    decDeg: -27.935
+    magnitude: 3.49
+    color: "#ff8f55"
+  - id: nuUma
+    name: 天璇增
+    constellation: 大熊座
+    raHours: 11.308
+    decDeg: 33.094
+    magnitude: 3.49
+    color: "#ff8f55"
+  - id: epsilonGru
+    name: 天鹤座ε
+    constellation: 天鹤座
+    raHours: 22.8092
+    decDeg: -51.317
+    magnitude: 3.49
+    color: "#eef4ff"
+  - id: nekkar
+    name: 七公增五
+    constellation: 牧夫座
+    raHours: 15.0324
+    decDeg: 40.39
+    magnitude: 3.5
+    color: "#fff1c8"
+  - id: kappaCma
+    name: 弧矢增
+    constellation: 大犬座
+    raHours: 6.8307
+    decDeg: -32.508
+    magnitude: 3.5
+    color: "#b7d4ff"
+  - id: gammaSge
+    name: 天箭座γ
+    constellation: 天箭座
+    raHours: 19.9793
+    decDeg: 19.492
+    magnitude: 3.51
+    color: "#ff8f55"
+  - id: muPeg
+    name: 飞马座μ
+    constellation: 飞马座
+    raHours: 22.8334
+    decDeg: 24.602
+    magnitude: 3.51
+    color: "#ff6d4a"
+  - id: altarf
+    name: 柳宿增
+    constellation: 巨蟹座
+    raHours: 8.275
+    decDeg: 9.185
+    magnitude: 3.52
+    color: "#ffc07a"
+  - id: phiVel
+    name: 船帆座φ
+    constellation: 船帆座
+    raHours: 9.9477
+    decDeg: -54.568
+    magnitude: 3.52
+    color: "#b7d4ff"
+  - id: thetaPeg
+    name: 飞马座θ
+    constellation: 飞马座
+    raHours: 22.1699
+    decDeg: 6.198
+    magnitude: 3.52
+    color: "#eef4ff"
+  - id: omicronLeo
+    name: 轩辕十一
+    constellation: 狮子座
+    raHours: 9.6859
+    decDeg: 9.892
+    magnitude: 3.52
+    color: "#eef4ff"
+  - id: xiSgr
+    name: 人马座ξ
+    constellation: 人马座
+    raHours: 18.9622
+    decDeg: -21.107
+    magnitude: 3.52
+    color: "#ffb56a"
+  - id: deltaEri
+    name: 天园六
+    constellation: 波江座
+    raHours: 3.7208
+    decDeg: -9.765
+    magnitude: 3.52
+    color: "#ff8f55"
+  - id: ain
+    name: 毕宿一
+    constellation: 金牛座
+    raHours: 4.4769
+    decDeg: 19.18
+    magnitude: 3.53
+    color: "#ffc07a"
+  - id: wasat
+    name: 井宿四
+    constellation: 双子座
+    raHours: 7.333
+    decDeg: 21.982
+    magnitude: 3.53
+    color: "#eef4ff"
+  - id: etaHer
+    name: 天纪一
+    constellation: 武仙座
+    raHours: 16.7149
+    decDeg: 38.922
+    magnitude: 3.53
+    color: "#fff1c8"
+  - id: xiHya
+    name: 长蛇座ξ
+    constellation: 长蛇座
+    raHours: 11.5501
+    decDeg: -31.858
+    magnitude: 3.54
+    color: "#ffe3a8"
+  - id: muSer
+    name: 巨蛇座μ
+    constellation: 巨蛇座
+    raHours: 15.827
+    decDeg: -3.43
+    magnitude: 3.54
+    color: "#eef4ff"
+  - id: xiSer
+    name: 巨蛇座ξ
+    constellation: 巨蛇座
+    raHours: 17.6265
+    decDeg: -15.398
+    magnitude: 3.54
+    color: "#fff1c8"
+  - id: zetaLep
+    name: 天兔座ζ
+    constellation: 天兔座
+    raHours: 5.7826
+    decDeg: -14.822
+    magnitude: 3.55
+    color: "#eef4ff"
+  - id: chiDra
+    name: 天龙座χ
+    constellation: 天龙座
+    raHours: 18.3506
+    decDeg: 72.734
+    magnitude: 3.55
+    color: "#fff1c8"
+  - id: iotaLup
+    name: 豺狼座ι
+    constellation: 豺狼座
+    raHours: 14.3234
+    decDeg: -46.058
+    magnitude: 3.55
+    color: "#b7d4ff"
+  - id: deltaPav
+    name: 孔雀六
+    constellation: 孔雀座
+    raHours: 20.1454
+    decDeg: -66.181
+    magnitude: 3.56
+    color: "#fff1c8"
+  - id: phiEri
+    name: 波江座φ
+    constellation: 波江座
+    raHours: 2.2751
+    decDeg: -51.512
+    magnitude: 3.56
+    color: "#b7d4ff"
+  - id: kappaGem
+    name: 双子座κ
+    constellation: 双子座
+    raHours: 7.7408
+    decDeg: 24.398
+    magnitude: 3.57
+    color: "#ffe3a8"
+  - id: kappaUma
+    name: 大熊座κ
+    constellation: 大熊座
+    raHours: 9.0604
+    decDeg: 47.157
+    magnitude: 3.57
+    color: "#eef4ff"
+  - id: rhoBoo
+    name: 七公增
+    constellation: 牧夫座
+    raHours: 14.5305
+    decDeg: 30.371
+    magnitude: 3.58
+    color: "#ffc07a"
+  - id: algedi
+    name: 牛宿二
+    constellation: 摩羯座
+    raHours: 20.2941
+    decDeg: -12.508
+    magnitude: 3.58
+    color: "#fff1c8"
+  - id: lambdaGem
+    name: 双子座λ
+    constellation: 双子座
+    raHours: 7.3016
+    decDeg: 16.54
+    magnitude: 3.58
+    color: "#eef4ff"
+  - id: tauOri
+    name: 猎户座τ
+    constellation: 猎户座
+    raHours: 5.2934
+    decDeg: -6.844
+    magnitude: 3.59
+    color: "#b7d4ff"
+  - id: betaVir
+    name: 室女座β
+    constellation: 室女座
+    raHours: 11.8448
+    decDeg: 1.765
+    magnitude: 3.59
+    color: "#fff1c8"
+  - id: fl51And
+    name: 仙女座51号
+    constellation: 仙女座
+    raHours: 1.6332
+    decDeg: 48.628
+    magnitude: 3.59
+    color: "#ff8f55"
+  - id: gammaLep
+    name: 厕增
+    constellation: 天兔座
+    raHours: 5.7411
+    decDeg: -22.447
+    magnitude: 3.59
+    color: "#fff1c8"
+  - id: psiVel
+    name: 船帆座ψ
+    constellation: 船帆座
+    raHours: 9.5117
+    decDeg: -40.467
+    magnitude: 3.6
+    color: "#fff1c8"
+  - id: deltaAra
+    name: 天坛座δ
+    constellation: 天坛座
+    raHours: 17.5183
+    decDeg: -60.684
+    magnitude: 3.6
+    color: "#b7d4ff"
+  - id: thetaGem
+    name: 双子座θ
+    constellation: 双子座
+    raHours: 6.8798
+    decDeg: 33.961
+    magnitude: 3.6
+    color: "#eef4ff"
+  - id: omicronTau
+    name: 金牛座ο
+    constellation: 金牛座
+    raHours: 3.4136
+    decDeg: 9.029
+    magnitude: 3.61
+    color: "#ffe3a8"
+  - id: lambdaHya
+    name: 长蛇座λ
+    constellation: 长蛇座
+    raHours: 10.1765
+    decDeg: -12.354
+    magnitude: 3.61
+    color: "#ff8f55"
+  - id: zetaSco
+    name: 尾宿二增
+    constellation: 天蝎座
+    raHours: 16.901
+    decDeg: -42.362
+    magnitude: 3.62
+    color: "#c8dcff"
+  - id: alpherg
+    name: 右更二
+    constellation: 双鱼座
+    raHours: 1.5247
+    decDeg: 15.346
+    magnitude: 3.62
+    color: "#fff1c8"
+  - id: omicronAnd
+    name: 仙女座ο
+    constellation: 仙女座
+    raHours: 23.032
+    decDeg: 42.326
+    magnitude: 3.62
+    color: "#b7d4ff"
+  - id: fl27Tau
+    name: 金牛座27号
+    constellation: 金牛座
+    raHours: 3.8194
+    decDeg: 24.054
+    magnitude: 3.62
+    color: "#b7d4ff"
+  - id: atlas
+    name: 昴宿增
+    constellation: 金牛座
+    raHours: 3.8107
+    decDeg: 24.053
+    magnitude: 3.63
+    color: "#c8dcff"
+  - id: rotanev
+    name: 瓠瓜四
+    constellation: 海豚座
+    raHours: 20.6257
+    decDeg: 14.596
+    magnitude: 3.63
+    color: "#fff1c8"
+  - id: thetaAra
+    name: 天坛座θ
+    constellation: 天坛座
+    raHours: 18.1105
+    decDeg: -50.091
+    magnitude: 3.65
+    color: "#b7d4ff"
+  - id: fl23UMa
+    name: 大熊座23号
+    constellation: 大熊座
+    raHours: 9.5254
+    decDeg: 63.062
+    magnitude: 3.65
+    color: "#fff1c8"
+  - id: gammaTau
+    name: 毕宿一
+    constellation: 金牛座
+    raHours: 4.3299
+    decDeg: 15.628
+    magnitude: 3.65
+    color: "#ffe3a8"
+  - id: betaSer
+    name: 巨蛇β
+    constellation: 巨蛇座
+    raHours: 15.7698
+    decDeg: 15.422
+    magnitude: 3.65
+    color: "#eef4ff"
+  - id: thuban
+    name: 右枢
+    constellation: 天龙座
+    raHours: 14.0732
+    decDeg: 64.376
+    magnitude: 3.67
+    color: "#eef4ff"
+  - id: nusakan
+    name: 贯索三
+    constellation: 北冕座
+    raHours: 15.463
+    decDeg: 29.106
+    magnitude: 3.68
+    color: "#eef4ff"
+  - id: pi4Ori
+    name: 参宿π4
+    constellation: 猎户座
+    raHours: 4.8534
+    decDeg: 5.605
+    magnitude: 3.68
+    color: "#b7d4ff"
+  - id: deltaSge
+    name: 天箭座δ
+    constellation: 天箭座
+    raHours: 19.7898
+    decDeg: 18.534
+    magnitude: 3.68
+    color: "#ff6d4a"
+  - id: nashira
+    name: 垒壁阵三
+    constellation: 摩羯座
+    raHours: 21.6682
+    decDeg: -16.662
+    magnitude: 3.69
+    color: "#eef4ff"
+  - id: chiUma
+    name: 大熊座χ
+    constellation: 大熊座
+    raHours: 11.7675
+    decDeg: 47.779
+    magnitude: 3.69
+    color: "#ff8f55"
+  - id: chiEri
+    name: 波江座χ
+    constellation: 波江座
+    raHours: 1.9325
+    decDeg: -51.61
+    magnitude: 3.69
+    color: "#ffe3a8"
+  - id: zetaAur
+    name: 五车四
+    constellation: 御夫座
+    raHours: 5.0413
+    decDeg: 41.076
+    magnitude: 3.69
+    color: "#ff8f55"
+  - id: electra
+    name: 昴宿一
+    constellation: 金牛座
+    raHours: 3.7479
+    decDeg: 24.113
+    magnitude: 3.7
+    color: "#c8dcff"
+  - id: gammaPsc
+    name: 霹雳一
+    constellation: 双鱼座
+    raHours: 23.286
+    decDeg: 3.282
+    magnitude: 3.7
+    color: "#fff1c8"
+  - id: xiHer
+    name: 武仙座ξ
+    constellation: 武仙座
+    raHours: 17.9627
+    decDeg: 29.248
+    magnitude: 3.7
+    color: "#ff8f55"
+  - id: alshain
+    name: 河鼓三
+    constellation: 天鹰座
+    raHours: 19.9214
+    decDeg: 6.407
+    magnitude: 3.71
+    color: "#fff1c8"
+  - id: fl72Oph
+    name: 蛇夫座72号
+    constellation: 蛇夫座
+    raHours: 18.1225
+    decDeg: 9.564
+    magnitude: 3.71
+    color: "#eef4ff"
+  - id: pi5Ori
+    name: 参宿π5
+    constellation: 猎户座
+    raHours: 4.9042
+    decDeg: 2.441
+    magnitude: 3.71
+    color: "#b7d4ff"
+  - id: epsilonSer
+    name: 巨蛇座ε
+    constellation: 巨蛇座
+    raHours: 15.8469
+    decDeg: 4.478
+    magnitude: 3.71
+    color: "#eef4ff"
+  - id: etaLep
+    name: 天兔座η
+    constellation: 天兔座
+    raHours: 5.9401
+    decDeg: -14.168
+    magnitude: 3.71
+    color: "#fff1c8"
+  - id: epsilonEri
+    name: 天园增
+    constellation: 波江座
+    raHours: 3.549
+    decDeg: -9.458
+    magnitude: 3.72
     color: "#ff8f55"
   - id: batenKaitos
     name: 天仓一
@@ -1281,6 +2282,321 @@ stars:
     decDeg: -10.335
     magnitude: 3.74
     color: "#ffc07a"
+  - id: grumium
+    name: 天棓一
+    constellation: 天龙座
+    raHours: 17.8931
+    decDeg: 56.872
+    magnitude: 3.75
+    color: "#ffc07a"
+  - id: betaMon
+    name: 麒麟β
+    constellation: 麒麟座
+    raHours: 6.4803
+    decDeg: -7.033
+    magnitude: 3.76
+    color: "#b7d4ff"
+  - id: sualocin
+    name: 瓠瓜一
+    constellation: 海豚座
+    raHours: 20.6607
+    decDeg: 15.912
+    magnitude: 3.77
+    color: "#b7d4ff"
+  - id: etaAra
+    name: 天坛座η
+    constellation: 天坛座
+    raHours: 16.8298
+    decDeg: -59.041
+    magnitude: 3.77
+    color: "#ff8f55"
+  - id: deltaSer
+    name: 巨蛇座δ
+    constellation: 巨蛇座
+    raHours: 15.5801
+    decDeg: 10.539
+    magnitude: 3.8
+    color: "#fff1c8"
+  - id: giausar
+    name: 紫微右垣六
+    constellation: 天龙座
+    raHours: 11.5234
+    decDeg: 69.331
+    magnitude: 3.82
+    color: "#ffc07a"
+  - id: alrescha
+    name: 外屏七
+    constellation: 双鱼座
+    raHours: 2.0341
+    decDeg: 2.764
+    magnitude: 3.82
+    color: "#eef4ff"
+  - id: gammaCrB
+    name: 贯索五
+    constellation: 北冕座
+    raHours: 15.7124
+    decDeg: 26.295
+    magnitude: 3.84
+    color: "#c8dcff"
+  - id: sadachbia
+    name: 坟墓一
+    constellation: 宝瓶座
+    raHours: 22.3609
+    decDeg: -1.387
+    magnitude: 3.84
+    color: "#eef4ff"
+  - id: muSgr
+    name: 斗宿增二
+    constellation: 人马座
+    raHours: 18.2294
+    decDeg: -21.059
+    magnitude: 3.84
+    color: "#9ec4ff"
+  - id: deltaCol
+    name: 天鸽座δ
+    constellation: 天鸽座
+    raHours: 6.3686
+    decDeg: -33.436
+    magnitude: 3.85
+    color: "#ffe3a8"
+  - id: gammaSer
+    name: 巨蛇座γ
+    constellation: 巨蛇座
+    raHours: 15.9408
+    decDeg: 15.665
+    magnitude: 3.85
+    color: "#fff1c8"
+  - id: mesarthim
+    name: 娄宿二
+    constellation: 白羊座
+    raHours: 1.9106
+    decDeg: 19.294
+    magnitude: 3.86
+    color: "#c8dcff"
+  - id: epsilonCol
+    name: 天鸽座ε
+    constellation: 天鸽座
+    raHours: 5.5202
+    decDeg: -35.47
+    magnitude: 3.86
+    color: "#ff8f55"
+  - id: muLeo
+    name: 轩辕十
+    constellation: 狮子座
+    raHours: 9.8794
+    decDeg: 26.007
+    magnitude: 3.88
+    color: "#ffc07a"
+  - id: iotaGru
+    name: 天鹤座ι
+    constellation: 天鹤座
+    raHours: 23.1726
+    decDeg: -45.247
+    magnitude: 3.88
+    color: "#ff8f55"
+  - id: epsilonPhe
+    name: 凤凰座ε
+    constellation: 凤凰座
+    raHours: 0.1568
+    decDeg: -45.747
+    magnitude: 3.88
+    color: "#ff8f55"
+  - id: piLup
+    name: 豺狼座π
+    constellation: 豺狼座
+    raHours: 15.0853
+    decDeg: -47.051
+    magnitude: 3.91
+    color: "#b7d4ff"
+  - id: epsilonHer
+    name: 天纪四
+    constellation: 武仙座
+    raHours: 17.004
+    decDeg: 30.926
+    magnitude: 3.92
+    color: "#eef4ff"
+  - id: kappaPhe
+    name: 凤凰座κ
+    constellation: 凤凰座
+    raHours: 0.4367
+    decDeg: -43.68
+    magnitude: 3.93
+    color: "#eef4ff"
+  - id: deltaPhe
+    name: 凤凰座δ
+    constellation: 凤凰座
+    raHours: 1.5208
+    decDeg: -49.073
+    magnitude: 3.93
+    color: "#ff8f55"
+  - id: asellusAustralis
+    name: 鬼宿四
+    constellation: 巨蟹座
+    raHours: 8.7448
+    decDeg: 18.154
+    magnitude: 3.94
+    color: "#ffc07a"
+  - id: alphaMon
+    name: 麒麟α
+    constellation: 麒麟座
+    raHours: 7.6875
+    decDeg: -9.551
+    magnitude: 3.94
+    color: "#ff8f55"
+  - id: zetaPhe
+    name: 凤凰座ζ
+    constellation: 凤凰座
+    raHours: 1.1397
+    decDeg: -55.246
+    magnitude: 3.94
+    color: "#b7d4ff"
+  - id: fl3Pup
+    name: 船尾座3号
+    constellation: 船尾座
+    raHours: 7.7301
+    decDeg: -28.955
+    magnitude: 3.94
+    color: "#eef4ff"
+  - id: mizarB
+    name: 辅
+    constellation: 大熊座
+    raHours: 13.4202
+    decDeg: 54.908
+    magnitude: 3.95
+    color: "#eef4ff"
+  - id: etaCol
+    name: 天鸽座η
+    constellation: 天鸽座
+    raHours: 5.9858
+    decDeg: -42.815
+    magnitude: 3.96
+    color: "#ff8f55"
+  - id: epsilonPav
+    name: 孔雀七
+    constellation: 孔雀座
+    raHours: 20.0099
+    decDeg: -72.91
+    magnitude: 3.97
+    color: "#b7d4ff"
+  - id: chiLup
+    name: 豺狼座χ
+    constellation: 豺狼座
+    raHours: 15.8493
+    decDeg: -33.627
+    magnitude: 3.97
+    color: "#b7d4ff"
+  - id: gammaMon
+    name: 麒麟座γ
+    constellation: 麒麟座
+    raHours: 6.2476
+    decDeg: -6.275
+    magnitude: 3.99
+    color: "#ff8f55"
+  - id: iotaCnc
+    name: 爟增
+    constellation: 巨蟹座
+    raHours: 8.7784
+    decDeg: 28.765
+    magnitude: 4.03
+    color: "#fff1c8"
+  - id: gammaTri
+    name: 三角三
+    constellation: 三角座
+    raHours: 2.2886
+    decDeg: 33.847
+    magnitude: 4.03
+    color: "#eef4ff"
+  - id: rhoLup
+    name: 豺狼座ρ
+    constellation: 豺狼座
+    raHours: 14.6315
+    decDeg: -49.426
+    magnitude: 4.05
+    color: "#b7d4ff"
+  - id: deltaCep
+    name: 造父一
+    constellation: 仙王座
+    raHours: 22.4862
+    decDeg: 58.415
+    magnitude: 4.07
+    color: "#fff1c8"
+  - id: lambdaLup
+    name: 豺狼座λ
+    constellation: 豺狼座
+    raHours: 15.1474
+    decDeg: -45.28
+    magnitude: 4.07
+    color: "#b7d4ff"
+  - id: kappaSer
+    name: 巨蛇座κ
+    constellation: 巨蛇座
+    raHours: 15.8123
+    decDeg: 18.142
+    magnitude: 4.09
+    color: "#ff6d4a"
+  - id: betaCra
+    name: 南冕β
+    constellation: 南冕座
+    raHours: 19.1672
+    decDeg: -39.341
+    magnitude: 4.1
+    color: "#ff8f55"
+  - id: alphaCra
+    name: 南冕α
+    constellation: 南冕座
+    raHours: 19.1579
+    decDeg: -37.904
+    magnitude: 4.11
+    color: "#eef4ff"
+  - id: zetaGru
+    name: 天鹤座ζ
+    constellation: 天鹤座
+    raHours: 23.0147
+    decDeg: -52.754
+    magnitude: 4.11
+    color: "#ffe3a8"
+  - id: muOri
+    name: 参宿μ
+    constellation: 猎户座
+    raHours: 6.0397
+    decDeg: 9.647
+    magnitude: 4.12
+    color: "#eef4ff"
+  - id: iotaPsc
+    name: 霹雳二
+    constellation: 双鱼座
+    raHours: 23.6658
+    decDeg: 5.626
+    magnitude: 4.13
+    color: "#eef4ff"
+  - id: thetaCrB
+    name: 贯索一
+    constellation: 北冕座
+    raHours: 15.5484
+    decDeg: 31.359
+    magnitude: 4.14
+    color: "#c8dcff"
+  - id: deltaHya
+    name: 柳宿四
+    constellation: 长蛇座
+    raHours: 8.6276
+    decDeg: 5.703
+    magnitude: 4.14
+    color: "#eef4ff"
+  - id: epsilonCrB
+    name: 贯索七
+    constellation: 北冕座
+    raHours: 15.9598
+    decDeg: 26.878
+    magnitude: 4.15
+    color: "#ffc07a"
+  - id: deltaMon
+    name: 麒麟座δ
+    constellation: 麒麟座
+    raHours: 7.1977
+    decDeg: -0.493
+    magnitude: 4.15
+    color: "#eef4ff"
   - id: epsilonPsA
     name: 天钱增二
     constellation: 南鱼座
@@ -1295,285 +2611,54 @@ stars:
     decDeg: -32.538
     magnitude: 4.2
     color: "#c8dcff"
-  - id: betaPsA
-    name: 天钱一
-    constellation: 南鱼座
-    raHours: 22.525
-    decDeg: -32.346
-    magnitude: 4.29
-    color: "#eef4ff"
-  - id: betaTra
-    name: 三角形一
-    constellation: 南三角座
-    raHours: 15.9189
-    decDeg: -63.431
-    magnitude: 2.85
+  - id: fl11Pup
+    name: 船尾座11号
+    constellation: 船尾座
+    raHours: 7.9477
+    decDeg: -22.88
+    magnitude: 4.2
     color: "#fff1c8"
-  - id: gammaTra
-    name: 三角形二
-    constellation: 南三角座
-    raHours: 15.3152
-    decDeg: -68.68
-    magnitude: 2.89
+  - id: epsUmi
+    name: 天枢增
+    constellation: 小熊座
+    raHours: 16.7661
+    decDeg: 82.037
+    magnitude: 4.21
     color: "#eef4ff"
-  - id: betaPav
-    name: 孔雀四
-    constellation: 孔雀座
-    raHours: 20.7493
-    decDeg: -66.207
-    magnitude: 3.42
-    color: "#eef4ff"
-  - id: deltaPav
-    name: 孔雀六
-    constellation: 孔雀座
-    raHours: 20.1454
-    decDeg: -66.181
-    magnitude: 3.56
-    color: "#fff1c8"
-  - id: epsilonPav
-    name: 孔雀七
-    constellation: 孔雀座
-    raHours: 20.0099
-    decDeg: -72.91
-    magnitude: 3.97
+  - id: thetaLup
+    name: 豺狼座θ
+    constellation: 豺狼座
+    raHours: 16.1099
+    decDeg: -36.802
+    magnitude: 4.22
     color: "#b7d4ff"
-  - id: alderamin
-    name: 天钩五
-    constellation: 仙王座
-    raHours: 21.3096
-    decDeg: 62.586
-    magnitude: 2.46
+  - id: gammaCra
+    name: 南冕座γ
+    constellation: 南冕座
+    raHours: 19.107
+    decDeg: -37.063
+    magnitude: 4.23
+    color: "#fff1c8"
+  - id: betaCom
+    name: 后发β
+    constellation: 后发座
+    raHours: 13.198
+    decDeg: 27.876
+    magnitude: 4.23
+    color: "#ffe3a8"
+  - id: omicronSer
+    name: 巨蛇座ο
+    constellation: 巨蛇座
+    raHours: 17.6903
+    decDeg: -12.875
+    magnitude: 4.24
     color: "#eef4ff"
-  - id: alfirk
-    name: 天钩三
-    constellation: 仙王座
-    raHours: 21.4776
-    decDeg: 70.561
-    magnitude: 3.23
-    color: "#b7d4ff"
-  - id: errai
-    name: 少卫增八
-    constellation: 仙王座
-    raHours: 23.6557
-    decDeg: 77.632
-    magnitude: 3.21
-    color: "#ffc07a"
-  - id: zetaCep
-    name: 造父增
-    constellation: 仙王座
-    raHours: 22.1809
-    decDeg: 58.201
-    magnitude: 3.35
-    color: "#ff8f55"
-  - id: deltaCep
-    name: 造父一
-    constellation: 仙王座
-    raHours: 22.4862
-    decDeg: 58.415
-    magnitude: 4.07
-    color: "#fff1c8"
-  - id: zubeneschamali
-    name: 氐宿四
-    constellation: 天秤座
-    raHours: 15.2835
-    decDeg: -9.383
-    magnitude: 2.61
-    color: "#c8dcff"
-  - id: zubenelgenubi
-    name: 氐宿一
-    constellation: 天秤座
-    raHours: 14.8479
-    decDeg: -16.042
-    magnitude: 2.75
-    color: "#eef4ff"
-  - id: sigmaLib
-    name: 折威七
-    constellation: 天秤座
-    raHours: 15.0678
-    decDeg: -25.282
-    magnitude: 3.29
-    color: "#ff8f55"
-  - id: denebAlgedi
-    name: 垒壁阵四
-    constellation: 摩羯座
-    raHours: 21.784
-    decDeg: -16.127
-    magnitude: 2.85
-    color: "#eef4ff"
-  - id: dabih
-    name: 牛宿一
-    constellation: 摩羯座
-    raHours: 20.3502
-    decDeg: -14.781
-    magnitude: 3.05
-    color: "#fff1c8"
-  - id: algedi
-    name: 牛宿二
-    constellation: 摩羯座
-    raHours: 20.2941
-    decDeg: -12.508
-    magnitude: 3.58
-    color: "#fff1c8"
-  - id: nashira
-    name: 垒壁阵三
-    constellation: 摩羯座
-    raHours: 21.6682
-    decDeg: -16.662
-    magnitude: 3.69
-    color: "#eef4ff"
-  - id: sadalsuud
-    name: 虚宿一
-    constellation: 宝瓶座
-    raHours: 21.5259
-    decDeg: -5.571
-    magnitude: 2.91
-    color: "#fff1c8"
-  - id: sadalmelik
-    name: 危宿一
-    constellation: 宝瓶座
-    raHours: 22.0964
-    decDeg: -0.32
-    magnitude: 2.96
-    color: "#fff1c8"
-  - id: skat
-    name: 羽林军二十六
-    constellation: 宝瓶座
-    raHours: 22.9108
-    decDeg: -15.821
-    magnitude: 3.27
-    color: "#eef4ff"
-  - id: sadachbia
-    name: 坟墓一
-    constellation: 宝瓶座
-    raHours: 22.3609
-    decDeg: -1.387
-    magnitude: 3.84
-    color: "#eef4ff"
-  - id: alpherg
-    name: 右更二
-    constellation: 双鱼座
-    raHours: 1.5247
-    decDeg: 15.346
-    magnitude: 3.62
-    color: "#fff1c8"
-  - id: alrescha
-    name: 外屏七
-    constellation: 双鱼座
-    raHours: 2.0341
-    decDeg: 2.764
-    magnitude: 3.82
-    color: "#eef4ff"
-  - id: gammaPsc
-    name: 霹雳一
-    constellation: 双鱼座
-    raHours: 23.286
-    decDeg: 3.282
-    magnitude: 3.7
-    color: "#fff1c8"
-  - id: iotaPsc
-    name: 霹雳二
-    constellation: 双鱼座
-    raHours: 23.6658
-    decDeg: 5.626
-    magnitude: 4.13
-    color: "#eef4ff"
-  - id: thetaPsc
-    name: 霹雳三
-    constellation: 双鱼座
-    raHours: 23.4661
-    decDeg: 6.379
-    magnitude: 4.27
-    color: "#fff1c8"
-  - id: lambdaPsc
-    name: 霹雳四
-    constellation: 双鱼座
-    raHours: 23.7008
-    decDeg: 1.78
-    magnitude: 4.49
-    color: "#eef4ff"
-  - id: sualocin
-    name: 瓠瓜一
-    constellation: 海豚座
-    raHours: 20.6607
-    decDeg: 15.912
-    magnitude: 3.77
-    color: "#b7d4ff"
-  - id: rotanev
-    name: 瓠瓜四
-    constellation: 海豚座
-    raHours: 20.6257
-    decDeg: 14.596
-    magnitude: 3.63
-    color: "#fff1c8"
-  - id: gammaDel
-    name: 瓠瓜二
-    constellation: 海豚座
-    raHours: 20.7776
-    decDeg: 16.124
-    magnitude: 4.27
-    color: "#fff1c8"
-  - id: deltaDel
-    name: 瓠瓜三
-    constellation: 海豚座
-    raHours: 20.7243
-    decDeg: 15.074
-    magnitude: 4.43
-    color: "#eef4ff"
-  - id: arneb
-    name: 厕一
-    constellation: 天兔座
-    raHours: 5.5455
-    decDeg: -17.822
-    magnitude: 2.58
-    color: "#fff1c8"
-  - id: nihal
-    name: 厕二
-    constellation: 天兔座
-    raHours: 5.4708
-    decDeg: -20.769
-    magnitude: 2.84
-    color: "#fff1c8"
-  - id: epsilonLep
-    name: 厕三
-    constellation: 天兔座
-    raHours: 5.091
-    decDeg: -22.371
-    magnitude: 3.19
-    color: "#ffc07a"
-  - id: gienahCrv
-    name: 轸宿一
-    constellation: 乌鸦座
-    raHours: 12.2634
-    decDeg: -17.542
-    magnitude: 2.59
-    color: "#b7d4ff"
-  - id: kraz
-    name: 轸宿四
-    constellation: 乌鸦座
-    raHours: 12.5731
-    decDeg: -23.397
-    magnitude: 2.65
-    color: "#fff1c8"
-  - id: algorab
-    name: 轸宿三
-    constellation: 乌鸦座
-    raHours: 12.4977
-    decDeg: -16.515
-    magnitude: 2.94
-    color: "#eef4ff"
-  - id: minkar
-    name: 轸宿二
-    constellation: 乌鸦座
-    raHours: 12.1687
-    decDeg: -22.619
-    magnitude: 3
-    color: "#ffc07a"
-  - id: corCaroli
-    name: 常陈一
-    constellation: 猎犬座
-    raHours: 12.9338
-    decDeg: 38.318
-    magnitude: 2.89
+  - id: acubens
+    name: 柳宿增二
+    constellation: 巨蟹座
+    raHours: 8.9748
+    decDeg: 11.858
+    magnitude: 4.25
     color: "#eef4ff"
   - id: chara
     name: 常陈二
@@ -1582,3 +2667,283 @@ stars:
     decDeg: 41.357
     magnitude: 4.26
     color: "#fff1c8"
+  - id: thetaPsc
+    name: 霹雳三
+    constellation: 双鱼座
+    raHours: 23.4661
+    decDeg: 6.379
+    magnitude: 4.27
+    color: "#fff1c8"
+  - id: gammaDel
+    name: 瓠瓜二
+    constellation: 海豚座
+    raHours: 20.7776
+    decDeg: 16.124
+    magnitude: 4.27
+    color: "#fff1c8"
+  - id: muLup
+    name: 豺狼座μ
+    constellation: 豺狼座
+    raHours: 15.3089
+    decDeg: -47.875
+    magnitude: 4.27
+    color: "#b7d4ff"
+  - id: thetaGru
+    name: 天鹤座θ
+    constellation: 天鹤座
+    raHours: 23.1147
+    decDeg: -43.52
+    magnitude: 4.28
+    color: "#fff1c8"
+  - id: betaPsA
+    name: 天钱一
+    constellation: 南鱼座
+    raHours: 22.525
+    decDeg: -32.346
+    magnitude: 4.29
+    color: "#eef4ff"
+  - id: deltaLyr
+    name: 渐台增
+    constellation: 天琴座
+    raHours: 18.915
+    decDeg: 36.898
+    magnitude: 4.3
+    color: "#c8dcff"
+  - id: zetaUmi
+    name: 勾陈三
+    constellation: 小熊座
+    raHours: 15.7343
+    decDeg: 77.795
+    magnitude: 4.32
+    color: "#eef4ff"
+  - id: alphaCom
+    name: 后发α
+    constellation: 后发座
+    raHours: 13.1665
+    decDeg: 17.529
+    magnitude: 4.32
+    color: "#fff1c8"
+  - id: nuSer
+    name: 巨蛇座ν
+    constellation: 巨蛇座
+    raHours: 17.3471
+    decDeg: -12.847
+    magnitude: 4.32
+    color: "#eef4ff"
+  - id: omicronLup
+    name: 豺狼座ο
+    constellation: 豺狼座
+    raHours: 14.8606
+    decDeg: -43.575
+    magnitude: 4.32
+    color: "#b7d4ff"
+  - id: zetaLyr
+    name: 渐台一
+    constellation: 天琴座
+    raHours: 18.7462
+    decDeg: 37.605
+    magnitude: 4.34
+    color: "#eef4ff"
+  - id: omegaLup
+    name: 豺狼座ω
+    constellation: 豺狼座
+    raHours: 15.6343
+    decDeg: -42.567
+    magnitude: 4.34
+    color: "#ff8f55"
+  - id: yildun
+    name: 勾陈二
+    constellation: 小熊座
+    raHours: 17.5369
+    decDeg: 86.587
+    magnitude: 4.35
+    color: "#eef4ff"
+  - id: fl2Lup
+    name: 豺狼座2号
+    constellation: 豺狼座
+    raHours: 15.2972
+    decDeg: -30.149
+    magnitude: 4.35
+    color: "#ff8f55"
+  - id: gammaCom
+    name: 后发座γ
+    constellation: 后发座
+    raHours: 12.449
+    decDeg: 28.269
+    magnitude: 4.35
+    color: "#ff8f55"
+  - id: pi2Ori
+    name: 参宿π2
+    constellation: 猎户座
+    raHours: 4.8435
+    decDeg: 8.9
+    magnitude: 4.35
+    color: "#eef4ff"
+  - id: gammaCol
+    name: 天鸽座γ
+    constellation: 天鸽座
+    raHours: 5.9589
+    decDeg: -35.283
+    magnitude: 4.36
+    color: "#b7d4ff"
+  - id: etaPhe
+    name: 凤凰座η
+    constellation: 凤凰座
+    raHours: 0.7226
+    decDeg: -57.463
+    magnitude: 4.36
+    color: "#eef4ff"
+  - id: zetaMon
+    name: 麒麟座ζ
+    constellation: 麒麟座
+    raHours: 8.1432
+    decDeg: -2.984
+    magnitude: 4.36
+    color: "#ffe3a8"
+  - id: kappaCol
+    name: 天鸽座κ
+    constellation: 天鸽座
+    raHours: 6.2759
+    decDeg: -35.141
+    magnitude: 4.37
+    color: "#ffe3a8"
+  - id: betaSge
+    name: 天箭β
+    constellation: 天箭座
+    raHours: 19.6841
+    decDeg: 17.476
+    magnitude: 4.39
+    color: "#ffb56a"
+  - id: psiPhe
+    name: 凤凰座ψ
+    constellation: 凤凰座
+    raHours: 1.8941
+    decDeg: -46.302
+    magnitude: 4.39
+    color: "#ff6d4a"
+  - id: epsilonMon
+    name: 麒麟座ε
+    constellation: 麒麟座
+    raHours: 6.3961
+    decDeg: 4.593
+    magnitude: 4.39
+    color: "#eef4ff"
+  - id: chi1Ori
+    name: 参宿χ1
+    constellation: 猎户座
+    raHours: 5.9064
+    decDeg: 20.276
+    magnitude: 4.39
+    color: "#ffe3a8"
+  - id: alphaSge
+    name: 天箭α
+    constellation: 天箭座
+    raHours: 19.6683
+    decDeg: 18.014
+    magnitude: 4.39
+    color: "#ffe3a8"
+  - id: omicronPup
+    name: 船尾座ο
+    constellation: 船尾座
+    raHours: 7.8014
+    decDeg: -25.937
+    magnitude: 4.4
+    color: "#b7d4ff"
+  - id: fl16Pup
+    name: 船尾座16号
+    constellation: 船尾座
+    raHours: 8.1505
+    decDeg: -19.245
+    magnitude: 4.4
+    color: "#b7d4ff"
+  - id: nuOri
+    name: 参宿ν
+    constellation: 猎户座
+    raHours: 6.1262
+    decDeg: 14.769
+    magnitude: 4.42
+    color: "#b7d4ff"
+  - id: lambdaSer
+    name: 巨蛇座λ
+    constellation: 巨蛇座
+    raHours: 15.7741
+    decDeg: 7.353
+    magnitude: 4.42
+    color: "#ffe3a8"
+  - id: deltaDel
+    name: 瓠瓜三
+    constellation: 海豚座
+    raHours: 20.7243
+    decDeg: 15.074
+    magnitude: 4.43
+    color: "#eef4ff"
+  - id: sigmaLup
+    name: 豺狼座σ
+    constellation: 豺狼座
+    raHours: 14.5436
+    decDeg: -50.457
+    magnitude: 4.44
+    color: "#b7d4ff"
+  - id: xiOri
+    name: 参宿ξ
+    constellation: 猎户座
+    raHours: 6.199
+    decDeg: 14.209
+    magnitude: 4.45
+    color: "#b7d4ff"
+  - id: lambdaGru
+    name: 天鹤座λ
+    constellation: 天鹤座
+    raHours: 22.1019
+    decDeg: -39.543
+    magnitude: 4.47
+    color: "#ff6d4a"
+  - id: pi6Ori
+    name: 参宿π6
+    constellation: 猎户座
+    raHours: 4.9758
+    decDeg: 1.714
+    magnitude: 4.47
+    color: "#ff8f55"
+  - id: fl13Mon
+    name: 麒麟座13号
+    constellation: 麒麟座
+    raHours: 6.5484
+    decDeg: 7.333
+    magnitude: 4.47
+    color: "#eef4ff"
+  - id: fl18Mon
+    name: 麒麟座18号
+    constellation: 麒麟座
+    raHours: 6.7977
+    decDeg: 2.412
+    magnitude: 4.48
+    color: "#ff8f55"
+  - id: lambdaPsc
+    name: 霹雳四
+    constellation: 双鱼座
+    raHours: 23.7008
+    decDeg: 1.78
+    magnitude: 4.49
+    color: "#eef4ff"
+  - id: deltaCrB
+    name: 贯索六
+    constellation: 北冕座
+    raHours: 15.8266
+    decDeg: 26.068
+    magnitude: 4.63
+    color: "#fff1c8"
+  - id: asellusBorealis
+    name: 鬼宿三
+    constellation: 巨蟹座
+    raHours: 8.7214
+    decDeg: 21.469
+    magnitude: 4.66
+    color: "#eef4ff"
+  - id: etaUmi
+    name: 太子增
+    constellation: 小熊座
+    raHours: 16.2859
+    decDeg: 75.755
+    magnitude: 4.95
+    color: "#eef4ff"

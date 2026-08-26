@@ -4,21 +4,24 @@ constellations:
     segments:
       - [ meissa, betelgeuse ]
       - [ meissa, bellatrix ]
-      - [ betelgeuse, bellatrix ]
       - [ betelgeuse, alnitak ]
       - [ bellatrix, mintaka ]
       - [ alnitak, alnilam, mintaka ]
       - [ alnitak, saiph ]
       - [ mintaka, rigel ]
       - [ saiph, rigel ]
+      - [ bellatrix, pi3Ori, pi4Ori, pi5Ori, pi6Ori ]
+      - [ pi2Ori, pi3Ori ]
+      - [ betelgeuse, muOri, nuOri, chi1Ori ]
+      - [ alnilam, iotaOri ]
   - name: 大熊座
     segments:
-      - [ dubhe, merak, phecda, megrez, dubhe ]
-      - [ megrez, alioth, mizar, alkaid ]
+      - [ dubhe, merak, phecda, megrez, alioth, mizar, alkaid ]
+      - [ dubhe, megrez ]
   - name: 小熊座
     segments:
-      - [ polaris, yildun, epsUmi, zetaUmi, etaUmi, pherkad ]
-      - [ etaUmi, kochab, pherkad ]
+      - [ polaris, yildun, epsUmi, zetaUmi ]
+      - [ zetaUmi, kochab, pherkad, etaUmi, zetaUmi ]
   - name: 仙后座
     segments:
       - [ caph, schedar, gammaCas, ruchbah, segin ]
@@ -104,6 +107,8 @@ constellations:
   - name: 半人马座
     segments:
       - [ rigilKentaurus, hadar ]
+      - [ hadar, epsilonCen, gammaCen, menkent ]
+      - [ gammaCen, iotaCen ]
   - name: 人马座
     segments:
       - [
@@ -116,6 +121,7 @@ constellations:
           kausMedia
         ]
       - [ nunki, albaldah, kausBorealis ]
+      - [ kausMedia, gamma2Sgr ]
   - name: 白羊座
     segments:
       - [ hamal, sheratan, mesarthim ]
@@ -130,14 +136,15 @@ constellations:
     segments:
       - [ zetaHer, etaHer, piHer, epsilonHer, zetaHer ]
       - [ zetaHer, kornephoros ]
+      - [ piHer, rasalgethi ]
   - name: 天龙座
     segments:
       - [ etamin, rastaban, grumium, etamin ]
-      - [ grumium, zetaDra, thuban, giausar ]
+      - [ grumium, zetaDra, etaDra, thuban, giausar ]
   - name: 长蛇座
     segments:
       - [ deltaHya, epsilonHya, zetaHya, sigmaHya ]
-      - [ zetaHya, alphard ]
+      - [ zetaHya, alphard, lambdaHya, nuHya, xiHya, gammaHya, piHya ]
   - name: 蛇夫座
     segments:
       - [ rasalhague, cebrai, sabik ]
@@ -147,7 +154,8 @@ constellations:
       - [ canopus, avior, aspidiske, thetaCar, miaplacidus ]
   - name: 波江座
     segments:
-      - [ cursa, zaurak, acamar, achernar ]
+      - [ cursa, zaurak, acamar ]
+      - [ acamar, phiEri, chiEri, achernar ]
   - name: 鲸鱼座
     segments:
       - [ menkar, kaffaljidhma, mira, batenKaitos, denebKaitos ]
@@ -159,16 +167,17 @@ constellations:
       - [ atria, betaTra, gammaTra, atria ]
   - name: 孔雀座
     segments:
-      - [ peacock, betaPav, deltaPav, epsilonPav, peacock ]
+      - [ peacock, betaPav, deltaPav, peacock ]
   - name: 仙王座
     segments:
-      - [ alderamin, alfirk, errai, zetaCep, deltaCep, alderamin ]
+      - [ alderamin, alfirk, errai ]
+      - [ alderamin, zetaCep, deltaCep ]
   - name: 天秤座
     segments:
       - [ zubenelgenubi, zubeneschamali, sigmaLib, zubenelgenubi ]
   - name: 摩羯座
     segments:
-      - [ algedi, dabih, denebAlgedi, nashira, algedi ]
+      - [ algedi, dabih, nashira, denebAlgedi, algedi ]
   - name: 宝瓶座
     segments:
       - [ sadalsuud, sadalmelik, sadachbia, skat ]
@@ -188,3 +197,50 @@ constellations:
   - name: 猎犬座
     segments:
       - [ corCaroli, chara ]
+  - name: 三角座
+    segments:
+      - [ alphaTri, betaTri, gammaTri, alphaTri ]
+  - name: 巨蛇座
+    segments:
+      - [ gammaSer, betaSer, deltaSer, alphaSer, epsilonSer ]
+      - [ nuSer, xiSer, etaSer ]
+  - name: 船尾座
+    segments:
+      - [ piPup, naos, sigmaPup, piPup ]
+      - [ naos, rhoPup ]
+  - name: 船帆座
+    segments:
+      - [ regor, deltaVel, kappaVel ]
+      - [ lambdaVel, deltaVel, muVel ]
+  - name: 豺狼座
+    segments:
+      - [ alphaLup, betaLup, gammaLup, deltaLup ]
+      - [ gammaLup, etaLup ]
+  - name: 天鸽座
+    segments:
+      - [ alphaCol, betaCol, etaCol ]
+      - [ betaCol, deltaCol ]
+  - name: 麒麟座
+    segments:
+      - [ gammaMon, betaMon, deltaMon, zetaMon ]
+  - name: 南冕座
+    segments:
+      - [ alphaCra, betaCra, gammaCra ]
+  - name: 后发座
+    segments:
+      - [ gammaCom, betaCom, alphaCom, gammaCom ]
+  - name: 天箭座
+    segments:
+      - [ gammaSge, deltaSge, alphaSge ]
+      - [ betaSge, deltaSge ]
+  - name: 凤凰座
+    segments:
+      - [ ankaa, betaPhe, gammaPhe, ankaa ]
+  - name: 天鹤座
+    segments:
+      - [ gammaGru, alnair, betaGru ]
+      - [ alnair, epsilonGru ]
+  - name: 天坛座
+    segments:
+      - [ alphaAra, betaAra, deltaAra ]
+      - [ betaAra, zetaAra ]
