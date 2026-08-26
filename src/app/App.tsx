@@ -1,37 +1,33 @@
-import { lazy, Suspense, useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { LocateFixed } from 'lucide-react'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
-import { locateSkyTarget } from '@/engine/interaction/locateSkyTarget'
-import type { AtmospherePhase } from '@/engine/render/atmosphereState'
-import { ErrorPanel, LoadingPanel, Notice } from '@/shared/ui'
+import { estimateSunHorizontal } from '@/engine/coordinates/skyMath'
+import { atmosphereState, type AtmospherePhase } from '@/engine/render/atmosphereState'
+import { Notice } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
 import QuickNav from '@/features/quick-nav/QuickNav'
 import LayerSection from '@/features/layer-controls/LayerSection'
 import { MagnitudeSection, QuickViewSection } from '@/features/layer-controls/ViewSections'
 import TimeDeck from '@/features/time-controls/TimeDeck'
+import SkyViewport from '@/features/sky-viewer/SkyViewport'
 import TopBar from './components/TopBar'
 import ControlPanel from './components/ControlPanel'
 import HoverDock from './components/HoverDock'
 import SiteFooter from './components/SiteFooter'
+import { applyUiAtmosphere } from './applyUiAtmosphere'
 import { useCatalog } from './hooks/useCatalog'
 import { useObserver } from './hooks/useObserver'
 import { useLayerState } from './hooks/useLayerState'
 import { useSkyView } from './hooks/useSkyView'
 import { usePlayback } from './hooks/usePlayback'
-import { skyObjectLabel, useLocale } from '@/i18n'
+import { useLocateTarget } from './hooks/useLocateTarget'
+import { useT } from '@/i18n'
 import styles from './App.module.css'
 
-const SkyViewport = lazy(() => import('@/features/sky-viewer/SkyViewport'))
-
-function formatSignedAltitude(degrees: number) {
-  const sign = degrees < 0 ? '−' : ''
-  return `${sign}${Math.abs(degrees).toFixed(1)}°`
-}
-
 export default function App() {
-  const { locale, t } = useLocale()
+  const t = useT()
   const { catalog, catalogError, retry } = useCatalog()
   const location = useObserver()
   const { observer } = location
@@ -41,7 +37,10 @@ export default function App() {
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(true)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
-  const [atmospherePhase, setAtmospherePhase] = useState<AtmospherePhase>('night')
+  const [atmospherePhase, setAtmospherePhase] = useState<AtmospherePhase>(() => {
+    const sun = estimateSunHorizontal(Date.now(), observer)
+    return atmosphereState(sun.altitude, sun.azimuth, layers.daylightEffect).phase
+  })
   const objectCardRef = useRef<HTMLElement>(null)
   const bodySnapshotRef = useRef<BodySnapshotWindow | null>(null)
   const datetimeInputRef = useRef<HTMLInputElement>(null)
@@ -64,6 +63,16 @@ export default function App() {
   })
   Object.assign(simulationRef.current.view, view)
 
+  useLayoutEffect(() => {
+    const sun = estimateSunHorizontal(simulationRef.current.utcMillis, {
+      latitude: observer.latitude,
+      longitude: observer.longitude,
+    })
+    const state = atmosphereState(sun.altitude, sun.azimuth, layers.daylightEffect)
+    applyUiAtmosphere(state)
+    setAtmospherePhase((current) => current === state.phase ? current : state.phase)
+  }, [observer.latitude, observer.longitude, layers.daylightEffect])
+
   const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
   const dismissNotice = useCallback(() => setNotice(null), [])
   const [bodyEpoch, setBodyEpoch] = useState(0)
@@ -79,6 +88,15 @@ export default function App() {
     return magnitudes
   }, [bodyEpoch, playback.currentTime, observer.latitude, observer.longitude])
 
+  const locateTarget = useLocateTarget({
+    catalog,
+    simulationRef,
+    bodySnapshotRef,
+    setView,
+    setSelected,
+    setNotice,
+  })
+
   const resetNow = () => {
     playback.pausePlayback()
     playback.commitTime(Date.now())
@@ -87,68 +105,31 @@ export default function App() {
     setNotice(null)
   }
 
-  const locateTarget = (id: string, type: 'star' | 'body') => {
-    if (!catalog) return
-    const latest = simulationRef.current
-    const result = locateSkyTarget({
-      id,
-      type,
-      bodies: interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis),
-      starById: catalog.starById,
-      utcMillis: latest.utcMillis,
-      observer: latest.observer,
-      view: latest.view,
-    })
-    if (!result) {
-      setNotice(type === 'body' ? t('notice.bodyPending') : null)
-      return
-    }
-    if (!result.belowHorizon) {
-      setView({ azimuth: result.azimuth, altitude: result.altitude, fov: latest.view.fov })
-    }
-    setSelected(result.selected)
-    latest.wake?.()
-    setNotice(result.belowHorizon
-      ? t('notice.belowHorizon', {
-        name: skyObjectLabel(result.selected, catalog, locale, t),
-        altitude: formatSignedAltitude(result.targetAltitude),
-      })
-      : null)
-  }
-
   return (
     <main className="app-shell">
-      <Suspense fallback={<div className={styles.skyFallback} aria-busy="true" />}>
-        {catalog ? (
-          <SkyViewport
-            catalog={catalog}
-            simulationRef={simulationRef}
-            bodySnapshotRef={bodySnapshotRef}
-            onBodiesReady={() => setBodyEpoch((value) => value + 1)}
-            onViewChange={onViewChange}
-            onSelect={(item) => {
-              setSelected(item)
-              if (item) setNotice(null)
-            }}
-            selected={selected}
-            objectCardRef={objectCardRef}
-            onAtmosphereChange={(state) => {
-              const root = document.documentElement
-              root.dataset.skyPhase = state.phase
-              root.style.setProperty('--ui-warmth', state.warmth.toFixed(3))
-              setAtmospherePhase((current) => current === state.phase ? current : state.phase)
-            }}
-          >
-            {selected && (
-              <ObjectCard selected={selected} catalog={catalog} onClose={() => setSelected(null)} ref={objectCardRef} />
-            )}
-          </SkyViewport>
-        ) : catalogError ? (
-          <ErrorPanel error={catalogError} onRetry={retry} />
-        ) : (
-          <LoadingPanel message={t('loading.catalog')} />
+      <SkyViewport
+        catalog={catalog}
+        catalogError={catalogError}
+        onCatalogRetry={retry}
+        simulationRef={simulationRef}
+        bodySnapshotRef={bodySnapshotRef}
+        onBodiesReady={() => setBodyEpoch((value) => value + 1)}
+        onViewChange={onViewChange}
+        onSelect={(item) => {
+          setSelected(item)
+          if (item) setNotice(null)
+        }}
+        selected={selected}
+        objectCardRef={objectCardRef}
+        onAtmosphereChange={(state) => {
+          applyUiAtmosphere(state)
+          setAtmospherePhase((current) => current === state.phase ? current : state.phase)
+        }}
+      >
+        {selected && catalog && (
+          <ObjectCard selected={selected} catalog={catalog} onClose={() => setSelected(null)} ref={objectCardRef} />
         )}
-      </Suspense>
+      </SkyViewport>
 
       <div className={styles.atmosphere} />
       <TopBar
@@ -164,17 +145,17 @@ export default function App() {
         }}
       />
 
-      {catalog && (
-        <HoverDock
-          side="left"
-          panelId="sky-quick-nav"
-          handleLabel={t('nav.title')}
-          handleLabelPinned={t('nav.collapse')}
-          handleIcon={<LocateFixed size={15} strokeWidth={1.65} />}
-        >
+      <HoverDock
+        side="left"
+        panelId="sky-quick-nav"
+        handleLabel={t('nav.title')}
+        handleLabelPinned={t('nav.collapse')}
+        handleIcon={<LocateFixed size={15} strokeWidth={1.65} />}
+      >
+        {catalog ? (
           <QuickNav catalog={catalog} bodyMagnitudes={bodyMagnitudes} onLocate={locateTarget} />
-        </HoverDock>
-      )}
+        ) : null}
+      </HoverDock>
 
       <ControlPanel>
         <LayerSection layers={layers} onToggle={toggleLayer} />

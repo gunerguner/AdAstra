@@ -169,3 +169,20 @@ export function horizonAnglesFromVector(vector: { x: number; y: number; z: numbe
     azimuth: wrapDegrees(radToDeg(Math.atan2(-vector.x, vector.z))),
   }
 }
+
+const sunHorizonMatrix = new Float32Array(9)
+const sunHorizonVector = { x: 0, y: 0, z: 0 }
+
+/**
+ * Meeus 低精度太阳地平坐标。给首帧大气/UI 用，不代替 Worker 星历。
+ * 精度约 1°，足够判断昼夜，避免星历到达前先画成夜晚再整页冲成白昼。
+ */
+export function estimateSunHorizontal(utcMillis: number, observer: Observer) {
+  const d = julianDay(utcMillis) - JULIAN_J2000
+  const meanAnomaly = degToRad(357.528 + 0.9856003 * d)
+  const longitude = 280.46 + 0.9856474 * d + 1.915 * Math.sin(meanAnomaly) + 0.02 * Math.sin(2 * meanAnomaly)
+  fillHorizonMatrix(utcMillis, observer, sunHorizonMatrix)
+  return horizonAnglesFromVector(
+    applyHorizonMatrixInto(eclipticEquatorialUnit(longitude), sunHorizonMatrix, sunHorizonVector),
+  )
+}

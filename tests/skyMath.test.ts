@@ -3,6 +3,7 @@ import {
   applyHorizonMatrixInto,
   eclipticEquatorialUnit,
   equatorialUnit,
+  estimateSunHorizontal,
   fillEqjHorizonMatrices,
   fillHorizonMatrix,
   fillPrecessionMatrix,
@@ -78,5 +79,13 @@ describe('skyMath', () => {
       { x: 0, y: 0, z: 0 },
     )
     expect(point.y).toBeCloseTo(1, 5)
+  })
+
+  it('estimates daytime sun altitude for Shanghai at local noon', () => {
+    const utcMillis = Date.parse('2026-08-26T04:00:00Z')
+    const sun = estimateSunHorizontal(utcMillis, { latitude: 31.2304, longitude: 121.4737 })
+    expect(sun.altitude).toBeGreaterThan(20)
+    expect(sun.azimuth).toBeGreaterThanOrEqual(0)
+    expect(sun.azimuth).toBeLessThan(360)
   })
 })

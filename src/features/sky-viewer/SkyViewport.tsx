@@ -1,23 +1,19 @@
-import { useEffect, useEffectEvent, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
+import { useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation, SkyView } from '@/shared/types/sky'
 import type { AtmosphereState } from '@/engine/render/atmosphereState'
-import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
-import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
+import type { AppError } from '@/shared/errors/appError'
+import type { BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { buildConstellationAnchors, buildConstellationStars } from '@/engine/astronomy/constellationData'
-import { attachAstroWorker } from '@/engine/astronomy/attachAstroWorker'
-import { createSkyScene, disposeSkyScene } from '@/engine/render/createSkyScene'
-import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
-import { SkyViewController } from '@/engine/interaction/SkyViewController'
 import { ErrorPanel } from '@/shared/ui'
-import { cardinals } from '@/config/cardinals'
-import { eclipticPoles } from '@/config/eclipticPoles'
-import { localizedName, skyObjectLabel, useLocale } from '@/i18n'
-import type { MessageKey } from '@/i18n/types'
+import SkyOverlayLabels from './SkyOverlayLabels'
+import { useSkyScene } from './useSkyScene'
 import styles from './skyViewer.module.css'
 
 type Props = {
-  catalog: RuntimeCatalog
+  catalog: RuntimeCatalog | null
+  catalogError?: AppError | null
+  onCatalogRetry?: () => void
   simulationRef: RefObject<SkySimulation>
   onViewChange: (view: SkyView) => void
   onSelect: (item: SelectedSkyObject | null) => void
@@ -31,6 +27,8 @@ type Props = {
 
 export default function SkyViewport({
   catalog,
+  catalogError,
+  onCatalogRetry,
   simulationRef,
   onViewChange,
   onSelect,
@@ -41,11 +39,6 @@ export default function SkyViewport({
   onAtmosphereChange,
   children,
 }: Props) {
-  const { locale, t } = useLocale()
-  const localeRef = useRef(locale)
-  const tRef = useRef(t)
-  localeRef.current = locale
-  tRef.current = t
   const mountRef = useRef<HTMLDivElement>(null)
   const hoverRef = useRef<HTMLDivElement>(null)
   const cardinalRefs = useRef<Record<string, HTMLDivElement | null>>({})
@@ -54,164 +47,66 @@ export default function SkyViewport({
   const hoverTargetRef = useRef<{ id: string; type: 'star' | 'body' } | null>(null)
   const selectedRef = useRef<SelectedSkyObject | null>(selected ?? null)
   selectedRef.current = selected ?? null
+  const overlays = useMemo(() => ({
+    mountRef,
+    hoverRef,
+    cardinalRefs,
+    constellationNameRefs,
+    eclipticPoleRefs,
+    hoverTargetRef,
+    selectedRef,
+  }), [])
   const [viewportError, setViewportError] = useState<AppError | null>(null)
-  const selectObject = useEffectEvent(onSelect)
-  const changeView = useEffectEvent(onViewChange)
-  const changeAtmosphere = useEffectEvent(onAtmosphereChange ?? (() => {}))
-  const bodiesReady = useEffectEvent(onBodiesReady ?? (() => {}))
 
-  const constellationStars = useMemo(() => buildConstellationStars(catalog), [catalog])
-  const constellationAnchors = useMemo(() => buildConstellationAnchors(constellationStars), [constellationStars])
+  const constellationStars = useMemo(
+    () => (catalog ? buildConstellationStars(catalog) : []),
+    [catalog],
+  )
+  const constellationAnchors = useMemo(
+    () => buildConstellationAnchors(constellationStars),
+    [constellationStars],
+  )
 
-  useEffect(() => {
-    const mount = mountRef.current
-    if (!mount) return
-    const { stars, countStarsThroughMagnitude } = catalog
-    const worker = attachAstroWorker({
-      onSnapshot: (window) => {
-        bodySnapshotRef.current = window
-        bodiesReady()
-        setViewportError((current) => current?.code === 'worker' ? null : current)
-      },
-      onError: (error) => {
-        logAppError(error, 'SkyViewport')
-        setViewportError(error)
-      },
-    })
-    const reportError = (error: unknown, code: 'webgl' | 'worker') => {
-      const appError = toAppError(error, code)
-      logAppError(appError, 'SkyViewport')
-      setViewportError(appError)
-    }
+  useSkyScene({
+    catalog,
+    simulationRef,
+    bodySnapshotRef,
+    objectCardRef,
+    constellationStars,
+    constellationAnchors,
+    overlays,
+    onViewChange,
+    onSelect,
+    onBodiesReady,
+    onAtmosphereChange,
+    setViewportError,
+  })
 
-    if (!document.createElement('canvas').getContext('webgl2')) {
-      reportError(new AppError('webgl', 'error.webgl.unsupported'), 'webgl')
-      worker.terminate()
-      return
-    }
-
-    let ctx
-    try {
-      ctx = createSkyScene({ mount, stars, constellationStars })
-    } catch (error) {
-      reportError(error, 'webgl')
-      worker.terminate()
-      return
-    }
-    ctx.renderer.domElement.setAttribute('aria-label', tRef.current('sky.canvasLabel'))
-
-    const resizeObserver = new ResizeObserver(ctx.resize)
-    resizeObserver.observe(mount)
-
-    const hideHover = () => {
-      hoverTargetRef.current = null
-      if (hoverRef.current) hoverRef.current.style.display = 'none'
-      ctx.renderer.domElement.style.cursor = ''
-    }
-    const bodiesAt = () => interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)
-    const scheduler = { wake() {} }
-    const controller = new SkyViewController(
-      ctx,
-      simulationRef,
-      { onSelect: selectObject, onViewChange: changeView },
-      bodiesAt,
-      stars,
-      countStarsThroughMagnitude,
-      (hit) => {
-        const hoverNode = hoverRef.current
-        if (hit && hoverNode) {
-          hoverTargetRef.current = { id: hit.id, type: hit.type }
-          hoverNode.textContent = skyObjectLabel(hit, catalog, localeRef.current, tRef.current)
-          ctx.renderer.domElement.style.cursor = 'pointer'
-        } else hideHover()
-      },
-      hideHover,
-      () => scheduler.wake(),
-    )
-    controller.bind()
-    const loop = startSkyRenderLoop({
-      ctx,
-      catalog,
-      simulationRef,
-      constellationAnchors,
-      overlays: {
-        cardinalRefs,
-        constellationNameRefs,
-        eclipticPoleRefs,
-        hoverRef,
-        hoverTargetRef,
-        objectCardRef,
-        selectedRef,
-      },
-      bodySnapshotRef,
-      requestBodySnapshot: worker.requestSnapshot,
-      onAtmosphereChange: changeAtmosphere,
-    })
-    scheduler.wake = loop.wake
-
-    return () => {
-      loop.stop()
-      resizeObserver.disconnect()
-      controller.unbind()
-      worker.terminate()
-      disposeSkyScene(ctx)
-    }
-  }, [catalog, objectCardRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars])
-
-  useEffect(() => {
-    const canvas = mountRef.current?.querySelector('canvas')
-    canvas?.setAttribute('aria-label', t('sky.canvasLabel'))
-    const hover = hoverTargetRef.current
-    if (hover && hoverRef.current) {
-      hoverRef.current.textContent = skyObjectLabel(hover, catalog, locale, t)
-    }
-  }, [catalog, locale, t])
+  const blockingError = catalogError ?? (viewportError?.code === 'webgl' ? viewportError : null)
 
   return (
-    <div className={`${styles.viewport} ${viewportError?.code === 'webgl' ? styles.fallback : ''}`} ref={mountRef}>
-      {viewportError && (
+    <div className={`${styles.viewport} ${blockingError ? styles.fallback : ''}`} ref={mountRef}>
+      {blockingError && (
+        <ErrorPanel
+          error={blockingError}
+          onRetry={blockingError.code === 'catalog' ? onCatalogRetry : undefined}
+        />
+      )}
+      {viewportError?.code === 'worker' && (
         <ErrorPanel
           error={viewportError}
-          onRetry={viewportError.code === 'worker' ? () => setViewportError(null) : undefined}
+          onRetry={() => setViewportError(null)}
         />
       )}
       <div className={styles.hover} ref={hoverRef} />
       <div className={styles.grain} />
       <div className={styles.vignette} />
-      {cardinals.map((cardinal) => (
-        <div
-          key={cardinal.id}
-          className={`${styles.cardinal} ${cardinal.id === 'north' ? styles.cardinalNorth : ''}`}
-          ref={(node) => {
-            cardinalRefs.current[cardinal.id] = node
-          }}
-        >
-          {t(`cardinals.${cardinal.id}` as MessageKey)}
-        </div>
-      ))}
-      {eclipticPoles.map((pole) => (
-        <div
-          key={pole.id}
-          className={styles.eclipticPole}
-          ref={(node) => {
-            eclipticPoleRefs.current[pole.id] = node
-          }}
-        >
-          <span className={styles.eclipticPoleCross} aria-hidden="true" />
-          <span className={styles.eclipticPoleLabel}>{t(`ecliptic.${pole.id}` as MessageKey)}</span>
-        </div>
-      ))}
-      {constellationStars.map((line) => (
-        <div
-          key={line.id}
-          className={styles.constellationName}
-          ref={(node) => {
-            constellationNameRefs.current[line.id] = node
-          }}
-        >
-          {localizedName(line.names, locale)}
-        </div>
-      ))}
+      <SkyOverlayLabels
+        constellationStars={constellationStars}
+        cardinalRefs={cardinalRefs}
+        eclipticPoleRefs={eclipticPoleRefs}
+        constellationNameRefs={constellationNameRefs}
+      />
       {children}
     </div>
   )

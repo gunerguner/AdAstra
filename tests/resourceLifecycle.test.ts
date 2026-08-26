@@ -11,7 +11,7 @@ describe('render resource lifecycle', () => {
   })
 
   it('stops the render loop, observers, worker and scene together', () => {
-    const source = readFileSync(resolve(import.meta.dirname, '../src/features/sky-viewer/SkyViewport.tsx'), 'utf8')
+    const source = readFileSync(resolve(import.meta.dirname, '../src/features/sky-viewer/useSkyScene.ts'), 'utf8')
     expect(source).toContain('loop.stop()')
     expect(source).toContain('resizeObserver.disconnect()')
     expect(source).toContain('controller.unbind()')

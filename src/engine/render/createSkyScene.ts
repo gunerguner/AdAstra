@@ -11,7 +11,6 @@ import {
 import type { Star } from '@/shared/types/star'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
 import { SKY_FOV_DEG, SKY_VOID_HEX, createSkyProjectionUniforms } from './skyProjection'
-import { PIXEL_RATIO_CAP } from '@/engine/performance/pixelRatio'
 import { createStarLayer } from './layers/starLayer'
 import { createMilkyWayLayer } from './layers/milkyWayLayer'
 import { createGridLayer } from './layers/gridLayer'
@@ -45,7 +44,7 @@ export function createSkyScene(options: {
   const sharedUniforms = { horizonMat, eqjHorizonMat, sky, showBelow, daylight, twilight, warmth, groundLight, sunDir, viewToHorizon }
   const j2000Uniforms = { ...sharedUniforms, horizonMat: eqjHorizonMat }
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, PIXEL_RATIO_CAP))
+  renderer.setPixelRatio(1)
   renderer.setClearColor(SKY_VOID_HEX, 1)
   renderer.setAnimationLoop(null)
   renderer.domElement.tabIndex = 0

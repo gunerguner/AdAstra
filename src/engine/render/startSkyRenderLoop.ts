@@ -6,12 +6,9 @@ import type { RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { ConstellationAnchor } from '@/engine/astronomy/constellationData'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
-import { applyHorizonMatrixInto, equatorialUnitInto, fillEqjHorizonMatrices } from '@/engine/coordinates/skyMath'
-import { ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG } from '@/engine/coordinates/astroConstants'
-import { horizontalVectorInto, skyCameraUpInto } from '@/engine/coordinates/skyGeometry'
-import { atmosphereState, type AtmosphereState } from './atmosphereState'
+import { fillEqjHorizonMatrices } from '@/engine/coordinates/skyMath'
+import type { AtmosphereState } from './atmosphereState'
 import { updateBodiesLayer } from './layers/bodyLayer'
-import { decidePixelRatio } from '@/engine/performance/pixelRatio'
 import { createFrameStats, publishFrameStats } from '@/engine/performance/frameStats'
 import { isFullRateFrame, nextFrameDelayMs } from '@/engine/performance/renderScheduler'
 import { createSkyOverlayUpdater, type SkyOverlayRefs } from '@/engine/interaction/updateSkyOverlays'
@@ -19,6 +16,9 @@ import { degToRad } from '@/shared/math'
 import type { SkySimulation } from '@/shared/types/sky'
 import type { ShaderMaterial } from 'three'
 import type { SkySceneContext } from './skyContext'
+import { syncAtmosphereUniforms } from './syncAtmosphereUniforms'
+import { syncLayerVisibility } from './syncLayerVisibility'
+import { updateSkyCamera } from './updateSkyCamera'
 
 export type SkyRenderLoop = {
   stop: () => void
@@ -55,8 +55,6 @@ export function startSkyRenderLoop(options: {
     constellationAnchors,
     overlays,
   })
-  let lastFrameAt = performance.now()
-  let qualityPixelRatio = renderer.getPixelRatio()
   let running = true
   let frame = 0
   let idleTimer = 0
@@ -68,11 +66,13 @@ export function startSkyRenderLoop(options: {
   let lastMagnitude = Number.NaN
   let lastLayersKey = ''
   let lastVisibleStars = -1
-  let lastSunAltitude = Number.NaN
-  let lastSunAzimuth = Number.NaN
-  let lastAtmosphereKey = ''
   let lastWidth = -1
   let lastHeight = -1
+  const atmosphereCache = {
+    lastSunAltitude: Number.NaN,
+    lastSunAzimuth: Number.NaN,
+    lastUiPhase: '',
+  }
 
   const cancelScheduled = () => {
     cancelAnimationFrame(frame)
@@ -135,36 +135,17 @@ export function startSkyRenderLoop(options: {
     fillEqjHorizonMatrices(latest.utcMillis, latest.observer, uniforms.horizonMat, uniforms.eqjHorizonMat)
     uniforms.showBelow.value = latest.layers.showBelowHorizon ? 1 : 0
     const bodySnapshots = interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis)
-    const sun = bodySnapshots.find((body) => body.id === 'sun')
-    const sunAltitude = sun?.altitude ?? ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG
-    const sunAzimuth = sun?.azimuth ?? 0
-    if (sun) {
-      applyHorizonMatrixInto(
-        equatorialUnitInto(sun.raHours, sun.decDeg, scratch.horizon),
-        uniforms.horizonMat,
-        scratch.projected,
-      )
-      uniforms.sunDir.value.copy(scratch.projected).normalize()
-    }
-    if (
-      sunAltitude !== lastSunAltitude
-      || sunAzimuth !== lastSunAzimuth
-      || layersChanged
-    ) {
-      const atmosphere = atmosphereState(sunAltitude, sunAzimuth, latest.layers.daylightEffect)
-      uniforms.daylight.value = atmosphere.daylight
-      uniforms.twilight.value = atmosphere.twilight
-      uniforms.warmth.value = atmosphere.warmth
-      uniforms.groundLight.value = atmosphere.groundLight
-      if (!sun) uniforms.sunDir.value.set(atmosphere.sunDirX, atmosphere.sunDirY, atmosphere.sunDirZ)
-      lastSunAltitude = sunAltitude
-      lastSunAzimuth = sunAzimuth
-      const atmosphereKey = `${atmosphere.phase}:${Math.round(atmosphere.daylight * 16)}:${Math.round(atmosphere.twilight * 16)}:${Math.round(atmosphere.warmth * 16)}`
-      if (atmosphereKey !== lastAtmosphereKey) {
-        lastAtmosphereKey = atmosphereKey
-        onAtmosphereChange?.(atmosphere)
-      }
-    }
+    syncAtmosphereUniforms({
+      uniforms,
+      scratch,
+      sun: bodySnapshots.find((body) => body.id === 'sun'),
+      utcMillis: latest.utcMillis,
+      observer: latest.observer,
+      daylightEffect: latest.layers.daylightEffect,
+      layersChanged,
+      cache: atmosphereCache,
+      onAtmosphereChange,
+    })
     uniforms.sky.uFov.value = degToRad(view.fov)
     const pixelRatio = renderer.getPixelRatio()
     layers.starMaterial.uniforms.uPixelRatio.value = pixelRatio
@@ -174,30 +155,13 @@ export function startSkyRenderLoop(options: {
       layers.starGeometry.setDrawRange(0, lastVisibleStars)
       lastMagnitude = latest.magnitudeLimit
     }
-    layers.starPoints.visible = latest.layers.stars
-    layers.milkyWay.visible = latest.layers.milkyWay
-    if (layersChanged) {
-      layers.linesGroup.children.forEach((child) => {
-        const kind = child.userData.kind
-        child.visible = kind === 'constellation' ? latest.layers.constellationLines
-          : kind === 'equatorialGrid' ? latest.layers.equatorialGrid
-          : kind === 'horizontalGrid' ? latest.layers.horizontalGrid
-          : child.visible
-      })
-      layers.helperGroup.visible = latest.layers.horizon || latest.layers.landscape || latest.layers.ecliptic || latest.layers.celestialEquator
-      layers.horizon.visible = latest.layers.horizon && !latest.layers.landscape
-      layers.horizonGlow.visible = latest.layers.horizon && !latest.layers.landscape
-      layers.ground.visible = latest.layers.landscape
-      layers.ecliptic.visible = latest.layers.ecliptic
-      layers.equator.visible = latest.layers.celestialEquator
+    if (layersChanged) syncLayerVisibility(layers, latest.layers)
+    else {
+      layers.starPoints.visible = latest.layers.stars
+      layers.milkyWay.visible = latest.layers.milkyWay
     }
 
-    horizontalVectorInto(view.altitude, view.azimuth, scratch.lookTarget)
-    skyCameraUpInto(view.altitude, view.azimuth, scratch.lookTarget, scratch.projected)
-    camera.up.copy(scratch.projected)
-    camera.lookAt(scratch.lookTarget)
-    camera.updateMatrixWorld()
-    uniforms.viewToHorizon.value.setFromMatrix4(camera.matrixWorld)
+    updateSkyCamera(camera, uniforms, scratch, view)
 
     const width = renderer.domElement.clientWidth
     const height = renderer.domElement.clientHeight
@@ -228,21 +192,11 @@ export function startSkyRenderLoop(options: {
     )
 
     renderer.render(scene, camera)
+    const renderDurationMs = performance.now() - frameStartedAt
     if (lastVisibleStars >= 0) renderer.domElement.dataset.visibleStars = String(lastVisibleStars)
-    const frameDelta = frameStartedAt - lastFrameAt
-    frameStats.push(frameDelta)
-    lastFrameAt = frameStartedAt
-    if (frameStats.filled === frameStats.capacity && !latest.scrubbing) {
-      const snapshot = frameStats.snapshot()
-      const nextPixelRatio = decidePixelRatio(snapshot.averageMs, qualityPixelRatio, window.devicePixelRatio)
-      if (nextPixelRatio !== qualityPixelRatio) {
-        qualityPixelRatio = nextPixelRatio
-        renderer.setPixelRatio(qualityPixelRatio)
-        ctx.resize()
-      }
-      if (import.meta.env.DEV) {
-        publishFrameStats(renderer.domElement, snapshot, renderer.info.memory, renderer.info.render.calls)
-      }
+    if (fullRate) frameStats.push(renderDurationMs)
+    if (import.meta.env.DEV && fullRate && frameStats.filled === frameStats.capacity) {
+      publishFrameStats(renderer.domElement, frameStats.snapshot(), renderer.info.memory, renderer.info.render.calls)
     }
     lastUtcMillis = latest.utcMillis
     lastAzimuth = view.azimuth
