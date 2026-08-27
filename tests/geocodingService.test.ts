@@ -4,7 +4,7 @@ import {
   geocodingLanguage,
   mapGeocodingHits,
   searchCities,
-} from '../src/engine/location/geocodingService'
+} from '@/engine/location/geocodingService'
 
 afterEach(() => vi.unstubAllGlobals())
 

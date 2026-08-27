@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDateTimeLocal, parseDateTimeLocal } from '../src/engine/coordinates/dateTimeLocal'
+import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
 
 describe('观测地时区转换', () => {
   it('按 IANA 时区往返 datetime-local', () => {

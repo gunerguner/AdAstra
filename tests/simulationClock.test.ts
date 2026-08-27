@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { SimulationClock } from '../src/engine/clock/simulationClock'
+import { SimulationClock } from '@/engine/clock/simulationClock'
 
 describe('SimulationClock', () => {
   it('在暂停时保持目标时刻，并可按倍率推进', () => {

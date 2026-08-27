@@ -4,7 +4,7 @@ import {
   mapGeolocationError,
   requestCurrentPosition,
   toGeolocationPlace,
-} from '../src/engine/location/geolocationService'
+} from '@/engine/location/geolocationService'
 
 afterEach(() => vi.unstubAllGlobals())
 

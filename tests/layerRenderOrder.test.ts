@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { createBodiesLayer } from '../src/engine/render/layers/bodyLayer'
-import { createHelperLayer } from '../src/engine/render/layers/helperLayer'
-import { createFullscreenLayer } from '../src/engine/render/layers/fullscreenLayer'
-import { makeSkyDomeMaterial } from '../src/engine/render/materials/skyDomeMaterial'
-import { makeSkyLimbMaterial } from '../src/engine/render/materials/skyLimbMaterial'
+import { createBodiesLayer } from '@/engine/render/layers/bodyLayer'
+import { createHelperLayer } from '@/engine/render/layers/helperLayer'
+import { createFullscreenLayer } from '@/engine/render/layers/fullscreenLayer'
+import { makeSkyDomeMaterial } from '@/engine/render/materials/skyDomeMaterial'
+import { makeSkyLimbMaterial } from '@/engine/render/materials/skyLimbMaterial'
 import { testSkyUniforms } from './testSkyUniforms'
 
 describe('layer render order', () => {

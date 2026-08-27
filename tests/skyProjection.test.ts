@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Camera, Vector3 } from 'three'
-import { SKY_HORIZON_LIFT, SKY_OUTSIDE_Z, projectSkyToNdc, skyOutsideMaskGlsl, skyProjectionGlsl, skyViewDirFromNdcGlsl } from '../src/engine/render/skyProjection'
+import { SKY_HORIZON_LIFT, SKY_OUTSIDE_Z, projectSkyToNdc, skyOutsideMaskGlsl, skyProjectionGlsl, skyViewDirFromNdcGlsl } from '@/engine/render/skyProjection'
 
 const identityCamera = {
   matrixWorldInverse: { elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },

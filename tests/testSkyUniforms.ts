@@ -1,6 +1,6 @@
 import { Matrix3, Vector3 } from 'three'
-import { createSkyProjectionUniforms } from '../src/engine/render/skyProjection'
-import type { SharedSkyUniforms } from '../src/engine/render/skyContext'
+import { createSkyProjectionUniforms } from '@/engine/render/skyProjection'
+import type { SharedSkyUniforms } from '@/engine/render/skyContext'
 
 export function testSkyUniforms(): SharedSkyUniforms {
   return {

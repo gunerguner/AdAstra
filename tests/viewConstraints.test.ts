@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { clampViewAltitude, nudgeView, panView, zoomView } from '../src/engine/interaction/viewConstraints'
-import { SKY_FOV_MAX, SKY_FOV_MIN } from '../src/engine/render/skyProjection'
+import { clampViewAltitude, nudgeView, panView, zoomView } from '@/engine/interaction/viewConstraints'
+import { SKY_FOV_MAX, SKY_FOV_MIN } from '@/engine/render/skyProjection'
 
 const view = { azimuth: 10, altitude: 0, fov: 100 }
 

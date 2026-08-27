@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyOverlayPlacement, overlayScreenPosition } from '../src/engine/interaction/overlayProjection'
+import { applyOverlayPlacement, overlayScreenPosition } from '@/engine/interaction/overlayProjection'
 
 describe('overlayScreenPosition', () => {
   it('把屏幕中心 NDC 映射到画布中心并加偏移', () => {

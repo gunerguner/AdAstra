@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { createFullscreenLayer } from '../src/engine/render/layers/fullscreenLayer'
-import { makeSkyLimbMaterial } from '../src/engine/render/materials/skyLimbMaterial'
+import { createFullscreenLayer } from '@/engine/render/layers/fullscreenLayer'
+import { makeSkyLimbMaterial } from '@/engine/render/materials/skyLimbMaterial'
 import { testSkyUniforms } from './testSkyUniforms'
 
 describe('gpu quality', () => {

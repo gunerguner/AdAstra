@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clamp, degToRad, lerp, lerpDegrees, radToDeg, wrapDegrees } from '../src/shared/math'
+import { clamp, degToRad, lerp, lerpDegrees, radToDeg, wrapDegrees } from '@/shared/math'
 
 describe('shared math', () => {
   it('clamps to inclusive bounds', () => {

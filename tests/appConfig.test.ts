@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { resolveObserver } from '../src/app/hooks/useObserver'
-import { cities } from '../src/data/cities'
-import { toGeolocationPlace } from '../src/engine/location/geolocationService'
+import { resolveObserver } from '@/app/hooks/useObserver'
+import { cities } from '@/data/cities'
+import { toGeolocationPlace } from '@/engine/location/geolocationService'
 import {
   TIMELINE_RANGE_HOURS,
   TIMELINE_RANGE_MS,
@@ -9,7 +9,7 @@ import {
   defaultPlaybackSpeed,
   layerToggles,
   playbackSpeeds,
-} from '../src/config'
+} from '@/config'
 
 describe('application configuration', () => {
   it('uses custom coordinates while retaining the city time zone', () => {

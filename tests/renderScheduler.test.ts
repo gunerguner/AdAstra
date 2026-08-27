@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { IDLE_FRAME_MS, isFullRateFrame, nextFrameDelayMs } from '../src/engine/performance/renderScheduler'
+import { IDLE_FRAME_MS, isFullRateFrame, nextFrameDelayMs } from '@/engine/performance/renderScheduler'
 
 describe('renderScheduler', () => {
   it('pauses completely while the document is hidden', () => {

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { Camera, Vector3 } from 'three'
-import { pickSkyObject } from '../src/engine/interaction/skyPicker'
-import { defaultLayers } from '../src/config'
-import type { Star } from '../src/shared/types/star'
-import type { BodySnapshot } from '../src/engine/astronomy/bodyInterpolation'
+import { pickSkyObject } from '@/engine/interaction/skyPicker'
+import { defaultLayers } from '@/config'
+import type { Star } from '@/shared/types/star'
+import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 
 const identityCamera = {
   matrixWorldInverse: { elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },

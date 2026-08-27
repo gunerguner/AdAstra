@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { Line } from 'three'
-import { createGridLayer } from '../src/engine/render/layers/gridLayer'
+import { createGridLayer } from '@/engine/render/layers/gridLayer'
 import { testSkyUniforms } from './testSkyUniforms'
 
 describe('equatorial grid', () => {

@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest'
 import {
   atmospherePhase,
   atmosphereState,
-} from '../src/engine/render/atmosphereState'
+} from '@/engine/render/atmosphereState'
 import {
   ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG,
   CIVIL_TWILIGHT_ALTITUDE_DEG,
   NAUTICAL_TWILIGHT_ALTITUDE_DEG,
-} from '../src/engine/coordinates/astroConstants'
+} from '@/engine/coordinates/astroConstants'
 
 describe('atmosphere state', () => {
   it('maps solar altitude into continuous twilight phases', () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Vector3 } from 'three'
-import { densifyGreatCircle, horizontalVector, skyCameraUpInto } from '../src/engine/coordinates/skyGeometry'
-import { horizonAnglesFromVector } from '../src/engine/coordinates/skyMath'
+import { densifyGreatCircle, horizontalVector, skyCameraUpInto } from '@/engine/coordinates/skyGeometry'
+import { horizonAnglesFromVector } from '@/engine/coordinates/skyMath'
 
 describe('skyGeometry', () => {
   it('maps zenith to the horizontal up axis', () => {

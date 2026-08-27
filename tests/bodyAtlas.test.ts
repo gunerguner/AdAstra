@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BODY_ATLAS_CELL, BODY_ATLAS_SIZE, createBodyAtlasTexture } from '../src/engine/render/createBodyAtlas'
+import { BODY_ATLAS_CELL, BODY_ATLAS_SIZE, createBodyAtlasTexture } from '@/engine/render/createBodyAtlas'
 
 describe('body atlas', () => {
   it('paints a high-contrast moon cell instead of a flat disc', () => {

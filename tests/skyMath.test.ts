@@ -8,8 +8,8 @@ import {
   fillHorizonMatrix,
   fillPrecessionMatrix,
   localSiderealHours,
-} from '../src/engine/coordinates/skyMath'
-import { HOURS_PER_DAY, JULIAN_J2000, JULIAN_UNIX_EPOCH, MS_PER_DAY, NORTH_ECLIPTIC_POLE, OBLIQUITY_DEG, SOUTH_ECLIPTIC_POLE } from '../src/engine/coordinates/astroConstants'
+} from '@/engine/coordinates/skyMath'
+import { HOURS_PER_DAY, JULIAN_J2000, JULIAN_UNIX_EPOCH, MS_PER_DAY, NORTH_ECLIPTIC_POLE, OBLIQUITY_DEG, SOUTH_ECLIPTIC_POLE } from '@/engine/coordinates/astroConstants'
 
 function utcMillisFromJd(jd: number) {
   return (jd - JULIAN_UNIX_EPOCH) * MS_PER_DAY

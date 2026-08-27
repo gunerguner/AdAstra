@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { HOURS_PER_DAY, JULIAN_J2000, JULIAN_UNIX_EPOCH, MS_PER_DAY } from '../src/engine/coordinates/astroConstants'
-import { localSiderealHours } from '../src/engine/coordinates/skyMath'
-import { aimSkyView, locateSkyTarget } from '../src/engine/interaction/locateSkyTarget'
-import { SKY_FOV_DEG } from '../src/engine/render/skyProjection'
-import type { BodySnapshot } from '../src/engine/astronomy/bodyInterpolation'
-import type { SkyView } from '../src/shared/types/sky'
-import type { Star } from '../src/shared/types/star'
+import { HOURS_PER_DAY, JULIAN_J2000, JULIAN_UNIX_EPOCH, MS_PER_DAY } from '@/engine/coordinates/astroConstants'
+import { localSiderealHours } from '@/engine/coordinates/skyMath'
+import { aimSkyView, locateSkyTarget } from '@/engine/interaction/locateSkyTarget'
+import { SKY_FOV_DEG } from '@/engine/render/skyProjection'
+import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
+import type { SkyView } from '@/shared/types/sky'
+import type { Star } from '@/shared/types/star'
 
 function utcMillisFromJd(jd: number) {
   return (jd - JULIAN_UNIX_EPOCH) * MS_PER_DAY

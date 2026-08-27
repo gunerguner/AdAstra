@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createFrameStats, publishFrameStats } from '../src/engine/performance/frameStats'
+import { createFrameStats, publishFrameStats } from '@/engine/performance/frameStats'
 
 describe('frameStats', () => {
   it('uses a bounded window and reports average and p95', () => {

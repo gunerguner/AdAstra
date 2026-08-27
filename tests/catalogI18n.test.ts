@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { constellationById, constellationLines } from '../src/data/catalog'
+import { constellationById, constellationLines } from '@/data/catalog'
 import starCatalog from '../data/stars.yaml'
 
 const stars = (starCatalog as {

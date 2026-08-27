@@ -89,6 +89,7 @@ app / features
     → shared / config / data
 
 i18n → data（星名与星座名索引）
+shared/ui → i18n（错误与提示组件的文案，经 Locale 上下文）
 
 workers/astronomy.worker.ts → engine/astronomy
 

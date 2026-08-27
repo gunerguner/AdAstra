@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { buildConstellationAnchors, buildConstellationStars } from '../src/engine/astronomy/constellationData'
-import { constellationLines } from '../src/data/catalog'
+import { buildConstellationAnchors, buildConstellationStars } from '@/engine/astronomy/constellationData'
+import { constellationLines } from '@/data/catalog'
 import starCatalog from '../data/stars.yaml'
-import type { RuntimeCatalog } from '../src/engine/catalog/catalogService'
+import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 
 const stars = (starCatalog as { stars: Array<{ id: string; magnitude: number }> }).stars
 const starIds = new Set(stars.map((star) => star.id))

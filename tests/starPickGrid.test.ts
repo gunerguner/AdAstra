@@ -4,7 +4,7 @@ import {
   createStarPickGrid,
   queryStarPickGrid,
   starPickCell,
-} from '../src/engine/interaction/starPickGrid'
+} from '@/engine/interaction/starPickGrid'
 
 describe('starPickGrid', () => {
   it('bins stars by NDC and only returns nearby candidates', () => {

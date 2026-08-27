@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { interpolate } from '../src/i18n/locale'
-import { zh } from '../src/i18n/messages/zh'
-import { en } from '../src/i18n/messages/en'
+import { interpolate } from '@/i18n/locale'
+import { zh } from '@/i18n/messages/zh'
+import { en } from '@/i18n/messages/en'
 
 function leafKeys(tree: unknown, prefix = ''): string[] {
   if (typeof tree === 'string') return [prefix.slice(0, -1)]

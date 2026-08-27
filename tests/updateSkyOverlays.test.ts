@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { Camera, Vector3 } from 'three'
-import { createSkyOverlayUpdater, type SkyOverlayRefs } from '../src/engine/interaction/updateSkyOverlays'
-import { defaultLayers } from '../src/config'
-import type { BodySnapshot } from '../src/engine/astronomy/bodyInterpolation'
-import type { LayerState, SelectedSkyObject } from '../src/shared/types/sky'
-import type { Star } from '../src/shared/types/star'
+import { createSkyOverlayUpdater, type SkyOverlayRefs } from '@/engine/interaction/updateSkyOverlays'
+import { defaultLayers } from '@/config'
+import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
+import type { LayerState, SelectedSkyObject } from '@/shared/types/sky'
+import type { Star } from '@/shared/types/star'
 
 const identityCamera = {
   matrixWorldInverse: { elements: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] },

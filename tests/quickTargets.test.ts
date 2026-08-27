@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { brightestStarIds, solarQuickTargets } from '../src/config'
-import { bodyRenderOrder } from '../src/engine/render/bodyAppearance'
+import { brightestStarIds, solarQuickTargets } from '@/config'
+import { bodyRenderOrder } from '@/engine/render/bodyAppearance'
 import starCatalog from '../data/stars.yaml'
 
 const catalogStars = (starCatalog as { stars: Array<{ id: string }> }).stars
