@@ -2,10 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { resolveObserver } from '../src/app/hooks/useObserver'
 import { cities } from '../src/data/cities'
 import { toGeolocationPlace } from '../src/engine/location/geolocationService'
-import { defaultLayers } from '../src/config/defaultLayers'
-import { layerToggles } from '../src/config/layerToggles'
-import { playbackSpeeds, defaultPlaybackSpeed } from '../src/config/playbackSpeeds'
-import { TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '../src/config/timeline'
+import {
+  TIMELINE_RANGE_HOURS,
+  TIMELINE_RANGE_MS,
+  defaultLayers,
+  defaultPlaybackSpeed,
+  layerToggles,
+  playbackSpeeds,
+} from '../src/config'
 
 describe('application configuration', () => {
   it('uses custom coordinates while retaining the city time zone', () => {

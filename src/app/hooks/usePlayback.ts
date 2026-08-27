@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { SimulationClock } from '@/engine/clock/simulationClock'
-import { defaultPlaybackSpeed } from '@/config/playbackSpeeds'
-import { TIMELINE_UI_INTERVAL_MS } from '@/config/timeline'
+import { defaultPlaybackSpeed, TIMELINE_UI_INTERVAL_MS } from '@/config'
 import { formatDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
 import type { SkySimulation } from '@/shared/types/sky'
 
@@ -163,7 +162,6 @@ export function usePlayback(
     pausePlayback,
     togglePlay,
     adjustTime,
-    setIsPlaying,
     beginTimelineScrub,
     scrubTimeline,
     endTimelineScrub,

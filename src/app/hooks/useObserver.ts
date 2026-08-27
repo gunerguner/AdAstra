@@ -75,7 +75,6 @@ export function useObserver() {
 
   return {
     cities,
-    activeCityIndex,
     observer,
     locateStatus,
     isAtGeolocation,

@@ -12,5 +12,5 @@ const DEFAULT_VIEW: SkyView = {
 export function useSkyView() {
   const [view, setView] = useState<SkyView>(DEFAULT_VIEW)
   const resetView = () => setView(DEFAULT_VIEW)
-  return { view, setView, onViewChange: setView, resetView }
+  return { view, setView, resetView }
 }

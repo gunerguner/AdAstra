@@ -31,10 +31,6 @@ export function createFrameStats(capacity = 45) {
         p95Ms: ordered[p95Index],
       }
     },
-    get averageMs() {
-      if (filled === 0) return 0
-      return samples.subarray(0, filled).reduce((total, sample) => total + sample, 0) / filled
-    },
     get filled() {
       return filled
     },

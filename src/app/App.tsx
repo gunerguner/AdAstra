@@ -32,7 +32,7 @@ export default function App() {
   const location = useObserver()
   const { observer, locateStatus } = location
   const { layers, toggleLayer } = useLayerState()
-  const { view, setView, onViewChange, resetView } = useSkyView()
+  const { view, setView, resetView } = useSkyView()
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(true)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
@@ -137,7 +137,7 @@ export default function App() {
         simulationRef={simulationRef}
         bodySnapshotRef={bodySnapshotRef}
         onBodiesReady={() => setBodyEpoch((value) => value + 1)}
-        onViewChange={onViewChange}
+        onViewChange={setView}
         onSelect={(item) => {
           setSelected(item)
           if (item) setNotice(null)

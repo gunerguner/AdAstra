@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Camera, Vector3 } from 'three'
 import { pickSkyObject } from '../src/engine/interaction/skyPicker'
-import { defaultLayers } from '../src/config/defaultLayers'
+import { defaultLayers } from '../src/config'
 import type { Star } from '../src/shared/types/star'
 import type { BodySnapshot } from '../src/engine/astronomy/bodyInterpolation'
 

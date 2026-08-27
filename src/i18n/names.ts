@@ -18,7 +18,7 @@ export function skyObjectLabel(
   locale: Locale,
   t: Translate,
 ) {
-  if (item.type === 'body') return t(`bodies.${item.id}` as MessageKey)
+  if (item.type === 'body') return t(`bodies.${item.id}`)
   const star = catalog.starById.get(item.id)
   return star ? localizedName(star.names, locale) : item.id
 }

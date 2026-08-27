@@ -11,11 +11,9 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, type ReactNode } from 'react'
 import type { LiveClockRefs, Playback } from '@/app/hooks/usePlayback'
-import { playbackSpeeds } from '@/config/playbackSpeeds'
-import { TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config/timeline'
+import { playbackSpeeds, TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config'
 import type { AtmospherePhase } from '@/engine/render/atmosphereState'
 import { useT } from '@/i18n'
-import type { MessageKey } from '@/i18n/types'
 import { IconButton } from '@/shared/ui'
 import styles from './timeControls.module.css'
 
@@ -66,14 +64,14 @@ export default function TimeDeck({
             <strong ref={clockRefs.yearLabel}>{playback.currentTime.getFullYear()}</strong>
             <span className={styles.phase}>
               <PhaseIcon phase={phase} />
-              {t(`phase.${phase}` as MessageKey)}
+              {t(`phase.${phase}`)}
             </span>
           </div>
           {open && (
             <label className={styles.speed}>{t('time.speed')}
               <select value={playback.speed} onChange={(event) => playback.setSpeed(Number(event.target.value))}>
                 {playbackSpeeds.map((item) => (
-                  <option value={item.value} key={item.value}>{t(`speed.${item.id}` as MessageKey)}</option>
+                  <option value={item.value} key={item.value}>{t(`speed.${item.id}`)}</option>
                 ))}
               </select>
             </label>

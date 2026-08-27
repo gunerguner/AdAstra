@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { defaultLayers } from '@/config/defaultLayers'
+import { defaultLayers } from '@/config'
 import type { LayerState } from '@/shared/types/sky'
 
 export function useLayerState() {

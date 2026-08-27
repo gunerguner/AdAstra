@@ -1,9 +1,7 @@
 import type { RefObject } from 'react'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
-import { cardinals } from '@/config/cardinals'
-import { eclipticPoles } from '@/config/eclipticPoles'
+import { cardinals, eclipticPoles } from '@/config'
 import { localizedName, useLocale } from '@/i18n'
-import type { MessageKey } from '@/i18n/types'
 import styles from './skyViewer.module.css'
 
 type Props = {
@@ -30,7 +28,7 @@ export default function SkyOverlayLabels({
             cardinalRefs.current[cardinal.id] = node
           }}
         >
-          {t(`cardinals.${cardinal.id}` as MessageKey)}
+          {t(`cardinals.${cardinal.id}`)}
         </div>
       ))}
       {eclipticPoles.map((pole) => (
@@ -42,7 +40,7 @@ export default function SkyOverlayLabels({
           }}
         >
           <span className={styles.eclipticPoleCross} aria-hidden="true" />
-          <span className={styles.eclipticPoleLabel}>{t(`ecliptic.${pole.id}` as MessageKey)}</span>
+          <span className={styles.eclipticPoleLabel}>{t(`ecliptic.${pole.id}`)}</span>
         </div>
       ))}
       {constellationStars.map((line) => (

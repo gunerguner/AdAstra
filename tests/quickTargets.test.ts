@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { brightestStarIds, solarQuickTargets } from '../src/config/quickTargets'
+import { brightestStarIds, solarQuickTargets } from '../src/config'
 import { bodyRenderOrder } from '../src/engine/render/bodyAppearance'
 import starCatalog from '../src/data/stars.yaml'
 

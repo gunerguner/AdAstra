@@ -3,7 +3,6 @@ import { BufferAttribute, BufferGeometry, Points, type Camera, type ShaderMateri
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 import { applyHorizonMatrixInto, equatorialUnitInto } from '@/engine/coordinates/skyMath'
 import { bodyAppearance, bodyPointSize, bodyRenderOrder } from '@/engine/render/bodyAppearance'
-import { brightLimbAngle } from '@/engine/render/bodyLimb'
 import { createBodyAtlasTexture } from '@/engine/render/createBodyAtlas'
 import { makeBodyMaterial } from '@/engine/render/materials/bodyMaterial'
 import { projectSkyToNdc } from '@/engine/render/skyProjection'
@@ -17,6 +16,15 @@ const bodyView = new Vector3()
 const unitScratch = { x: 0, y: 0, z: 0 }
 const ndcScratch = { x: 0, y: 0, z: 0 }
 const snapshotById: Record<string, BodySnapshot | undefined> = Object.create(null)
+
+/** 月亮/行星亮半球在屏幕上的朝向：太阳相对该天体的屏幕夹角。 */
+function brightLimbAngle(
+  body: { x: number; y: number } | null,
+  sun: { x: number; y: number } | null,
+) {
+  if (!body || !sun) return 0
+  return Math.atan2(sun.y - body.y, sun.x - body.x)
+}
 
 export function createBodiesLayer(
   sky: SkyProjectionUniforms,

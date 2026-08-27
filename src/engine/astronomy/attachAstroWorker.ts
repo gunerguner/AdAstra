@@ -6,7 +6,35 @@ import {
   type AstroWorkerRequest,
   type AstroWorkerResponse,
 } from '@/engine/astronomy/astroWorkerProtocol'
-import { shouldRequestBodySnapshot, BODY_SNAPSHOT_LOOKAHEAD_MS, type BodySnapshotRequestState } from '@/engine/astronomy/bodySnapshotRequest'
+
+const BODY_SNAPSHOT_MIN_INTERVAL_MS = 120
+const BODY_SNAPSHOT_LOOKAHEAD_MS = 6 * 60 * 60 * 1000
+
+type BodySnapshotRequestState = {
+  at: number
+  utcMillis: number
+  latitude: number
+  longitude: number
+}
+
+/** 判断这一帧要不要再向 Worker 要采样窗口（最短间隔、地点/时间是否变了）。 */
+function shouldRequestBodySnapshot(
+  now: number,
+  utcMillis: number,
+  observer: Observer,
+  last: BodySnapshotRequestState | null,
+  hidden: boolean,
+) {
+  if (hidden) return false
+  if (last && now - last.at < BODY_SNAPSHOT_MIN_INTERVAL_MS) return false
+  if (
+    last
+    && last.utcMillis === utcMillis
+    && last.latitude === observer.latitude
+    && last.longitude === observer.longitude
+  ) return false
+  return true
+}
 
 export function attachAstroWorker(handlers: {
   onSnapshot: (window: BodySnapshotWindow) => void

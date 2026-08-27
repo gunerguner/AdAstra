@@ -1,8 +1,7 @@
 import { Layers3 } from 'lucide-react'
-import { layerToggles } from '@/config/layerToggles'
+import { layerToggles } from '@/config'
 import type { LayerState } from '@/shared/types/sky'
 import { useT } from '@/i18n'
-import type { MessageKey } from '@/i18n/types'
 import { SectionTitle, ToggleButton } from '@/shared/ui'
 import styles from './layerControls.module.css'
 
@@ -25,7 +24,7 @@ export default function LayerSection({ layers, onToggle }: Props) {
             onClick={() => onToggle(item.key)}
           >
             {item.swatch && <i className={styles.swatch} style={{ background: item.swatch }} />}
-            {t(`layers.${item.key}` as MessageKey)}
+            {t(`layers.${item.key}`)}
           </ToggleButton>
         ))}
       </div>

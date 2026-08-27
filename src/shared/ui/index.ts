@@ -1,5 +1,4 @@
 export { ErrorPanel } from './ErrorPanel'
-export { LoadingPanel } from './LoadingPanel'
 export { default as ErrorBoundary } from './ErrorBoundary'
 export { default as IconButton } from './IconButton'
 export { default as Notice } from './Notice'

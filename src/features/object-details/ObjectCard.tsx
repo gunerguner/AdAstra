@@ -2,7 +2,6 @@ import { X } from 'lucide-react'
 import type { Ref } from 'react'
 import type { SelectedSkyObject } from '@/shared/types/sky'
 import { bodyKindKey, constellationLabel, skyObjectLabel, useLocale } from '@/i18n'
-import type { MessageKey } from '@/i18n/types'
 import { IconButton } from '@/shared/ui'
 import styles from './objectDetails.module.css'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
@@ -21,7 +20,7 @@ export default function ObjectCard({ selected, catalog, onClose, ref }: Props) {
   const kind = selected.type === 'star'
     ? 'star'
     : (BODY_CARD_KIND[selected.id as keyof typeof BODY_CARD_KIND] ?? 'planet')
-  const phaseKey = selected.phaseKey ? `moonPhase.${selected.phaseKey}` as MessageKey : null
+  const phaseKey = selected.phaseKey ? `moonPhase.${selected.phaseKey}` : null
   return (
     <aside className={styles.card} data-kind={kind} ref={ref}>
       <IconButton className={styles.close} onClick={onClose} aria-label={t('card.close')}><X size={15} /></IconButton>

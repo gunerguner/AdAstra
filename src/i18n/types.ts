@@ -12,4 +12,7 @@ export type MessageTree = typeof import('./messages/zh').zh
 export type MessageKey = LeafPaths<MessageTree>
 export type MessageParams = Record<string, string | number>
 
-export type Translate = (key: MessageKey, params?: MessageParams) => string
+export type Translate = {
+  (key: MessageKey, params?: MessageParams): string
+  (key: string, params?: MessageParams): string
+}

@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Orbit, Star } from 'lucide-react'
-import { brightestStarIds, solarQuickTargets } from '@/config/quickTargets'
+import { brightestStarIds, solarQuickTargets } from '@/config'
 import { bodyAppearance } from '@/engine/render/bodyAppearance'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import { localizedName, useLocale } from '@/i18n'
-import type { MessageKey } from '@/i18n/types'
 import styles from './quickNav.module.css'
 
 type Tab = 'bodies' | 'stars'
@@ -58,7 +57,7 @@ export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
               <li key={body.id}>
                 <button type="button" className={styles.item} onClick={() => onLocate(body.id, 'body')}>
                   <i className={styles.swatch} style={{ background: bodyAppearance[body.id]?.color }} aria-hidden="true" />
-                  <span>{t(`bodies.${body.id}` as MessageKey)}</span>
+                  <span>{t(`bodies.${body.id}`)}</span>
                   <small>{magnitude == null ? '—' : formatMagnitude(magnitude)}</small>
                 </button>
               </li>

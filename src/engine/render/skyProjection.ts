@@ -113,16 +113,6 @@ export function createSkyProjectionUniforms(fovDeg = SKY_FOV_DEG) {
 const viewScratch = new Vector3()
 const ndcScratch = { x: 0, y: 0, z: 0 }
 
-/** 屏幕点 → 视线方向（立体投影的逆变换），给全屏天空着色器用。 */
-export function viewDirectionFromNdc(ndcX: number, ndcY: number, fovDeg: number, aspect: number, out = new Vector3()) {
-  const tanQ = Math.tan((fovDeg * Math.PI) / 180 * 0.25)
-  const sx = ndcX * aspect * tanQ
-  const sy = (ndcY + SKY_HORIZON_LIFT) * tanQ
-  const r2 = sx * sx + sy * sy
-  const inv = 1 / (1 + r2)
-  return out.set(2 * sx * inv, 2 * sy * inv, (r2 - 1) * inv)
-}
-
 /** 天球上一点 → 屏幕 NDC。在圆盘外返回 null（看不见）。 */
 export function projectSkyToNdc(
   world: Vector3,

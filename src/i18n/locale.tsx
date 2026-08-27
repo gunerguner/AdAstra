@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import type { Locale, MessageKey, MessageParams, MessageTree, Translate } from './types'
+import type { Locale, MessageParams, MessageTree, Translate } from './types'
 import { zh } from './messages/zh'
 import { en } from './messages/en'
 
@@ -24,7 +24,7 @@ export function interpolate(template: string, params?: MessageParams) {
   ))
 }
 
-function lookup(tree: MessageTree, path: MessageKey): string {
+function lookup(tree: MessageTree, path: string): string {
   const value = path.split('.').reduce<unknown>((node, key) => {
     if (!node || typeof node !== 'object') return undefined
     return (node as Record<string, unknown>)[key]

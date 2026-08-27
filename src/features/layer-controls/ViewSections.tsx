@@ -1,7 +1,6 @@
 import { Crosshair, SlidersHorizontal } from 'lucide-react'
-import { quickViews } from '@/config/quickViews'
+import { quickViews } from '@/config'
 import { useT } from '@/i18n'
-import type { MessageKey } from '@/i18n/types'
 import { SectionTitle, ToggleButton } from '@/shared/ui'
 import styles from './layerControls.module.css'
 import type { SkyView } from '@/shared/types/sky'
@@ -47,7 +46,7 @@ export function QuickViewSection({
       <SectionTitle icon={<Crosshair size={14} />}>{t('view.title')}</SectionTitle>
       <div className={styles.quickViews}>
         {quickViews.map((preset) => {
-          const label = t(`view.${preset.id}` as MessageKey)
+          const label = t(`view.${preset.id}`)
           return (
             <ToggleButton
               key={preset.id}
