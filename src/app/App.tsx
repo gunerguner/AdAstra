@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { LocateFixed } from 'lucide-react'
-import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
+import type { SelectedSkyObject } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
-import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
-import { estimateSunHorizontal } from '@/engine/coordinates/skyMath'
-import { atmosphereState, type AtmospherePhase } from '@/engine/render/atmosphereState'
+import type { BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { Notice } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
 import QuickNav from '@/features/quick-nav/QuickNav'
@@ -16,13 +14,16 @@ import TopBar from './components/TopBar'
 import ControlPanel from './components/ControlPanel'
 import HoverDock from './components/HoverDock'
 import SiteFooter from './components/SiteFooter'
-import { applyUiAtmosphere } from './applyUiAtmosphere'
 import { useCatalog } from './hooks/useCatalog'
 import { useObserver } from './hooks/useObserver'
 import { useLayerState } from './hooks/useLayerState'
 import { useSkyView } from './hooks/useSkyView'
 import { usePlayback } from './hooks/usePlayback'
 import { useLocateTarget } from './hooks/useLocateTarget'
+import { useSimulationRef } from './hooks/useSimulationRef'
+import { useAtmosphereTheme } from './hooks/useAtmosphereTheme'
+import { useLocationNotice } from './hooks/useLocationNotice'
+import { useBodyMagnitudes } from './hooks/useBodyMagnitudes'
 import { useT } from '@/i18n'
 import styles from './App.module.css'
 
@@ -36,80 +37,38 @@ export default function App() {
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(true)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
-  const [notice, setNotice] = useState<string | null>(null)
-  const [atmospherePhase, setAtmospherePhase] = useState<AtmospherePhase>(() => {
-    const sun = estimateSunHorizontal(Date.now(), observer)
-    return atmosphereState(sun.altitude, sun.azimuth, layers.daylightEffect).phase
+
+  const simulationRef = useSimulationRef({
+    latitude: observer.latitude,
+    longitude: observer.longitude,
+    magnitudeLimit,
+    layers,
+    view,
   })
-  const objectCardRef = useRef<HTMLElement>(null)
   const bodySnapshotRef = useRef<BodySnapshotWindow | null>(null)
+  const objectCardRef = useRef<HTMLElement>(null)
   const datetimeInputRef = useRef<HTMLInputElement>(null)
   const yearLabelRef = useRef<HTMLElement>(null)
   const clockRefs = useMemo(() => ({
     datetimeInput: datetimeInputRef,
     yearLabel: yearLabelRef,
   }), [])
-  const simulationRef = useRef<SkySimulation>({
-    utcMillis: Date.now(),
-    observer: { latitude: observer.latitude, longitude: observer.longitude },
-    magnitudeLimit,
-    layers,
-    view: { ...view },
-  })
-  Object.assign(simulationRef.current, {
-    observer: { latitude: observer.latitude, longitude: observer.longitude },
-    magnitudeLimit,
-    layers,
-  })
-  Object.assign(simulationRef.current.view, view)
-
-  useLayoutEffect(() => {
-    const sun = estimateSunHorizontal(simulationRef.current.utcMillis, {
-      latitude: observer.latitude,
-      longitude: observer.longitude,
-    })
-    const state = atmosphereState(sun.altitude, sun.azimuth, layers.daylightEffect)
-    applyUiAtmosphere(state)
-    setAtmospherePhase((current) => current === state.phase ? current : state.phase)
-  }, [observer.latitude, observer.longitude, layers.daylightEffect])
 
   const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
-  const dismissNotice = useCallback(() => setNotice(null), [])
-
-  useEffect(() => {
-    if (locateStatus === 'pending') {
-      setNotice(t('location.locating'))
-      return
-    }
-    const fellBackToShanghai = observer.id === 'shanghai' && !observer.custom
-    if (locateStatus === 'denied' && fellBackToShanghai) {
-      setNotice(t('location.denied'))
-      return
-    }
-    if (locateStatus === 'unavailable' && fellBackToShanghai) {
-      setNotice(t('location.unavailable'))
-      return
-    }
-    setNotice((current) => {
-      if (current === t('location.locating')) return null
-      if (!fellBackToShanghai && (current === t('location.denied') || current === t('location.unavailable'))) {
-        return null
-      }
-      return current
-    })
-  }, [locateStatus, observer.custom, observer.id, t])
-  const [bodyEpoch, setBodyEpoch] = useState(0)
-  const bodyMagnitudes = useMemo(() => {
-    void bodyEpoch
-    void playback.currentTime
-    void observer.latitude
-    void observer.longitude
-    const magnitudes: Record<string, number> = {}
-    for (const body of interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)) {
-      magnitudes[body.id] = body.magnitude
-    }
-    return magnitudes
-  }, [bodyEpoch, playback.currentTime, observer.latitude, observer.longitude])
+  const { notice, setNotice, dismissNotice } = useLocationNotice(observer, locateStatus)
+  const { atmospherePhase, onAtmosphereChange } = useAtmosphereTheme({
+    simulationRef,
+    latitude: observer.latitude,
+    longitude: observer.longitude,
+    daylightEffect: layers.daylightEffect,
+  })
+  const { bodyMagnitudes, markBodiesReady } = useBodyMagnitudes({
+    bodySnapshotRef,
+    simulationRef,
+    currentTimeMs: playback.currentTime.getTime(),
+    latitude: observer.latitude,
+    longitude: observer.longitude,
+  })
 
   const locateTarget = useLocateTarget({
     catalog,
@@ -136,7 +95,7 @@ export default function App() {
         onCatalogRetry={retry}
         simulationRef={simulationRef}
         bodySnapshotRef={bodySnapshotRef}
-        onBodiesReady={() => setBodyEpoch((value) => value + 1)}
+        onBodiesReady={markBodiesReady}
         onViewChange={setView}
         onSelect={(item) => {
           setSelected(item)
@@ -144,10 +103,7 @@ export default function App() {
         }}
         selected={selected}
         objectCardRef={objectCardRef}
-        onAtmosphereChange={(state) => {
-          applyUiAtmosphere(state)
-          setAtmospherePhase((current) => current === state.phase ? current : state.phase)
-        }}
+        onAtmosphereChange={onAtmosphereChange}
       >
         {selected && catalog && (
           <ObjectCard selected={selected} catalog={catalog} onClose={() => setSelected(null)} ref={objectCardRef} />

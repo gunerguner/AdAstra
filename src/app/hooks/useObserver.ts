@@ -9,12 +9,14 @@ import {
 import { clamp } from '@/shared/math'
 
 export type ObserverPlace = City
+/** resolveObserver 的产物：城市/定位点加上是否手动定位的 custom 标记。 */
+export type ResolvedObserver = ObserverPlace & { custom: boolean }
 export type LocateStatus = 'pending' | 'ready' | 'denied' | 'unavailable'
 
 export function resolveObserver(
   city: ObserverPlace,
   manualPosition: { latitude: number; longitude: number } | null,
-) {
+): ResolvedObserver {
   return manualPosition
     ? { ...city, ...manualPosition, custom: true as const }
     : { ...city, custom: false as const }
