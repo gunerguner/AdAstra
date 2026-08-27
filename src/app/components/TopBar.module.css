@@ -76,12 +76,6 @@
   cursor: pointer;
 }
 
-.lang button.langActive {
-  color: var(--color-gold-soft);
-  background: var(--color-gold-fill);
-  box-shadow: inset 0 0 0 1px var(--color-gold-border);
-}
-
 .status {
   display: flex;
   align-items: stretch;
@@ -110,6 +104,11 @@
   border: 0;
 }
 
+.stat svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .stat span {
   min-width: 4.6em;
   color: var(--color-label);
@@ -120,7 +119,6 @@
 }
 
 .stat strong,
-.stat select,
 .stat input {
   color: var(--color-text);
   font-size: 12px;
@@ -133,40 +131,69 @@
   color-scheme: dark;
 }
 
-.stat select {
-  width: 88px;
-  max-width: 88px;
-  padding: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  appearance: none;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-gold-soft) 8%, transparent));
+.place,
+.coord {
+  gap: 5px;
+  padding-inline: 7px;
 }
 
-.stat select option {
-  background: var(--color-option);
+.place span,
+.coord span {
+  min-width: 0;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.locate {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-label);
+  cursor: pointer;
+}
+
+.locate:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.lang button.langActive,
+.locateActive,
+.locate:hover:not(:disabled) {
+  color: var(--color-gold-soft);
+  background: var(--color-gold-fill);
+  box-shadow: inset 0 0 0 1px var(--color-gold-border);
 }
 
 .coord input {
-  width: 72px;
+  width: 64px;
+  height: 18px;
+  line-height: 18px;
   font-variant-numeric: tabular-nums;
 }
 
-.stat input[type='number']::-webkit-inner-spin-button,
-.stat input[type='number']::-webkit-outer-spin-button {
+.coord input::-webkit-inner-spin-button,
+.coord input::-webkit-outer-spin-button {
   appearance: none;
-}
-
-.stat input[type='datetime-local'] {
-  width: 168px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
 }
 
 .time {
   color: var(--color-cyan);
+}
+
+.time input {
+  width: 168px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .view {
@@ -180,10 +207,7 @@
 
 @media (max-width: 1080px) {
   .brand small,
-  .brand i {
-    display: none;
-  }
-
+  .brand i,
   .stat span {
     display: none;
   }
@@ -210,11 +234,11 @@
   }
 
   .coord input {
-    width: 62px;
+    width: 54px;
     font-size: 11px;
   }
 
-  .stat input[type='datetime-local'] {
+  .time input {
     width: 148px;
     font-size: 10px;
   }

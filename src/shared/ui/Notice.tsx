@@ -6,16 +6,17 @@ import styles from './Notice.module.css'
 
 type Props = {
   message: string | null
+  sticky?: boolean
   onDismiss: () => void
 }
 
-export default function Notice({ message, onDismiss }: Props) {
+export default function Notice({ message, sticky = false, onDismiss }: Props) {
   const t = useT()
   useEffect(() => {
-    if (!message) return
+    if (!message || sticky) return
     const timer = window.setTimeout(onDismiss, 4000)
     return () => window.clearTimeout(timer)
-  }, [message, onDismiss])
+  }, [message, sticky, onDismiss])
 
   if (!message) return null
 

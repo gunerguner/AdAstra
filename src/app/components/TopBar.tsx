@@ -1,8 +1,9 @@
-import { CircleDot, Compass, MapPin, Sparkles } from 'lucide-react'
+import { CircleDot, Compass, Locate, MapPin, Sparkles } from 'lucide-react'
 import type { RefObject } from 'react'
 import type { SkyView } from '@/shared/types/sky'
-import { useLocale } from '@/i18n'
+import { localizedName, useLocale } from '@/i18n'
 import { useObserver } from '../hooks/useObserver'
+import CityCombobox from './CityCombobox'
 import styles from './TopBar.module.css'
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
   datetimeValue: string
   datetimeInputRef: RefObject<HTMLInputElement | null>
   onDateTimeChange: (value: string) => void
+  onNotice: (message: string) => void
 }
 
 export default function TopBar({
@@ -19,9 +21,26 @@ export default function TopBar({
   datetimeValue,
   datetimeInputRef,
   onDateTimeChange,
+  onNotice,
 }: Props) {
   const { locale, setLocale, t } = useLocale()
-  const { cities, activeCityIndex, observer, setCity, setLatitude, setLongitude } = location
+  const {
+    cities,
+    observer,
+    locateStatus,
+    isAtGeolocation,
+    setCity,
+    setPlace,
+    setLatitude,
+    setLongitude,
+    locateHere,
+  } = location
+  const locating = locateStatus === 'pending'
+  const cityLabel = locating
+    ? t('location.locating')
+    : observer.custom
+      ? t('location.custom')
+      : localizedName(observer.names, locale)
 
   return (
     <header className={styles.topbar}>
@@ -32,19 +51,30 @@ export default function TopBar({
         <small>{t('brand.tagline')}</small>
       </div>
       <div className={styles.status}>
-        <label className={styles.stat}>
+        <div className={`${styles.stat} ${styles.place}`}>
           <MapPin size={13} />
           <span>{t('location.label')}</span>
-          <select
-            aria-label={t('location.city')}
-            value={activeCityIndex}
-            onChange={(event) => setCity(Number(event.target.value))}
+          <CityCombobox
+            cities={cities}
+            observerId={observer.id}
+            currentLabel={cityLabel}
+            locale={locale}
+            onSelectCity={setCity}
+            onSelectPlace={setPlace}
+            onNotice={onNotice}
+          />
+          <button
+            type="button"
+            className={`${styles.locate} ${isAtGeolocation ? styles.locateActive : ''}`}
+            aria-label={t('location.locateHere')}
+            aria-pressed={isAtGeolocation}
+            aria-busy={locating}
+            disabled={locating}
+            onClick={locateHere}
           >
-            {cities.map((city, index) => (
-              <option value={index} key={city.id}>{city.names[locale]}</option>
-            ))}
-          </select>
-        </label>
+            <Locate size={13} strokeWidth={1.7} />
+          </button>
+        </div>
         {[
           { key: 'latitude' as const, min: -90, max: 90, value: observer.latitude, onChange: setLatitude },
           { key: 'longitude' as const, min: -180, max: 180, value: observer.longitude, onChange: setLongitude },

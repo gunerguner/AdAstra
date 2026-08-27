@@ -27,7 +27,7 @@ export class AppError extends Error {
 }
 
 export function isAbortError(error: unknown) {
-  return error instanceof DOMException && error.name === 'AbortError'
+  return error instanceof Error && error.name === 'AbortError'
 }
 
 export function isAppError(error: unknown): error is AppError {

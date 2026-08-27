@@ -17,6 +17,7 @@ describe('统一错误处理', () => {
 
   it('识别取消请求，避免当成界面故障', () => {
     expect(isAbortError(new DOMException('Aborted', 'AbortError'))).toBe(true)
+    expect(isAbortError(Object.assign(new Error('Aborted'), { name: 'AbortError' }))).toBe(true)
     expect(isAbortError(new Error('fail'))).toBe(false)
   })
 })

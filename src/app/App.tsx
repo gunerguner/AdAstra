@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { LocateFixed } from 'lucide-react'
 import type { SelectedSkyObject, SkySimulation } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
@@ -30,7 +30,7 @@ export default function App() {
   const t = useT()
   const { catalog, catalogError, retry } = useCatalog()
   const location = useObserver()
-  const { observer } = location
+  const { observer, locateStatus } = location
   const { layers, toggleLayer } = useLayerState()
   const { view, setView, onViewChange, resetView } = useSkyView()
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
@@ -75,6 +75,29 @@ export default function App() {
 
   const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
   const dismissNotice = useCallback(() => setNotice(null), [])
+
+  useEffect(() => {
+    if (locateStatus === 'pending') {
+      setNotice(t('location.locating'))
+      return
+    }
+    const fellBackToShanghai = observer.id === 'shanghai' && !observer.custom
+    if (locateStatus === 'denied' && fellBackToShanghai) {
+      setNotice(t('location.denied'))
+      return
+    }
+    if (locateStatus === 'unavailable' && fellBackToShanghai) {
+      setNotice(t('location.unavailable'))
+      return
+    }
+    setNotice((current) => {
+      if (current === t('location.locating')) return null
+      if (!fellBackToShanghai && (current === t('location.denied') || current === t('location.unavailable'))) {
+        return null
+      }
+      return current
+    })
+  }, [locateStatus, observer.custom, observer.id, t])
   const [bodyEpoch, setBodyEpoch] = useState(0)
   const bodyMagnitudes = useMemo(() => {
     void bodyEpoch
@@ -137,6 +160,7 @@ export default function App() {
         view={view}
         datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
         datetimeInputRef={datetimeInputRef}
+        onNotice={setNotice}
         onDateTimeChange={(value) => {
           const utcMillis = parseDateTimeLocal(value, observer.timeZone)
           if (utcMillis === null) return
@@ -163,7 +187,7 @@ export default function App() {
         <QuickViewSection view={view} onChange={setView} />
       </ControlPanel>
 
-      <Notice message={notice} onDismiss={dismissNotice} />
+      <Notice message={notice} sticky={locateStatus === 'pending'} onDismiss={dismissNotice} />
 
       <TimeDeck
         open={isTimeDeckOpen}
