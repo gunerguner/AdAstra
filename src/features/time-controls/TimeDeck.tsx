@@ -10,7 +10,7 @@ import {
   Sunset,
 } from 'lucide-react'
 import { useEffect, useRef, type ReactNode } from 'react'
-import type { LiveClockRefs, Playback } from '@/app/hooks/usePlayback'
+import type { LiveClockRefs, Playback } from '@/shared/types/playback'
 import { playbackSpeeds, TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config'
 import type { AtmospherePhase } from '@/engine/render/atmosphereState'
 import { useT } from '@/i18n'

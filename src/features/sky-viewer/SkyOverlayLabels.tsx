@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
-import { cardinals, eclipticPoles } from '@/config'
+import { cardinals, eclipticPoles } from '@/engine/coordinates/astroConstants'
 import { localizedName, useLocale } from '@/i18n'
 import styles from './skyViewer.module.css'
 

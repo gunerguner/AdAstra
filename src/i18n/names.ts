@@ -1,6 +1,10 @@
 import type { Locale, LocalizedName, MessageKey, Translate } from './types'
 import { constellationById } from '@/data/catalog'
-import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
+
+/** 只取「id → 星名」这一块契约，避免 i18n 反向依赖 engine 的 RuntimeCatalog。 */
+type StarNameIndex = {
+  starById: ReadonlyMap<string, { names: LocalizedName }>
+}
 
 export function localizedName(names: LocalizedName, locale: Locale) {
   return names[locale] || names.zh
@@ -14,7 +18,7 @@ export function constellationLabel(constellationId: string | undefined, locale: 
 
 export function skyObjectLabel(
   item: { id: string; type: 'star' | 'body' },
-  catalog: Pick<RuntimeCatalog, 'starById'>,
+  catalog: StarNameIndex,
   locale: Locale,
   t: Translate,
 ) {

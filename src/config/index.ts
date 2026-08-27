@@ -1,21 +1,8 @@
-import { NORTH_ECLIPTIC_POLE, SOUTH_ECLIPTIC_POLE } from '@/engine/coordinates/astroConstants'
 import type { LayerState } from '@/shared/types/sky'
 
 export const TIMELINE_RANGE_HOURS = 8
 export const TIMELINE_RANGE_MS = TIMELINE_RANGE_HOURS * 60 * 60 * 1000
 export const TIMELINE_UI_INTERVAL_MS = 200
-
-export const cardinals = [
-  { id: 'north', azimuth: 0 },
-  { id: 'east', azimuth: 90 },
-  { id: 'south', azimuth: 180 },
-  { id: 'west', azimuth: 270 },
-] as const
-
-export const eclipticPoles = [
-  { id: 'north', ...NORTH_ECLIPTIC_POLE },
-  { id: 'south', ...SOUTH_ECLIPTIC_POLE },
-] as const
 
 export const playbackSpeeds = [
   { value: 1, id: 'realtime' },

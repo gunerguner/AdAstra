@@ -1,0 +1,25 @@
+/** 时间输入框与年份标签的实时 DOM ref，播放循环直接写值避免每帧重渲染。 */
+import type { RefObject } from 'react'
+
+export type LiveClockRefs = {
+  datetimeInput: RefObject<HTMLInputElement | null>
+  yearLabel: RefObject<HTMLElement | null>
+}
+
+/** usePlayback 暴露给播放器 UI（TimeDeck 等）的时间控制契约。 */
+export type Playback = {
+  /** 当前模拟时刻。 */
+  currentTime: Date
+  isPlaying: boolean
+  speed: number
+  setSpeed: (value: number) => void
+  /** 时间轴拖动偏移（毫秒），相对时间轴锚点。 */
+  timelineOffset: number
+  commitTime: (utcMillis: number, resetTimeline?: boolean) => void
+  pausePlayback: () => void
+  togglePlay: () => void
+  adjustTime: (milliseconds: number) => void
+  beginTimelineScrub: (offset?: number) => void
+  scrubTimeline: (offset: number) => void
+  endTimelineScrub: () => void
+}

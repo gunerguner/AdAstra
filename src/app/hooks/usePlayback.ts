@@ -2,12 +2,8 @@ import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { SimulationClock } from '@/engine/clock/simulationClock'
 import { defaultPlaybackSpeed, TIMELINE_UI_INTERVAL_MS } from '@/config'
 import { formatDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
+import type { Playback, LiveClockRefs } from '@/shared/types/playback'
 import type { SkySimulation } from '@/shared/types/sky'
-
-export type LiveClockRefs = {
-  datetimeInput: RefObject<HTMLInputElement | null>
-  yearLabel: RefObject<HTMLElement | null>
-}
 
 function writeLiveClock(
   utcMillis: number,
@@ -24,7 +20,7 @@ export function usePlayback(
   timeZone: string,
   simulationRef: RefObject<SkySimulation>,
   clockRefs: LiveClockRefs,
-) {
+): Playback {
   const [currentTime, setCurrentTime] = useState(() => new Date())
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState(defaultPlaybackSpeed)
@@ -167,5 +163,3 @@ export function usePlayback(
     endTimelineScrub,
   }
 }
-
-export type Playback = ReturnType<typeof usePlayback>

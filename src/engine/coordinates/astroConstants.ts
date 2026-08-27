@@ -35,6 +35,19 @@ export const DAYLIGHT_FULL_ALTITUDE_DEG = 6
 export const NORTH_ECLIPTIC_POLE = { raHours: 18, decDeg: 90 - OBLIQUITY_DEG }
 export const SOUTH_ECLIPTIC_POLE = { raHours: 6, decDeg: OBLIQUITY_DEG - 90 }
 
+/** 地平方位基点（度），叠加标注与交互命中用。 */
+export const cardinals = [
+  { id: 'north', azimuth: 0 },
+  { id: 'east', azimuth: 90 },
+  { id: 'south', azimuth: 180 },
+  { id: 'west', azimuth: 270 },
+] as const
+
+export const eclipticPoles = [
+  { id: 'north', ...NORTH_ECLIPTIC_POLE },
+  { id: 'south', ...SOUTH_ECLIPTIC_POLE },
+] as const
+
 /** IAU 银道：北银极与银心（赤经时、赤纬度）。 */
 export const NORTH_GALACTIC_POLE = { raHours: 12.857298, decDeg: 27.12825 }
 export const GALACTIC_CENTER = { raHours: 17.760333, decDeg: -28.936175 }
