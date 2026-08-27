@@ -94,7 +94,7 @@ pnpm build
 pnpm preview
 ```
 
-`pnpm build` first generates the runtime catalog from `src/data/stars.yaml`, then writes static output to `dist/`. Deploy to any HTTPS static host or CDN; a Service Worker requires a secure context.
+`pnpm build` first generates the runtime catalog from `data/stars.yaml`, then writes static output to `dist/`. Deploy to any HTTPS static host or CDN; a Service Worker requires a secure context.
 
 Host locally with Docker:
 

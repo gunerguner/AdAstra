@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildConstellationAnchors, buildConstellationStars } from '../src/engine/astronomy/constellationData'
 import { constellationLines } from '../src/data/catalog'
-import starCatalog from '../src/data/stars.yaml'
+import starCatalog from '../data/stars.yaml'
 import type { RuntimeCatalog } from '../src/engine/catalog/catalogService'
 
 const stars = (starCatalog as { stars: Array<{ id: string; magnitude: number }> }).stars

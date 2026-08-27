@@ -94,7 +94,7 @@ pnpm build
 pnpm preview
 ```
 
-`pnpm build` 会先从 `src/data/stars.yaml` 生成运行时星表，再输出静态产物到 `dist/`。可部署到任意支持 HTTPS 的静态服务器或 CDN；Service Worker 需要安全上下文。
+`pnpm build` 会先从 `data/stars.yaml` 生成运行时星表，再输出静态产物到 `dist/`。可部署到任意支持 HTTPS 的静态服务器或 CDN；Service Worker 需要安全上下文。
 
 用 Docker 本地托管：
 

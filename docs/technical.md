@@ -72,10 +72,12 @@ flowchart LR
 | `src/engine/render` | Three.js 场景、图层、材质、帧循环、昼夜 |
 | `src/engine/interaction` | 指针、视角约束、拾取、DOM overlay 投影 |
 | `src/engine/performance` | 帧统计、DPR、空闲降频 |
+| `src/engine/location` | 浏览器定位请求与地理编码（城市搜索） |
 | `src/workers` | `astronomy.worker.ts`：计算线程入口 |
 | `src/i18n` | 界面语言：中英词典、Locale 上下文。引擎不持有文案 |
-| `src/data` | 源码内静态数据：星座 YAML、城市、源星表 |
-| `src/config` | 默认图层、方位、播放倍率、时间轴窗口、快捷视角 |
+| `src/data` | 运行时静态数据：星座 YAML、城市列表 |
+| `data`（仓库根） | 构建期数据：源星表 YAML、星表来源与许可清单 |
+| `src/config` | 默认图层、播放倍率、时间轴窗口、快捷视角 |
 | `src/shared` | 跨目录类型、错误、无业务 UI |
 
 依赖方向：
@@ -86,14 +88,18 @@ app / features
     → engine/*（按需）
     → shared / config / data
 
+i18n → data（星名与星座名索引）
+
 workers/astronomy.worker.ts → engine/astronomy
 
+engine/location → data/cities（类型）
+engine/astronomy → data/catalog（星座连线数据）
 engine/render、engine/interaction
     → engine/coordinates、engine/astronomy（读方向 / 快照）
     → engine/catalog（读星表）
 
-engine/astronomy、clock、catalog
-    ↛ render、interaction、app
+engine/astronomy、clock、catalog、location
+    ↛ render、interaction、app、i18n
 ```
 
 规则：
@@ -102,6 +108,7 @@ engine/astronomy、clock、catalog
 - `engine/render` 不推进时间、不创建 Worker。太阳系采样由 `SkyViewport` 注入的回调触发。
 - `shared`、`config`、`data` 不反向依赖 `engine` 或 `app`。
 - `engine` 不依赖 `i18n`。界面文案和天体显示名在 React 边界按当前语言解析；星表索引同时带中英名，切语言不重载星表。
+- `i18n` 只依赖 `data`，不依赖 `engine`；需要业务模型时声明最小结构化接口。
 
 有意保留的耦合：`skyGeometry.ts` 用 Three.js 的 `Vector3` 做网格细分；`startSkyRenderLoop.ts` 编排一帧（矩阵、插值、overlay、`render`），装配发生在 `SkyViewport.tsx`。
 
@@ -127,7 +134,7 @@ engine/astronomy、clock、catalog
 simulationUtc = pausedAt + (performance.now - startedAt) * rate
 ```
 
-播放倍率（`src/config/playbackSpeeds.ts`）：实时、1 分钟/秒、5 分钟/秒（默认）、1 小时/秒、1 天/秒。底部时间轴窗口约 8 小时，步进 1 小时。标签页进入后台时停 rAF，恢复后不补播后台经过的时间。
+播放倍率（`src/config/index.ts`）：实时、1 分钟/秒、5 分钟/秒（默认）、1 小时/秒、1 天/秒。底部时间轴窗口约 8 小时，步进 1 小时。标签页进入后台时停 rAF，恢复后不补播后台经过的时间。
 
 拖动时间轴时设 `simulation.scrubbing`，暂停向 Worker 刷精确采样，松手后再请求终点窗口。过时的中间目标直接丢弃，只保留最新时间。
 
@@ -137,7 +144,7 @@ simulationUtc = pausedAt + (performance.now - startedAt) * rate
 
 | 数据 | 来源 | 运行时形态 |
 | --- | --- | --- |
-| 亮星 | `src/data/stars.yaml`，构建期打包 | `public/data/v1/core-stars.bin` + 名称索引 JSON |
+| 亮星 | `data/stars.yaml`，构建期打包 | `public/data/v1/core-stars.bin` + 名称索引 JSON |
 | 星座连线 | 项目维护的 YAML | 运行时用恒星 id 解析成几何；名称锚点取所用恒星方向的平均 |
 | 城市 | `src/data/cities.ts` | 上海、北京、伦敦、纽约、悉尼 + IANA 时区 |
 | 太阳、月亮、行星 | Astronomy Engine | Worker 内按时刻计算，不进星表 |

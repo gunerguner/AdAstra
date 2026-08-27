@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { constellationById, constellationLines } from '../src/data/catalog'
-import starCatalog from '../src/data/stars.yaml'
+import starCatalog from '../data/stars.yaml'
 
 const stars = (starCatalog as {
   stars: Array<{ id: string; name: string; nameEn: string; constellation: string }>

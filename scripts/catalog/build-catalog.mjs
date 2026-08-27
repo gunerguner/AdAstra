@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { parse } from 'yaml'
 
 const root = resolve(import.meta.dirname, '../..')
-const sourcePath = resolve(root, 'src/data/stars.yaml')
+const sourcePath = resolve(root, 'data/stars.yaml')
 const policyPath = resolve(root, 'data/licenses/catalog-sources.json')
 const outputDir = resolve(root, 'public/data/v1')
 const production = process.argv.includes('--production')

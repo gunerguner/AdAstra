@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import brightChecklist from '../scripts/catalog/bright-stars-v3.yaml'
-import starCatalog from '../src/data/stars.yaml'
+import starCatalog from '../data/stars.yaml'
 
 const checklist = (brightChecklist as { stars: Array<{ id: string; magnitude: number }> }).stars
 const catalogIds = new Set(
