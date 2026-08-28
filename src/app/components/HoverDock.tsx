@@ -1,3 +1,4 @@
+/** 侧栏：悬停展开，可钉住。左右各一个（快捷导航 / 图层）。 */
 import { useState, type ReactNode } from 'react'
 import { Panel } from '@/shared/ui'
 import styles from './HoverDock.module.css'

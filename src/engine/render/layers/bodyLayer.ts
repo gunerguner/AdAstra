@@ -26,6 +26,7 @@ function brightLimbAngle(
   return Math.atan2(sun.y - body.y, sun.x - body.x)
 }
 
+/** 建太阳系点精灵批次（含运行时图集）。 */
 export function createBodiesLayer(
   sky: SkyProjectionUniforms,
   pixelRatio: number,
@@ -52,6 +53,7 @@ export function createBodiesLayer(
   return { points, geometry, material }
 }
 
+/** 每帧把插值快照写进 buffer；图层关掉则全透明。 */
 export function updateBodiesLayer(
   points: Points,
   snapshots: BodySnapshot[],
@@ -114,6 +116,7 @@ export function updateBodiesLayer(
   points.visible = true
 }
 
+/** 释放几何、材质和图集。 */
 export function disposeBodiesLayer(points: Points) {
   points.geometry.dispose()
   const atlas = points.userData.atlas as Texture | undefined

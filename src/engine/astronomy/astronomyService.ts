@@ -18,6 +18,7 @@ const bodyDefinitions = [
 ] as const
 
 export class AstronomyService {
+  /** 指定时刻、地点的太阳系天体快照（含月相角、土星环倾角）。 */
   getBodies(date: Date, observer: Observer): BodySnapshot[] {
     const site = new AstronomyObserver(observer.latitude, observer.longitude, 0)
     return bodyDefinitions.map(([body, id]) => {

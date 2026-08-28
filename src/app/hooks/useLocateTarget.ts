@@ -1,3 +1,4 @@
+/** 快速导航：定位天体、必要时转视角、地平下给提示。 */
 import type { Dispatch, RefObject, SetStateAction } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'

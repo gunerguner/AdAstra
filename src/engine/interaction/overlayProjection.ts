@@ -2,6 +2,7 @@
 import type { Camera, Vector3 } from 'three'
 import { projectSkyToNdc } from '@/engine/render/skyProjection'
 
+/** 像素半径换成 NDC 半径，给拾取圆用。 */
 export function ndcRadiusForPixels(pixels: number, minScreenSize: number) {
   return pixels * 2 / Math.max(1, minScreenSize)
 }
@@ -14,6 +15,7 @@ export type OverlayPlacement = {
   y: number
 }
 
+/** NDC → 屏幕像素；出画或太大则 visible:false。给了 size 会避开边缘。 */
 export function overlayScreenPosition(
   ndc: { x: number; y: number } | null,
   width: number,
@@ -37,6 +39,7 @@ export function overlayScreenPosition(
   return { visible: true, x, y }
 }
 
+/** 把 placement 写到 DOM（display + translate3d），没变则跳过。 */
 export function applyOverlayPlacement(node: HTMLElement, placement: OverlayPlacement) {
   if (!placement.visible) {
     if (node.style.display !== 'none') node.style.display = 'none'
@@ -50,6 +53,7 @@ export function applyOverlayPlacement(node: HTMLElement, placement: OverlayPlace
   return true
 }
 
+/** 天球方向 → 投影 → 钉到 DOM。 */
 export function placeSkyOverlay(
   node: HTMLElement,
   world: Vector3,

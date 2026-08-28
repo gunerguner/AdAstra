@@ -1,3 +1,4 @@
+/** 界面文案的类型：Locale、点号路径 MessageKey、t() 签名。 */
 export type { LocalizedName } from '@/shared/types/star'
 
 export type Locale = 'zh' | 'en'

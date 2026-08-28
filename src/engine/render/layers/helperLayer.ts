@@ -15,6 +15,7 @@ function horizonCircle(y: number) {
   })
 }
 
+/** 地面、地平圈、黄道光晕、黄道、天赤道。 */
 export function createHelperLayer(uniforms: SharedSkyUniforms) {
   const group = new Group()
   const { mesh: ground, material: groundMaterial } = createFullscreenLayer(makeGroundMaterial(uniforms), 5)

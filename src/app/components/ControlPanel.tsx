@@ -1,3 +1,4 @@
+/** 右侧图层/视角控制：包一层 HoverDock。 */
 import { Layers3 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useT } from '@/i18n'

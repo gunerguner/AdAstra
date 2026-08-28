@@ -1,3 +1,4 @@
+/** 图层开关按钮。variant 给黄道/天赤道着色。 */
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import styles from './ToggleButton.module.css'
 

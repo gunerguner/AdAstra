@@ -1,5 +1,7 @@
 import type { City } from '@/data/cities'
 
+/** 浏览器定位：把 Geolocation API 收成观测点，失败原因可展示。 */
+
 export const GEOLOCATION_PLACE_ID = 'geolocation'
 export const GEOLOCATION_TIMEOUT_MS = 10_000
 
@@ -18,6 +20,7 @@ const POSITION_OPTIONS: PositionOptions = {
   maximumAge: 300_000,
 }
 
+/** 设备 IANA 时区；读不到或空字符串时回退 UTC。 */
 export function deviceTimeZone(): string {
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
@@ -26,6 +29,7 @@ export function deviceTimeZone(): string {
   }
 }
 
+/** 定位成功后的「当前地点」城市记录。 */
 export function toGeolocationPlace(
   coords: GeolocationCoords,
   timeZone = deviceTimeZone(),
@@ -47,6 +51,7 @@ function finiteCoordinate(value: number, min: number, max: number) {
   return Number.isFinite(value) && value >= min && value <= max
 }
 
+/** 调一次 getCurrentPosition；不支持 / 超时 / 拒绝都收成 ok:false。 */
 export function requestCurrentPosition(): Promise<GeolocationResult> {
   const geolocation = globalThis.navigator?.geolocation
   if (!geolocation?.getCurrentPosition) {

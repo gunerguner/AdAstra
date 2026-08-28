@@ -1,3 +1,4 @@
+/** 可重试错误面板。文案走 i18n `error.{code}.*`。 */
 import { useT } from '@/i18n'
 import type { AppError } from '@/shared/errors/appError'
 import styles from './ErrorPanel.module.css'

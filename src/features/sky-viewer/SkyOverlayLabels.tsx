@@ -1,3 +1,4 @@
+/** 方位字、星座名、黄道极的 DOM 锚点，由 updateSkyOverlays 每帧挪位置。 */
 import type { RefObject } from 'react'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
 import { cardinals, eclipticPoles } from '@/engine/coordinates/astroConstants'

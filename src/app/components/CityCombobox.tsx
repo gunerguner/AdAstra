@@ -1,3 +1,4 @@
+/** 城市输入：未搜索时列快捷城市，输入后走 Open-Meteo 地理编码。 */
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { City } from '@/data/cities'

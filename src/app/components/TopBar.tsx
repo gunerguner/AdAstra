@@ -1,3 +1,4 @@
+/** 顶栏：城市搜索、定位、时间、当前视角、中英切换。 */
 import { CircleDot, Compass, Locate, MapPin, Sparkles } from 'lucide-react'
 import type { RefObject } from 'react'
 import type { SkyView } from '@/shared/types/sky'

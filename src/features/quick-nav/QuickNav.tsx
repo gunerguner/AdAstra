@@ -1,3 +1,4 @@
+/** 快速导航：太阳系天体和最亮恒星，点一下转到目标。 */
 import { useState } from 'react'
 import { Orbit, Star } from 'lucide-react'
 import { brightestStarIds, solarQuickTargets } from '@/config'

@@ -1,3 +1,4 @@
+/** 控制区小节标题，可带图标和右侧附加。 */
 import type { ReactNode } from 'react'
 import styles from './SectionTitle.module.css'
 

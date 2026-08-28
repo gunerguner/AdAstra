@@ -18,6 +18,7 @@ export function useBodyMagnitudes(options: {
 }) {
   const { bodySnapshotRef, simulationRef, currentTimeMs, latitude, longitude } = options
   const [epoch, setEpoch] = useState(0)
+  /** Worker 首帧快照到达后调用，迫使视星等表按当前时刻重算。 */
   const markBodiesReady = useCallback(() => setEpoch((value) => value + 1), [])
 
   const bodyMagnitudes = useMemo(() => {
@@ -25,11 +26,10 @@ export function useBodyMagnitudes(options: {
     void currentTimeMs
     void latitude
     void longitude
-    const magnitudes: Record<string, number> = {}
-    for (const body of interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)) {
-      magnitudes[body.id] = body.magnitude
-    }
-    return magnitudes
+    return Object.fromEntries(
+      interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)
+        .map((body) => [body.id, body.magnitude]),
+    )
   }, [epoch, currentTimeMs, latitude, longitude, bodySnapshotRef, simulationRef])
 
   return { bodyMagnitudes, markBodiesReady }

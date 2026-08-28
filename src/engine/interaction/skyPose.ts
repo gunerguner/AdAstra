@@ -15,6 +15,7 @@ function poseFromEquatorial(
   return horizonAnglesFromVector(horizonScratch)
 }
 
+/** 恒星/行星此刻的地平方位；找不到对象返回 null。 */
 export function poseOfSkyObject(
   item: { id: string; type: 'star' | 'body' },
   options: {

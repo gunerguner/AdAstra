@@ -18,6 +18,7 @@ export const SKY_OUTSIDE_Z = 0.08
 export const SKY_VOID_HEX = 0x050817
 export const SKY_VOID_RGB = [5 / 255, 8 / 255, 23 / 255] as const
 
+/** 把视场夹在立体投影还能看清的范围。 */
 export function clampSkyFov(fovDeg: number) {
   return clamp(fovDeg, SKY_FOV_MIN, SKY_FOV_MAX)
 }
@@ -103,6 +104,7 @@ vec3 skyViewDirFromNdc(vec2 ndc) {
 }
 `
 
+/** 着色器共用的立体投影 uniforms（视场、画幅比）。 */
 export function createSkyProjectionUniforms(fovDeg = SKY_FOV_DEG) {
   return {
     uFov: { value: (fovDeg * Math.PI) / 180 },

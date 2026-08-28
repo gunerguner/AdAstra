@@ -8,6 +8,7 @@ export function createFullscreenLayer(material: ShaderMaterial, renderOrder: num
   return { mesh, material }
 }
 
+/** 释放 mesh 的几何和材质。 */
 export function disposeMesh(mesh: { geometry: { dispose: () => void }; material: Material | Material[] }) {
   mesh.geometry.dispose()
   const material = mesh.material

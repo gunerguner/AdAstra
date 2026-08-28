@@ -1,3 +1,4 @@
+/** 加载运行时星表；失败给出可重试的 AppError。 */
 import { catalogService, type RuntimeCatalog } from '@/engine/catalog/catalogService'
 import { isAbortError, logAppError, toAppError, type AppError } from '@/shared/errors/appError'
 import { useEffect, useState } from 'react'

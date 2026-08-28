@@ -1,9 +1,15 @@
+/**
+ * 产品侧默认值：播放倍率、时间轴跨度、图层开关、快捷视角和快速导航目标。
+ * 不含天文常数（那些在 engine/coordinates/astroConstants）。
+ */
 import type { LayerState } from '@/shared/types/sky'
 
+/** 时间轴总跨度（小时）以及滑块 UI 刷新间隔。 */
 export const TIMELINE_RANGE_HOURS = 8
 export const TIMELINE_RANGE_MS = TIMELINE_RANGE_HOURS * 60 * 60 * 1000
 export const TIMELINE_UI_INTERVAL_MS = 200
 
+/** 播放倍率：value 是相对墙钟的倍数，id 对 i18n `speed.*`。 */
 export const playbackSpeeds = [
   { value: 1, id: 'realtime' },
   { value: 60, id: 'minute' },
@@ -12,14 +18,17 @@ export const playbackSpeeds = [
   { value: 86400, id: 'day' },
 ] as const
 
+/** 默认 5 分钟/秒。 */
 export const defaultPlaybackSpeed = 300
 
+/** 快捷视角。azimuth 为 `'current'` 时只改仰角（天顶）。 */
 export type QuickViewPreset = {
   id: 'east' | 'south' | 'west' | 'north' | 'zenith'
   azimuth: number | 'current'
   altitude: number
 }
 
+/** 东/南/西/北/天顶快捷视角。 */
 export const quickViews = [
   { id: 'east', azimuth: 90, altitude: 0 },
   { id: 'south', azimuth: 180, altitude: 0 },
@@ -28,6 +37,7 @@ export const quickViews = [
   { id: 'zenith', azimuth: 'current', altitude: 82 },
 ] satisfies QuickViewPreset[]
 
+/** 首次进入时的图层开关。 */
 export const defaultLayers = {
   stars: true,
   constellationLines: true,
@@ -43,12 +53,14 @@ export const defaultLayers = {
   daylightEffect: true,
 } satisfies LayerState
 
+/** 控制面板图层按钮：key 对 LayerState，variant 给黄道/天赤道着色。 */
 export type LayerToggleDef = {
   key: keyof LayerState
   swatch?: string
   variant?: 'ecliptic' | 'equator'
 }
 
+/** 控制面板上的图层按钮列表。 */
 export const layerToggles = [
   { key: 'stars' },
   { key: 'milkyWay' },
@@ -64,6 +76,7 @@ export const layerToggles = [
   { key: 'horizontalGrid' },
 ] satisfies LayerToggleDef[]
 
+/** 快速导航：太阳系天体顺序（与渲染序一致）。 */
 export const solarQuickTargets = [
   { id: 'sun' },
   { id: 'moon' },
@@ -76,6 +89,7 @@ export const solarQuickTargets = [
   { id: 'neptune' },
 ] as const
 
+/** 快速导航：最亮的 10 颗恒星（视星等升序）。 */
 export const brightestStarIds = [
   'sirius',
   'canopus',

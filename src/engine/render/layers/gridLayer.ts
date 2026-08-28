@@ -7,6 +7,7 @@ import { makeSkyLineMaterial } from '@/engine/render/materials/skyLineMaterial'
 import type { ConstellationStars } from '@/engine/astronomy/constellationData'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
+/** 把一段大圆弧加进 Group，kind 供 syncLayerVisibility 查找。 */
 function addSkyLine(group: Group, points: Vector3[], kind: string, material: ShaderMaterial) {
   const densified = densifyGreatCircle(points)
   if (densified.length < 2) return
@@ -16,6 +17,7 @@ function addSkyLine(group: Group, points: Vector3[], kind: string, material: Sha
   group.add(mesh)
 }
 
+/** 星座折线 + 赤经赤纬网 + 地平方位网。 */
 export function createGridLayer(
   constellationStars: ConstellationStars[],
   uniforms: {

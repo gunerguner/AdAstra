@@ -1,3 +1,4 @@
+/** 底部提示条。非 sticky 时 4 秒后自动关掉。 */
 import { X } from 'lucide-react'
 import { useEffect } from 'react'
 import { useT } from '@/i18n'

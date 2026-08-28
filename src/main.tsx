@@ -1,3 +1,4 @@
+/** 挂 React 根、语言环境和错误边界；生产注册 Service Worker。 */
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import '@fontsource-variable/manrope/wght.css'

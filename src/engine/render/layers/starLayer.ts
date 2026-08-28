@@ -6,6 +6,7 @@ import { makeStarMaterial } from '@/engine/render/materials/starMaterial'
 import type { Star } from '@/shared/types/star'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
+/** 一次性把星表写成 GPU buffer。drawRange 由视星等上限每帧改。 */
 export function createStarLayer(
   stars: Star[],
   uniforms: {

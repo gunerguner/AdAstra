@@ -6,6 +6,7 @@ export type FrameStatsSnapshot = {
   p95Ms: number
 }
 
+/** 环形缓冲：push 每帧耗时，snapshot 给出均值和 p95。 */
 export function createFrameStats(capacity = 45) {
   const samples = new Float64Array(Math.max(1, capacity))
   let cursor = 0
@@ -40,6 +41,7 @@ export function createFrameStats(capacity = 45) {
   }
 }
 
+/** 把帧统计写到 canvas dataset，DevTools 里能直接看。 */
 export function publishFrameStats(
   target: { dataset: DOMStringMap },
   stats: FrameStatsSnapshot,

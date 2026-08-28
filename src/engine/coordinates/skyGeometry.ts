@@ -20,6 +20,7 @@ export function horizontalVectorInto(altitude: number, azimuth: number, out: Vec
   )
 }
 
+/** 分配新向量的地平方向。热路径请用 horizontalVectorInto。 */
 export function horizontalVector(altitude: number, azimuth: number) {
   return horizontalVectorInto(altitude, azimuth, new Vector3())
 }

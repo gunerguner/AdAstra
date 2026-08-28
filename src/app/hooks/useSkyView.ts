@@ -1,3 +1,4 @@
+/** 相机朝向 React state。高频拖拽走 simulation ref，这里只做低频同步。 */
 import { useState } from 'react'
 import { SKY_FOV_DEG } from '@/engine/render/skyProjection'
 import { VIEW_DEFAULT_ALTITUDE, VIEW_DEFAULT_AZIMUTH } from '@/engine/interaction/viewConstraints'

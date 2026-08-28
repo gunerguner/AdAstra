@@ -42,6 +42,7 @@ const ndcScratch = { x: 0, y: 0, z: 0 }
 const candidateScratch: number[] = []
 const LINEAR_PICK_LIMIT = 400
 
+/** 按屏幕半径命中最近的太阳系天体。 */
 function pickBody(input: PickInput): SelectedSkyObject | null {
   if (!input.layers.bodies) return null
   let best: {
@@ -142,6 +143,7 @@ function fillStarGrid(input: PickInput, grid: StarPickGrid, limit: number) {
   }
 }
 
+/** 亮星少则线性扫；多则走网格再精修。 */
 function pickStar(input: PickInput): SelectedSkyObject | null {
   const limit = input.countStarsThroughMagnitude(input.magnitudeLimit)
   let best: { star: Star; altitude: number; azimuth: number; distance: number } | null = null
@@ -174,6 +176,7 @@ function pickStar(input: PickInput): SelectedSkyObject | null {
   }
 }
 
+/** 天体优先，否则恒星。图层关掉则跳过对应分支。 */
 export function pickSkyObject(input: PickInput): SelectedSkyObject | null {
   const bodyHit = pickBody(input)
   if (bodyHit || !input.layers.stars) return bodyHit

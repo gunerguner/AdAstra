@@ -1,3 +1,4 @@
+/** 播放/暂停、倍率、时间轴拖动。时钟写 simulation.utcMillis，UI 控件低频刷新。 */
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { SimulationClock } from '@/engine/clock/simulationClock'
 import { defaultPlaybackSpeed, TIMELINE_UI_INTERVAL_MS } from '@/config'
@@ -5,6 +6,7 @@ import { formatDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
 import type { Playback, LiveClockRefs } from '@/shared/types/playback'
 import type { SkySimulation } from '@/shared/types/sky'
 
+/** 直接改 datetime-local 和年份 DOM，避开 React 每帧 setState。 */
 function writeLiveClock(
   utcMillis: number,
   timeZone: string,

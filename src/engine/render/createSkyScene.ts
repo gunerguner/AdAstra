@@ -21,6 +21,7 @@ import { makeSkyDomeMaterial } from './materials/skyDomeMaterial'
 import { makeSkyLimbMaterial } from './materials/skyLimbMaterial'
 import type { SkySceneContext } from './skyContext'
 
+/** 挂上 renderer 和各图层，返回每帧要用的 uniforms / scratch。 */
 export function createSkyScene(options: {
   mount: HTMLElement
   stars: Star[]
@@ -115,6 +116,7 @@ export function createSkyScene(options: {
   }
 }
 
+/** 释放几何、材质、渲染器和 WebGL 上下文。 */
 export function disposeSkyScene(ctx: SkySceneContext) {
   ctx.layers.starGeometry.dispose()
   ctx.layers.starMaterial.dispose()

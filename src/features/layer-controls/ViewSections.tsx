@@ -1,3 +1,4 @@
+/** 视星等上限滑块和快捷视角按钮。 */
 import { Crosshair, SlidersHorizontal } from 'lucide-react'
 import { quickViews } from '@/config'
 import { useT } from '@/i18n'

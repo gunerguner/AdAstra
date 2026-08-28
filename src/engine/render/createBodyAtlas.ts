@@ -50,6 +50,7 @@ function paintCell(data: Uint8Array, index: number, paint: (nx: number, ny: numb
   }
 }
 
+/** 画 3×3 RGBA 图集并做成 Three DataTexture。 */
 export function createBodyAtlasTexture() {
   const data = new Uint8Array(SIZE * SIZE * 4)
   const painters: Array<(nx: number, ny: number) => [number, number, number]> = [

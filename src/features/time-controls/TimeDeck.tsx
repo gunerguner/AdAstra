@@ -1,3 +1,4 @@
+/** 底部时间甲板：播放、倍率、时间轴、昼夜相位。 */
 import {
   ChevronLeft,
   ChevronRight,

@@ -1,3 +1,4 @@
+/** 创建 Three 场景、渲染循环和视角控制器；卸载时释放 GPU。 */
 import { useEffect, useEffectEvent, useRef, type Dispatch, type RefObject, type SetStateAction } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation, SkyView } from '@/shared/types/sky'

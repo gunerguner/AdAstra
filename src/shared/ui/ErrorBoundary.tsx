@@ -1,3 +1,4 @@
+/** 捕获渲染树异常，转成 ErrorPanel。 */
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { AppError, logAppError, toAppError } from '@/shared/errors/appError'
 import { ErrorPanel } from './ErrorPanel'

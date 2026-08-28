@@ -8,11 +8,14 @@ import {
 } from '@/engine/location/geolocationService'
 import { clamp } from '@/shared/math'
 
+/** 观测点：预置城市、搜索结果或浏览器定位，可再手动改经纬度。 */
+
 export type ObserverPlace = City
 /** resolveObserver 的产物：城市/定位点加上是否手动定位的 custom 标记。 */
 export type ResolvedObserver = ObserverPlace & { custom: boolean }
 export type LocateStatus = 'pending' | 'ready' | 'denied' | 'unavailable'
 
+/** 有手动经纬度则盖在城市上，并标 custom。 */
 export function resolveObserver(
   city: ObserverPlace,
   manualPosition: { latitude: number; longitude: number } | null,
@@ -22,6 +25,7 @@ export function resolveObserver(
     : { ...city, custom: false as const }
 }
 
+/** 城市选择、搜索地点、浏览器定位和手动经纬度。 */
 export function useObserver() {
   const [activeCityIndex, setActiveCityIndex] = useState(defaultCityIndex)
   const [searchedPlace, setSearchedPlace] = useState<ObserverPlace | null>(null)

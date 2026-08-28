@@ -5,6 +5,7 @@ import { GALACTIC_CENTER, NORTH_GALACTIC_POLE } from '@/engine/coordinates/astro
 import { makeMilkyWayMaterial } from '@/engine/render/materials/milkyWayMaterial'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
+/** 银道坐标系球体 + 噪声材质。 */
 export function createMilkyWayLayer(uniforms: {
   horizonMat: Float32Array
   sky: SkyProjectionUniforms

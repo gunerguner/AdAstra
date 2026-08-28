@@ -39,16 +39,19 @@ export const bodyAppearance: Record<string, {
   neptune: { color: '#6f8fe0', size: 8, priority: 16, atlasIndex: 8, spriteScale: 1 },
 }
 
+/** 行星视星等 → 相对大小；日月固定 1。 */
 export function bodyVisualScale(id: string, magnitude: number) {
   if (id === 'sun' || id === 'moon') return 1
   return clamp((1.6 - magnitude) / 3.8, 0.7, 1.55)
 }
 
+/** 点精灵直径（像素）。 */
 export function bodyPointSize(id: string, magnitude: number) {
   const base = bodyAppearance[id]?.size ?? 10
   return base * bodyVisualScale(id, magnitude)
 }
 
+/** 点击命中半径（像素）；太阳按光球不算光晕。 */
 export function bodyPickSize(id: string, magnitude: number) {
   const appearance = bodyAppearance[id]
   const diameter = bodyPointSize(id, magnitude)
@@ -56,10 +59,12 @@ export function bodyPickSize(id: string, magnitude: number) {
   return diameter * 0.5 * (appearance?.spriteScale ?? 1) + 8
 }
 
+/** 视星等 → 0–1 亮度，给点精灵大小和透明度。 */
 export function starBrightness(magnitude: number) {
   return clamp((3.1 - magnitude) / 4.6, 0, 1)
 }
 
+/** 恒星点精灵直径（像素）。 */
 export function starPointSize(magnitude: number) {
   return 9 + starBrightness(magnitude) * 44
 }

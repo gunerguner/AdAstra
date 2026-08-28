@@ -31,6 +31,7 @@ type GeocodingResponse = {
   reason?: string
 }
 
+/** 含 CJK/假名/韩文则向 Open-Meteo 要中文地名。 */
 export function geocodingLanguage(query: string): 'zh' | 'en' {
   return /[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/.test(query) ? 'zh' : 'en'
 }
@@ -43,6 +44,7 @@ function finiteCoordinate(value: number | undefined, min: number, max: number): 
   return typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max
 }
 
+/** 丢掉非聚落、缺坐标/时区的命中，拼出 regionLabel。 */
 export function mapGeocodingHits(hits: GeocodingHit[]): GeocodedPlace[] {
   const places: GeocodedPlace[] = []
   for (const hit of hits) {
@@ -62,6 +64,7 @@ export function mapGeocodingHits(hits: GeocodingHit[]): GeocodedPlace[] {
   return places
 }
 
+/** 按名称搜城市。短于 2 字直接空数组；取消请求抛 AbortError。 */
 export async function searchCities(query: string, signal?: AbortSignal): Promise<GeocodedPlace[]> {
   const name = query.trim()
   if (name.length < GEOCODING_MIN_QUERY_LENGTH) return []

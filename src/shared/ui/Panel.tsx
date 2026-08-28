@@ -1,3 +1,4 @@
+/** 毛玻璃面板容器。 */
 import type { HTMLAttributes, ReactNode } from 'react'
 import styles from './Panel.module.css'
 

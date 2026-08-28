@@ -49,6 +49,7 @@ export type CatalogIndexEntry = {
   index: number
 }
 
+/** 运行时星表：按视星等排序的恒星数组 + id 索引。 */
 export type RuntimeCatalog = {
   manifest: DataManifest
   stars: Star[]
@@ -61,9 +62,11 @@ async function digestHex(buffer: ArrayBuffer) {
   return Array.from(new Uint8Array(digest), (value) => value.toString(16).padStart(2, '0')).join('')
 }
 
+/** 从 /data/v1 拉星表并解析成 RuntimeCatalog。 */
 export class CatalogService {
   constructor(private readonly root = '/data/v1') {}
 
+  /** 拉 manifest + bin，校验长度和 SHA-256，还不解析恒星记录。 */
   async loadCoreCatalogBuffer(signal?: AbortSignal): Promise<CatalogBuffer> {
     const manifestResponse = await fetchCatalog(`${this.root}/manifest.json`, { signal, cache: 'no-cache' })
     if (!manifestResponse.ok) throw catalogError('error.catalog.manifestHttp', undefined, { status: manifestResponse.status })
@@ -80,6 +83,7 @@ export class CatalogService {
     return { manifest, file, values: new Float32Array(buffer) }
   }
 
+  /** 解析 index.json，合成按视星等排序的 RuntimeCatalog。 */
   async loadCoreCatalog(signal?: AbortSignal): Promise<RuntimeCatalog> {
     try {
       return await this.readCoreCatalog(signal)

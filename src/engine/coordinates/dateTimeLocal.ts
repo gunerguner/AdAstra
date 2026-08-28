@@ -9,6 +9,7 @@ type LocalDateParts = {
 
 const formatterCache = new Map<string, Intl.DateTimeFormat>()
 
+/** 按 IANA 时区缓存 DateTimeFormat，避免每次 new。 */
 function formatter(timeZone: string) {
   let value = formatterCache.get(timeZone)
   value ??= new Intl.DateTimeFormat('en-CA', {
@@ -40,6 +41,7 @@ function localEpoch(parts: LocalDateParts) {
   return Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute)
 }
 
+/** UTC 毫秒 → 观测地 `YYYY-MM-DDTHH:mm`，给 datetime-local 输入框。 */
 export function formatDateTimeLocal(utcMillis: number, timeZone: string) {
   const parts = Object.fromEntries(
     formatter(timeZone).formatToParts(new Date(utcMillis)).map((part) => [part.type, part.value]),

@@ -1,3 +1,4 @@
+/** 图层开关网格。 */
 import { Layers3 } from 'lucide-react'
 import { layerToggles } from '@/config'
 import type { LayerState } from '@/shared/types/sky'

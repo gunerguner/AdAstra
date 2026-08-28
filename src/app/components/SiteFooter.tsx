@@ -1,3 +1,4 @@
+/** 页脚版权与技术栈链接。 */
 import styles from './SiteFooter.module.css'
 
 const START_YEAR = 2020

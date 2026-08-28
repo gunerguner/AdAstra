@@ -16,6 +16,7 @@ export type MoonPhaseKey = (typeof moonPhaseKeys)[number]
 
 const MOON_PHASE_STEP_DEG = 360 / moonPhaseKeys.length
 
+/** 按朔望角把月相收成 8 档键。 */
 export function moonPhaseName(synodicDeg: number): MoonPhaseKey {
   const index = Math.round(wrapDegrees(synodicDeg) / MOON_PHASE_STEP_DEG) % moonPhaseKeys.length
   return moonPhaseKeys[index]

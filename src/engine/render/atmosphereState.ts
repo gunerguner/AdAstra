@@ -44,6 +44,7 @@ function smoothstep(edge0: number, edge1: number, value: number) {
   return t * t * (3 - 2 * t)
 }
 
+/** 按太阳高度分夜 / 天文 / 航海 / 民用曙暮光 / 白天。关掉白天效果则恒为 night。 */
 export function atmospherePhase(sunAltitude: number, enabled: boolean): AtmospherePhase {
   if (!enabled || sunAltitude < ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG) return 'night'
   if (sunAltitude < NAUTICAL_TWILIGHT_ALTITUDE_DEG) return 'astronomical'

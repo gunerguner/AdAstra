@@ -20,6 +20,7 @@ const JULIAN_DAYS_PER_CENTURY = 36525
 const ARCSEC_TO_RAD = Math.PI / (180 * 3600)
 const precessionScratch = new Float32Array(9)
 
+/** Unix 毫秒或 Date → 儒略日。 */
 function julianDay(time: number | Date) {
   return (typeof time === 'number' ? time : time.getTime()) / MS_PER_DAY + JULIAN_UNIX_EPOCH
 }
@@ -45,6 +46,7 @@ export function equatorialUnitInto(
   return out
 }
 
+/** 分配新对象的赤道单位向量。热路径请用 equatorialUnitInto。 */
 export function equatorialUnit(raHours: number, decDeg: number) {
   return equatorialUnitInto(raHours, decDeg, { x: 0, y: 0, z: 0 })
 }

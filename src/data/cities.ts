@@ -1,3 +1,5 @@
+/** 预置观测城市：快捷下拉用，搜索结果走 geocoding，不写进这份表。 */
+
 export type City = {
   id: string
   names: { zh: string; en: string }
@@ -14,4 +16,5 @@ export const cities = [
   { id: 'sydney', names: { zh: '悉尼', en: 'Sydney' }, latitude: -33.8688, longitude: 151.2093, timeZone: 'Australia/Sydney' },
 ] as const satisfies readonly City[]
 
+/** 定位失败或用户未选城时的默认观测点。 */
 export const defaultCityIndex = cities.findIndex((city) => city.id === 'shanghai')

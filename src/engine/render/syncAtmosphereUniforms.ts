@@ -10,6 +10,7 @@ export type AtmosphereSyncCache = {
   lastUiPhase: string
 }
 
+/** 用太阳地平坐标更新天空/地面 uniforms，并回调 UI 昼夜相位。 */
 export function syncAtmosphereUniforms(options: {
   uniforms: SharedSkyUniforms
   scratch: SkySceneContext['scratch']

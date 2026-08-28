@@ -40,6 +40,7 @@ export class SkyViewController {
     private readonly onActivity: () => void,
   ) {}
 
+  /** 把新视角写入 simulation ref；forceUiSync 时立刻通知 React。 */
   emitView(next: SkyView, forceUiSync = false) {
     Object.assign(this.simulationRef.current.view, next)
     this.onActivity()
@@ -180,6 +181,7 @@ export class SkyViewController {
     this.emitView(next, true)
   }
 
+  /** 在 canvas 上挂指针/滚轮/键盘；重复 bind 会先卸旧监听。 */
   bind() {
     this.unbind()
     this.listeners = new AbortController()
@@ -194,6 +196,7 @@ export class SkyViewController {
     element.addEventListener('keydown', this.onKeyDown, { signal })
   }
 
+  /** 卸监听并取消待处理的 hover / 视角同步。 */
   unbind() {
     window.clearTimeout(this.viewSyncTimer)
     cancelAnimationFrame(this.hoverFrame)

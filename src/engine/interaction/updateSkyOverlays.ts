@@ -35,6 +35,7 @@ export type SkyOverlayFrame = {
 
 const HORIZON_LABEL_MIN_Y = 0.07
 
+/** 返回每帧 update()：只在视角/尺寸/图层变了时重算 DOM 位置。 */
 export function createSkyOverlayUpdater(options: {
   camera: Camera
   uniforms: { horizonMat: Float32Array; eqjHorizonMat: Float32Array }

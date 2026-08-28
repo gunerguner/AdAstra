@@ -5,6 +5,7 @@
 import { clamp, degToRad, lerp, lerpDegrees, radToDeg } from '@/shared/math'
 import { DEG_PER_HOUR, HOURS_PER_DAY } from '@/engine/coordinates/astroConstants'
 
+/** 某一时刻一颗太阳系天体的地平/赤道坐标与外观。 */
 export type BodySnapshot = {
   id: string
   altitude: number
@@ -18,6 +19,7 @@ export type BodySnapshot = {
   ringTilt?: number
 }
 
+/** Worker 给出的一对采样：from/to 之间由主线程按当前时刻插值。 */
 export type BodySnapshotWindow = {
   fromUtcMillis: number
   toUtcMillis: number
@@ -26,17 +28,17 @@ export type BodySnapshotWindow = {
 }
 
 const EMPTY: BodySnapshot[] = []
-const pooled: BodySnapshot[] = []
+/** 对象池：按天体下标复用快照，避免每帧分配。 */
+const pooled: Array<BodySnapshot | undefined> = []
 const result: BodySnapshot[] = []
 const nextById = new Map<string, BodySnapshot>()
 
 let cachedWindow: BodySnapshotWindow | null = null
 let cachedUtcMillis = Number.NaN
 
+/** 取第 index 个池化快照；没有才新建。 */
 function slot(index: number): BodySnapshot {
-  const existing = pooled[index]
-  if (existing) return existing
-  const created: BodySnapshot = {
+  return pooled[index] ??= {
     id: '',
     altitude: 0,
     azimuth: 0,
@@ -46,10 +48,9 @@ function slot(index: number): BodySnapshot {
     phaseAngle: 0,
     phaseFraction: 0,
   }
-  pooled[index] = created
-  return created
 }
 
+/** 两帧之间插值一颗天体：赤经赤纬走球面，方位走劣弧，写入 out。 */
 function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: BodySnapshot) {
   const fromRa = degToRad(from.raHours * DEG_PER_HOUR)
   const toRa = degToRad(to.raHours * DEG_PER_HOUR)

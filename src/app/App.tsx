@@ -27,6 +27,7 @@ import { useBodyMagnitudes } from './hooks/useBodyMagnitudes'
 import { useT } from '@/i18n'
 import styles from './App.module.css'
 
+/** 根组件：星表、观测点、图层、播放、天空视口和各控制面板。 */
 export default function App() {
   const t = useT()
   const { catalog, catalogError, retry } = useCatalog()

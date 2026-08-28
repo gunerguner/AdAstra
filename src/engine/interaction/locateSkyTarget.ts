@@ -60,6 +60,7 @@ function selectedFromTarget(
   }
 }
 
+/** 目标在视场内则只转方位；偏出上下沿才抬/压仰角。地平下不转。 */
 export function aimSkyView(view: SkyView, target: { azimuth: number; altitude: number }) {
   if (target.altitude < 0) {
     return { azimuth: view.azimuth, altitude: view.altitude, belowHorizon: true }
@@ -75,6 +76,7 @@ export function aimSkyView(view: SkyView, target: { azimuth: number; altitude: n
   return { azimuth: target.azimuth, altitude, belowHorizon: false }
 }
 
+/** 算出目标地平坐标、是否该转相机、以及选中对象快照。 */
 export function locateSkyTarget(input: LocateSkyTargetInput): LocateSkyTargetResult | null {
   const horizonMat = new Float32Array(9)
   const eqjHorizonMat = new Float32Array(9)

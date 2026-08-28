@@ -12,6 +12,7 @@ export type RenderScheduleInput = {
   layersChanged: boolean
 }
 
+/** 交互中 / 时间在走 → 满帧；否则空闲 4fps。 */
 export function isFullRateFrame(input: RenderScheduleInput) {
   if (input.hidden) return false
   if (input.viewChanged || input.layersChanged) return true
@@ -19,6 +20,7 @@ export function isFullRateFrame(input: RenderScheduleInput) {
   return input.now - input.lastWakeAt < INTERACTION_HOLD_MS
 }
 
+/** 满帧立刻 rAF；空闲则延迟 IDLE_FRAME_MS。 */
 export function nextFrameDelayMs(fullRate: boolean) {
   return fullRate ? 0 : IDLE_FRAME_MS
 }

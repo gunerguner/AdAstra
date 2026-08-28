@@ -1,3 +1,4 @@
+/** WebGL 天空视口：星表加载中/失败时盖面板，成功后挂渲染循环。 */
 import { useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation, SkyView } from '@/shared/types/sky'

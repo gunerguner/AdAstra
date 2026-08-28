@@ -1,3 +1,4 @@
+/** 选中天体信息卡：种类、名称、星座、星等、月相。 */
 import { X } from 'lucide-react'
 import type { Ref } from 'react'
 import type { SelectedSkyObject } from '@/shared/types/sky'

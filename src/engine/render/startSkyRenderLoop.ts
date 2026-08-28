@@ -25,6 +25,7 @@ export type SkyRenderLoop = {
   wake: () => void
 }
 
+/** 启动 rAF 循环；返回 stop / wake（交互后拉回满帧）。 */
 export function startSkyRenderLoop(options: {
   ctx: SkySceneContext
   catalog: RuntimeCatalog

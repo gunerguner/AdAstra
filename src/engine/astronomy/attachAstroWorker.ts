@@ -36,6 +36,7 @@ function shouldRequestBodySnapshot(
   return true
 }
 
+/** 挂上 Worker，返回 requestSnapshot / terminate。 */
 export function attachAstroWorker(handlers: {
   onSnapshot: (window: BodySnapshotWindow) => void
   onError: (error: AppError) => void

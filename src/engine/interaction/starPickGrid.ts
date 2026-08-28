@@ -8,6 +8,7 @@ export type StarPickGrid = {
   buckets: number[][]
 }
 
+/** 分配 cols×rows 个空桶。 */
 export function createStarPickGrid(cols = STAR_PICK_GRID_COLS, rows = STAR_PICK_GRID_ROWS): StarPickGrid {
   return {
     cols,
@@ -16,6 +17,7 @@ export function createStarPickGrid(cols = STAR_PICK_GRID_COLS, rows = STAR_PICK_
   }
 }
 
+/** 清空桶内容，复用数组避免分配。 */
 export function clearStarPickGrid(grid: StarPickGrid) {
   for (const bucket of grid.buckets) bucket.length = 0
 }
@@ -24,14 +26,17 @@ function ndcToBin(ndc: number, count: number) {
   return Math.min(count - 1, Math.max(0, Math.floor((ndc * 0.5 + 0.5) * count)))
 }
 
+/** NDC → 格子下标。 */
 export function starPickCell(ndcX: number, ndcY: number, cols: number, rows: number) {
   return ndcToBin(ndcY, rows) * cols + ndcToBin(ndcX, cols)
 }
 
+/** 把恒星下标丢进对应格子。 */
 export function addStarToPickGrid(grid: StarPickGrid, index: number, ndcX: number, ndcY: number) {
   grid.buckets[starPickCell(ndcX, ndcY, grid.cols, grid.rows)].push(index)
 }
 
+/** 半径覆盖到的格子里所有恒星下标，写入 into。 */
 export function queryStarPickGrid(
   grid: StarPickGrid,
   ndcX: number,

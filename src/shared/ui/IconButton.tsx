@@ -1,3 +1,4 @@
+/** 图标按钮。active 时加高亮。 */
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import styles from './IconButton.module.css'
 
