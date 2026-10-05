@@ -24,6 +24,7 @@ import { useSimulationRef } from './hooks/useSimulationRef'
 import { useAtmosphereTheme } from './hooks/useAtmosphereTheme'
 import { useLocationNotice } from './hooks/useLocationNotice'
 import { useBodyMagnitudes } from './hooks/useBodyMagnitudes'
+import { useMediaQuery } from './hooks/useMediaQuery'
 import { useT } from '@/i18n'
 import styles from './App.module.css'
 
@@ -38,6 +39,18 @@ export default function App() {
   const [magnitudeLimit, setMagnitudeLimit] = useState(5.5)
   const [isTimeDeckOpen, setIsTimeDeckOpen] = useState(true)
   const [selected, setSelected] = useState<SelectedSkyObject | null>(null)
+  // 窄屏两侧面板会互相叠住,钉住时一次只开一个。
+  const isCompactViewport = useMediaQuery('(max-width: 940px)')
+  const [navPinned, setNavPinned] = useState(false)
+  const [controlsPinned, setControlsPinned] = useState(false)
+  const pinNav = (pinned: boolean) => {
+    setNavPinned(pinned)
+    if (pinned && isCompactViewport) setControlsPinned(false)
+  }
+  const pinControls = (pinned: boolean) => {
+    setControlsPinned(pinned)
+    if (pinned && isCompactViewport) setNavPinned(false)
+  }
 
   const simulationRef = useSimulationRef({
     latitude: observer.latitude,
@@ -132,13 +145,15 @@ export default function App() {
         handleLabel={t('nav.title')}
         handleLabelPinned={t('nav.collapse')}
         handleIcon={<LocateFixed size={15} strokeWidth={1.65} />}
+        pinned={navPinned}
+        onPinnedChange={pinNav}
       >
         {catalog ? (
           <QuickNav catalog={catalog} bodyMagnitudes={bodyMagnitudes} onLocate={locateTarget} />
         ) : null}
       </HoverDock>
 
-      <ControlPanel>
+      <ControlPanel pinned={controlsPinned} onPinnedChange={pinControls}>
         <LayerSection layers={layers} onToggle={toggleLayer} />
         <MagnitudeSection magnitudeLimit={magnitudeLimit} onChange={setMagnitudeLimit} />
         <QuickViewSection view={view} onChange={setView} />

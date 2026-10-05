@@ -6,7 +6,7 @@
     calc(var(--topbar-offset) + var(--safe-top)),
     calc((100dvh + var(--topbar-offset) + var(--safe-top) - var(--deck-offset) - var(--safe-bottom)) / 2 - var(--handle-size) / 2)
   );
-  right: 0;
+  right: var(--safe-right);
   display: flex;
   align-items: flex-start;
   max-height: calc(100dvh - var(--deck-offset) - var(--safe-bottom));
@@ -18,7 +18,7 @@
 .dock[data-side='left'] {
   --dock-dir: -1;
   right: auto;
-  left: 0;
+  left: var(--safe-left);
   flex-direction: row-reverse;
 }
 
@@ -48,7 +48,6 @@
   border: 1px solid var(--color-border);
   backdrop-filter: blur(var(--blur-panel));
   box-shadow: inset calc(var(--dock-dir) * 1px) 0 0 color-mix(in srgb, var(--color-gold-soft) 16%, transparent);
-  animation: handleBreath 5.2s ease-in-out infinite;
 }
 
 .dock[data-side='right'] .handle {
@@ -108,6 +107,13 @@
   margin-inline-end: 4px;
 }
 
+/* 呼吸光晕是「可悬停」的桌面暗示;触摸设备上关掉,省掉常驻合成开销。 */
+@media (hover: hover) and (pointer: fine) {
+  .handle {
+    animation: handleBreath 5.2s ease-in-out infinite;
+  }
+}
+
 .open .handle,
 .dock[data-pinned] .handle {
   animation: none;
@@ -158,6 +164,6 @@
 @media (max-width: 680px) {
   .sheet,
   .dock[data-side='left'] .sheet {
-    width: min(292px, calc(100vw - 48px));
+    width: min(292px, calc(100vw - var(--safe-left) - var(--safe-right) - 48px));
   }
 }

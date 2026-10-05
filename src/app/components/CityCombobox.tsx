@@ -87,7 +87,11 @@ export default function CityCombobox({
     const node = rootRef.current
     if (!node) return
     const box = node.getBoundingClientRect()
-    setMenuBox({ top: box.bottom + 6, left: box.left, width: Math.max(box.width, 240) })
+    const viewportWidth = window.innerWidth || document.documentElement.clientWidth
+    const width = Math.min(Math.max(box.width, 240), viewportWidth - 16)
+    // 小屏上把菜单夹在视口内,不越过右缘。
+    const left = Math.max(8, Math.min(box.left, viewportWidth - width - 8))
+    setMenuBox({ top: box.bottom + 6, left, width })
   }
 
   useLayoutEffect(() => {

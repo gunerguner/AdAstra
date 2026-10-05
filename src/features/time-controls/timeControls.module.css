@@ -256,11 +256,54 @@
 
 @media (max-width: 680px) {
   .deck {
-    width: min(100% - 24px, 480px);
+    width: min(calc(100vw - var(--safe-left) - var(--safe-right) - 24px), 480px);
     padding: 6px 10px 5px;
   }
 
   .collapsed {
-    width: min(100% - 24px, 360px);
+    width: min(calc(100vw - var(--safe-left) - var(--safe-right) - 24px), 360px);
+  }
+
+  /* 触屏:播放/步进按钮和时间轴滑轨都加大,保证可点可拖。 */
+  .step,
+  .play {
+    width: 34px;
+    min-width: 34px;
+  }
+
+  .play {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  .toggle {
+    width: 32px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .now {
+    height: 32px;
+    font-size: 10px;
+  }
+
+  .track {
+    height: 26px;
+  }
+
+  .track::before {
+    inset: 10px 0 auto;
+    height: 6px;
+  }
+
+  .timeline input {
+    height: 26px;
+  }
+
+  .speed select {
+    width: auto;
+    min-width: 88px;
+    padding: 6px 5px;
+    font-size: 10px;
   }
 }

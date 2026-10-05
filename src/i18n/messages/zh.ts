@@ -104,7 +104,7 @@ export const zh = {
   },
   retry: '重试',
   sky: {
-    canvasLabel: '实时星空画布。使用方向键旋转视角，加号和减号缩放。',
+    canvasLabel: '实时星空画布。使用方向键旋转视角，加号和减号缩放；双击或双触可放大。',
   },
   phase: {
     night: '夜晚',

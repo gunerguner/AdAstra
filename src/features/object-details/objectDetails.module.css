@@ -22,6 +22,18 @@
   width: 25px;
 }
 
+@media (max-width: 480px) {
+  .card {
+    width: min(258px, calc(100vw - var(--safe-left) - var(--safe-right) - 24px));
+  }
+
+  .close {
+    width: 32px;
+    right: 8px;
+    top: 8px;
+  }
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;

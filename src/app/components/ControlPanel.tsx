@@ -5,10 +5,12 @@ import { useT } from '@/i18n'
 import HoverDock from './HoverDock'
 
 type Props = {
+  pinned: boolean
+  onPinnedChange: (pinned: boolean) => void
   children: ReactNode
 }
 
-export default function ControlPanel({ children }: Props) {
+export default function ControlPanel({ pinned, onPinnedChange, children }: Props) {
   const t = useT()
   return (
     <HoverDock
@@ -17,6 +19,8 @@ export default function ControlPanel({ children }: Props) {
       handleLabel={t('controls.title')}
       handleLabelPinned={t('controls.collapse')}
       handleIcon={<Layers3 size={15} strokeWidth={1.65} />}
+      pinned={pinned}
+      onPinnedChange={onPinnedChange}
     >
       {children}
     </HoverDock>

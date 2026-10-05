@@ -219,27 +219,112 @@
   }
 }
 
+/* 触屏:输入字号 ≥16px,避免 iOS Safari 聚焦时把整页放大。 */
+@media (pointer: coarse) {
+  .stat strong,
+  .stat input {
+    font-size: 16px;
+  }
+
+  .coord input {
+    width: 78px;
+  }
+
+  .time input {
+    width: auto;
+    min-width: 178px;
+  }
+}
+
+/* 窄屏:单行滚动改为「品牌/语言 + 换行信息条」,触控目标放大。 */
 @media (max-width: 680px) {
   .topbar {
-    padding: 0 12px;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'brand lang'
+      'status status';
+    gap: 5px 8px;
+    padding: 6px max(10px, var(--safe-right)) 6px max(10px, var(--safe-left));
+    min-height: 0;
+  }
+
+  .brand {
+    grid-area: brand;
   }
 
   .brand span:nth-of-type(2) {
     display: none;
   }
 
-  .stat {
-    padding: 5px 8px;
+  .lang {
+    grid-area: lang;
   }
 
-  .coord input {
-    width: 54px;
+  .lang button {
+    min-width: 40px;
+    min-height: 34px;
+    padding: 5px 10px;
     font-size: 11px;
   }
 
+  .status {
+    grid-area: status;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .stat {
+    min-height: 38px;
+    border: 1px solid var(--color-divider);
+    border-radius: var(--radius-lg);
+    background: var(--color-chip);
+    padding: 0 10px;
+  }
+
+  .stat:last-child {
+    border: 1px solid var(--color-divider);
+  }
+
+  .place {
+    flex: 1 1 100px;
+  }
+
+  .place span,
+  .coord span {
+    height: auto;
+  }
+
+  .locate {
+    width: 32px;
+    height: 32px;
+    margin-inline-start: 4px;
+  }
+
+  .coord {
+    flex: 0 0 auto;
+  }
+
+  .coord input {
+    width: 72px;
+  }
+
+  /* 时间输入独占一行,城市/坐标挤上一行,顶栏控制在三行内。 */
+  .time {
+    flex-basis: 100%;
+    min-width: 0;
+    color: var(--color-cyan);
+  }
+
   .time input {
-    width: 148px;
-    font-size: 10px;
+    width: 100%;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
   }
 }

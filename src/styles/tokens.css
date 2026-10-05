@@ -65,7 +65,7 @@
   --type-eyebrow: 9px var(--font-mono);
   --letter-eyebrow: 0.12em;
   --swatch-size: 7px;
-  /* Chrome offsets: 1080 compact labels, 940 hide view, 680 narrow. */
+  /* Chrome offsets: 1080 compact labels, 940 hide view, 680 narrow (two-row topbar). */
   --topbar-offset: 70px;
   --deck-offset: 156px;
   --handle-size: 112px;
@@ -74,6 +74,8 @@
   --deck-inset: 16px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
   --app-bg:
     radial-gradient(ellipse at 54% 45%, rgba(22, 56, 105, 0.36) 0%, rgba(9, 19, 47, 0.28) 34%, transparent 63%),
     linear-gradient(170deg, #0d1634 0%, #071026 53%, #030610 100%);
@@ -100,11 +102,16 @@
 
 @media (max-width: 680px) {
   :root {
-    --topbar-offset: 64px;
+    /* 窄屏顶栏为三行(品牌/城市+坐标/时间),实测约 135px。 */
+    --topbar-offset: 141px;
     --deck-offset: 132px;
     --handle-size: 96px;
     --handle-width: 36px;
     --notice-offset: 96px;
     --deck-inset: 8px;
+    /* 移动 GPU 对 WebGL 之上的 backdrop-filter 更敏感，收窄模糊半径。 */
+    --blur-chrome: 10px;
+    --blur-panel: 12px;
+    --blur-deck: 12px;
   }
 }

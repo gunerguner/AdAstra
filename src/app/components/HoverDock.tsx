@@ -1,7 +1,11 @@
-/** 侧栏：悬停展开，可钉住。左右各一个（快捷导航 / 图层）。 */
+/** 侧栏：精确指针可悬停展开，点按手柄钉住。左右各一个（快捷导航 / 图层）。 */
 import { useState, type ReactNode } from 'react'
 import { Panel } from '@/shared/ui'
 import styles from './HoverDock.module.css'
+
+/** 悬停展开只对鼠标/触控板有意义；触摸设备点一下就钉住，不靠 pointerenter。 */
+const FINE_POINTER = typeof window !== 'undefined'
+  && window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
 type Props = {
   side: 'left' | 'right'
@@ -9,6 +13,8 @@ type Props = {
   handleLabelPinned: string
   panelId: string
   handleIcon: ReactNode
+  pinned: boolean
+  onPinnedChange: (pinned: boolean) => void
   children: ReactNode
 }
 
@@ -18,20 +24,27 @@ export default function HoverDock({
   handleLabelPinned,
   panelId,
   handleIcon,
+  pinned,
+  onPinnedChange,
   children,
 }: Props) {
   const [hovered, setHovered] = useState(false)
-  const [pinned, setPinned] = useState(false)
-  const open = hovered || pinned
+  const open = (FINE_POINTER && hovered) || pinned
 
   return (
     <div
       className={`${styles.dock} ${open ? styles.open : ''}`}
       data-side={side}
       data-pinned={pinned || undefined}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      onFocusCapture={() => setHovered(true)}
+      onPointerEnter={() => {
+        if (FINE_POINTER) setHovered(true)
+      }}
+      onPointerLeave={() => {
+        if (FINE_POINTER) setHovered(false)
+      }}
+      onFocusCapture={() => {
+        if (FINE_POINTER) setHovered(true)
+      }}
       onBlurCapture={(event) => {
         const next = event.relatedTarget
         if (next instanceof Node && event.currentTarget.contains(next)) return
@@ -44,7 +57,7 @@ export default function HoverDock({
         aria-label={pinned ? handleLabelPinned : handleLabel}
         aria-expanded={open}
         aria-controls={panelId}
-        onClick={() => setPinned((value) => !value)}
+        onClick={() => onPinnedChange(!pinned)}
       >
         {handleIcon}
         <span className={styles.handleSpine} aria-hidden="true" />

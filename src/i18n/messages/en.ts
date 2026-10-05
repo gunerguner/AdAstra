@@ -106,7 +106,7 @@ export const en = {
   },
   retry: 'Retry',
   sky: {
-    canvasLabel: 'Live sky canvas. Arrow keys pan; plus and minus zoom.',
+    canvasLabel: 'Live sky canvas. Arrow keys pan; plus and minus zoom; double-tap or double-click zooms in.',
   },
   phase: {
     night: 'Night',

@@ -88,11 +88,25 @@
 
 @media (max-width: 680px) {
   .root {
-    width: 80px;
-    flex-basis: 80px;
+    flex: 1 1 auto;
+    width: auto;
+    height: 32px;
   }
 
   .input {
+    font-size: 16px;
+    line-height: 32px;
+  }
+
+  .option {
+    padding: 11px 10px;
+  }
+
+  .option strong {
+    font-size: 14px;
+  }
+
+  .option span {
     font-size: 11px;
   }
 }

@@ -16,10 +16,15 @@ type Callbacks = {
   onSelect: (item: SelectedSkyObject | null) => void
 }
 
+/** 双击/双触判定窗口与位移容差。 */
+const DOUBLE_TAP_MS = 320
+const DOUBLE_TAP_RADIUS = 48
+
 export class SkyViewController {
   private drag: { x: number; y: number; azimuth: number; altitude: number; moved: boolean } | null = null
   private pointers = new Map<number, { x: number; y: number }>()
   private pinch: { distance: number; fov: number } | null = null
+  private lastTap: { x: number; y: number; time: number } | null = null
   private lastViewSyncAt = 0
   private listeners: AbortController | null = null
   private viewSyncTimer = 0
@@ -146,7 +151,19 @@ export class SkyViewController {
     this.pointers.delete(event.pointerId)
     if (this.pointers.size < 2) this.pinch = null
     if (this.drag && !this.drag.moved && this.pointers.size === 0) {
-      this.callbacks.onSelect(this.hitAt(event.clientX, event.clientY))
+      const now = performance.now()
+      const last = this.lastTap
+      this.lastTap = { x: event.clientX, y: event.clientY, time: now }
+      // 短时间内的第二次轻点视为双击/双触:放大一档,不再重复拾取。
+      const isDoubleTap = last !== null
+        && now - last.time <= DOUBLE_TAP_MS
+        && Math.hypot(event.clientX - last.x, event.clientY - last.y) <= DOUBLE_TAP_RADIUS
+      if (isDoubleTap) {
+        this.lastTap = null
+        this.emitView(zoomView(this.simulationRef.current.view, 0.6), true)
+      } else {
+        this.callbacks.onSelect(this.hitAt(event.clientX, event.clientY))
+      }
     }
     if (this.drag?.moved && this.pointers.size === 0) {
       this.emitView({ ...this.simulationRef.current.view }, true)

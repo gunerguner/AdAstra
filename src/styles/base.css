@@ -6,12 +6,22 @@ html, body, #root {
   margin: 0;
 }
 
+/* 触屏基础：禁下拉刷新/回弹串扰、去系统点按高亮、chrome 不允许长按选字。 */
+html {
+  overscroll-behavior: none;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
 button, input, select {
   font: inherit;
 }
 
 button {
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 :focus-visible {
@@ -25,6 +35,14 @@ button {
   overflow: hidden;
   position: relative;
   background: var(--app-bg);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input, select, textarea {
+  user-select: text;
+  -webkit-user-select: auto;
 }
 
 .sr-only {
