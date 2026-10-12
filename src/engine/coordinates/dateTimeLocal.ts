@@ -5,6 +5,7 @@ type LocalDateParts = {
   day: number
   hour: number
   minute: number
+  second: number
 }
 
 const formatterCache = new Map<string, Intl.DateTimeFormat>()
@@ -19,6 +20,7 @@ function formatter(timeZone: string) {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
+    second: '2-digit',
     hourCycle: 'h23',
   })
   if (!formatterCache.has(timeZone)) formatterCache.set(timeZone, value)
@@ -34,6 +36,7 @@ function partsAt(utcMillis: number, timeZone: string): LocalDateParts {
     day: read('day'),
     hour: read('hour'),
     minute: read('minute'),
+    second: read('second'),
   }
 }
 
@@ -62,6 +65,7 @@ export function parseDateTimeLocal(value: string, timeZone: string): number | nu
     day: Number(match[3]),
     hour: Number(match[4]),
     minute: Number(match[5]),
+    second: 0,
   }
   const target = localEpoch(wanted)
   let candidate = target
@@ -72,4 +76,40 @@ export function parseDateTimeLocal(value: string, timeZone: string): number | nu
 
   const actual = partsAt(candidate, timeZone)
   return localEpoch(actual) === target ? candidate : null
+}
+
+/** 回归年的平均长度，用于播放倍率和夏令时空洞时的回退。 */
+const MEAN_YEAR_MS = 365.2425 * 24 * 60 * 60 * 1000
+
+function daysInMonth(year: number, month: number) {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate()
+}
+
+function pad(value: number, width: number) {
+  return String(value).padStart(width, '0')
+}
+
+export type LocalTimeShift = {
+  years?: number
+  days?: number
+  minutes?: number
+}
+
+/**
+ * 按观测地民用时前进或后退。
+ * 跨年时把 2 月 29 日收到 2 月 28 日；分钟和日的进位交给公历。
+ * 落到夏令时空洞时退回平均毫秒，不改成邻近的有效分钟。
+ */
+export function shiftLocalUtc(utcMillis: number, timeZone: string, shift: LocalTimeShift) {
+  const years = shift.years ?? 0
+  const days = shift.days ?? 0
+  const minutes = shift.minutes ?? 0
+  const parts = partsAt(utcMillis, timeZone)
+  const year = parts.year + years
+  const day = years === 0 ? parts.day : Math.min(parts.day, daysInMonth(year, parts.month))
+  const carried = new Date(Date.UTC(year, parts.month - 1, day + days, parts.hour, parts.minute + minutes))
+  const value = `${pad(carried.getUTCFullYear(), 4)}-${pad(carried.getUTCMonth() + 1, 2)}-${pad(carried.getUTCDate(), 2)}T${pad(carried.getUTCHours(), 2)}:${pad(carried.getUTCMinutes(), 2)}`
+  const parsed = parseDateTimeLocal(value, timeZone)
+  if (parsed == null) return utcMillis + years * MEAN_YEAR_MS + days * 86_400_000 + minutes * 60_000
+  return parsed + parts.second * 1000 + (utcMillis % 1000)
 }

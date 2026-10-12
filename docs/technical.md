@@ -135,7 +135,7 @@ engine/astronomy、clock、catalog、location
 simulationUtc = pausedAt + (performance.now - startedAt) * rate
 ```
 
-播放倍率（`src/config/index.ts`）：实时、1 分钟/秒、5 分钟/秒（默认）、1 小时/秒、1 天/秒。底部时间轴窗口约 8 小时，步进 1 小时。标签页进入后台时停 rAF，恢复后不补播后台经过的时间。
+播放倍率（`src/config/index.ts`）：实时、5 分钟/秒（默认）、1 小时/秒、1 天/秒、1 年/秒、10 年/秒、100 年/秒。底部时间轴窗口约 8 小时。前进/后退按所选步长跳转：1 小时、1 天、1 年、10 年、100 年；日和年以上按观测地公历，换步长后播放倍率改成大约一步每秒。标签页进入后台时停 rAF，恢复后不补播后台经过的时间。
 
 拖动时间轴时设 `simulation.scrubbing`，暂停向 Worker 刷精确采样，松手后再请求终点窗口。过时的中间目标直接丢弃，只保留最新时间。
 

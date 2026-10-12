@@ -9,14 +9,36 @@ export const TIMELINE_RANGE_HOURS = 8
 export const TIMELINE_RANGE_MS = TIMELINE_RANGE_HOURS * 60 * 60 * 1000
 export const TIMELINE_UI_INTERVAL_MS = 200
 
+/** 回归年的平均秒数。1 年/秒 的播放倍率。 */
+export const MEAN_YEAR_RATE = 31_556_952
+
 /** 播放倍率：value 是相对墙钟的倍数，id 对 i18n `speed.*`。 */
 export const playbackSpeeds = [
   { value: 1, id: 'realtime' },
-  { value: 60, id: 'minute' },
   { value: 300, id: 'fiveMinute' },
   { value: 3600, id: 'hour' },
   { value: 86400, id: 'day' },
+  { value: MEAN_YEAR_RATE, id: 'year' },
+  { value: MEAN_YEAR_RATE * 10, id: 'decade' },
+  { value: MEAN_YEAR_RATE * 100, id: 'century' },
 ] as const
+
+/**
+ * 单次前进/后退的步长。playRate 是换成该步长后的播放倍率（约一步每秒）。
+ * 年、十年、百年按公历年数，不按固定毫秒。
+ */
+export const timeSteps = [
+  { id: 'hour', years: 0, days: 0, minutes: 60, playRate: 3600 },
+  { id: 'day', years: 0, days: 1, minutes: 0, playRate: 86400 },
+  { id: 'year', years: 1, days: 0, minutes: 0, playRate: MEAN_YEAR_RATE },
+  { id: 'decade', years: 10, days: 0, minutes: 0, playRate: MEAN_YEAR_RATE * 10 },
+  { id: 'century', years: 100, days: 0, minutes: 0, playRate: MEAN_YEAR_RATE * 100 },
+] as const
+
+export type TimeStepId = (typeof timeSteps)[number]['id']
+
+/** 打开时仍是 ±1 小时，和原来的步进一致。 */
+export const defaultTimeStepId: TimeStepId = 'hour'
 
 /** 默认 5 分钟/秒。 */
 export const defaultPlaybackSpeed = 300

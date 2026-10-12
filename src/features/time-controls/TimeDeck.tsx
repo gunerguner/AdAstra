@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, type ReactNode } from 'react'
 import type { LiveClockRefs, Playback } from '@/shared/types/playback'
-import { playbackSpeeds, TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config'
+import { playbackSpeeds, timeSteps, TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config'
 import type { AtmospherePhase } from '@/engine/render/atmosphereState'
 import { useT } from '@/i18n'
 import { IconButton } from '@/shared/ui'
@@ -69,6 +69,31 @@ export default function TimeDeck({
             </span>
           </div>
           {open && (
+            <label className={styles.speed}>{t('time.stepSize')}
+              <select value={playback.timeStep} onChange={(event) => playback.setTimeStep(event.target.value as typeof playback.timeStep)}>
+                {timeSteps.map((step) => (
+                  <option value={step.id} key={step.id}>{t(`time.steps.${step.id}`)}</option>
+                ))}
+              </select>
+            </label>
+          )}
+        </div>
+        <button type="button" className={styles.step} onClick={() => playback.stepTime(-1)} aria-label={t('time.stepBack', { step: t(`time.steps.${playback.timeStep}`) })} aria-hidden={!open} tabIndex={open ? 0 : -1}>
+          <ChevronLeft size={16} />
+        </button>
+        <button
+          type="button"
+          className={`${styles.play} ${playback.isPlaying ? styles.playing : ''}`}
+          onClick={playback.togglePlay}
+          aria-label={playback.isPlaying ? t('time.pause') : t('time.play')}
+        >
+          {playback.isPlaying ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
+        </button>
+        <button type="button" className={styles.step} onClick={() => playback.stepTime(1)} aria-label={t('time.stepForward', { step: t(`time.steps.${playback.timeStep}`) })} aria-hidden={!open} tabIndex={open ? 0 : -1}>
+          <ChevronRight size={16} />
+        </button>
+        <div className={styles.side}>
+          {open && (
             <label className={styles.speed}>{t('time.speed')}
               <select value={playback.speed} onChange={(event) => playback.setSpeed(Number(event.target.value))}>
                 {playbackSpeeds.map((item) => (
@@ -77,24 +102,6 @@ export default function TimeDeck({
               </select>
             </label>
           )}
-        </div>
-        <div className={styles.actions}>
-          <button type="button" className={styles.step} onClick={() => playback.adjustTime(-3600000)} aria-label={t('time.stepBack')} aria-hidden={!open} tabIndex={open ? 0 : -1}>
-            <ChevronLeft size={16} />
-          </button>
-          <button
-            type="button"
-            className={`${styles.play} ${playback.isPlaying ? styles.playing : ''}`}
-            onClick={playback.togglePlay}
-            aria-label={playback.isPlaying ? t('time.pause') : t('time.play')}
-          >
-            {playback.isPlaying ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
-          </button>
-          <button type="button" className={styles.step} onClick={() => playback.adjustTime(3600000)} aria-label={t('time.stepForward')} aria-hidden={!open} tabIndex={open ? 0 : -1}>
-            <ChevronRight size={16} />
-          </button>
-        </div>
-        <div className={styles.side}>
           <button
             type="button"
             className={styles.now}

@@ -12,7 +12,7 @@ It is a popular-science sky simulation: close enough to what you see with the na
 
 - **The sky at any place and time**: Choose Shanghai, Beijing, London, New York, or Sydney, or enter latitude and longitude; set the date and time in the local time zone.
 - **Look around freely**: Drag to change azimuth and altitude, zoom with the wheel or trackpad; jump to east, south, west, north, or the zenith.
-- **Step through time**: Play, pause, scrub an ~8-hour timeline, or step forward and back by the hour; rates range from real time to 1 day per second.
+- **Step through time**: Play, pause, or scrub an ~8-hour timeline. Step forward and back by an hour, day, year, decade, or century; rates range from real time to 100 years per second.
 - **Main objects**: Bright stars, constellation lines, the Sun, the Moon, and Mercury through Neptune. Click for name, magnitude, azimuth, altitude, and lunar phase.
 - **Layers**: Stars, Milky Way, constellations, planets, horizon and ground, objects below the horizon, daylight, ecliptic, celestial equator, equatorial grid, and horizontal grid can each be toggled.
 - **Sky density**: A limiting magnitude controls how many stars are drawn. Smaller numbers are brighter, so fewer stars appear.

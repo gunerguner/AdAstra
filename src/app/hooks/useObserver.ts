@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { readSkyPreferences, writeSkyPreferences, type StoredPlace } from '@/app/preferences/skyPreferences'
 import { cities, defaultCityIndex, type City } from '@/data/cities'
 import {
   GEOLOCATION_PLACE_ID,
@@ -25,13 +26,31 @@ export function resolveObserver(
     : { ...city, custom: false as const }
 }
 
-/** 城市选择、搜索地点、浏览器定位和手动经纬度。 */
+function restoredPlace(): StoredPlace | null {
+  return readSkyPreferences()?.place ?? null
+}
+
+function placeFromStored(place: StoredPlace): ObserverPlace {
+  return {
+    id: place.id,
+    names: place.names,
+    latitude: place.latitude,
+    longitude: place.longitude,
+    timeZone: place.timeZone,
+  }
+}
+
+/** 城市选择、搜索地点、浏览器定位和手动经纬度。有上次地点时不再自动改写。 */
 export function useObserver() {
-  const [activeCityIndex, setActiveCityIndex] = useState(defaultCityIndex)
-  const [searchedPlace, setSearchedPlace] = useState<ObserverPlace | null>(null)
-  const [manualPosition, setManualPosition] = useState<{ latitude: number; longitude: number } | null>(null)
-  const [locateStatus, setLocateStatus] = useState<LocateStatus>('pending')
-  const userChosePlaceRef = useRef(false)
+  const restored = useState<StoredPlace | null>(restoredPlace)[0]
+  const presetIndex = restored ? cities.findIndex((city) => city.id === restored.id) : -1
+  const [activeCityIndex, setActiveCityIndex] = useState(presetIndex >= 0 ? presetIndex : defaultCityIndex)
+  const [searchedPlace, setSearchedPlace] = useState<ObserverPlace | null>(
+    restored && presetIndex < 0 ? placeFromStored(restored) : null,
+  )
+  const [manualPosition, setManualPosition] = useState<{ latitude: number; longitude: number } | null>(restored?.manual ?? null)
+  const [locateStatus, setLocateStatus] = useState<LocateStatus>(restored ? 'ready' : 'pending')
+  const userChosePlaceRef = useRef(restored !== null)
   const geolocatedPlaceRef = useRef<ObserverPlace | null>(null)
   const requestIdRef = useRef(0)
 
@@ -76,8 +95,23 @@ export function useObserver() {
   }, [applyResult])
 
   useEffect(() => {
+    if (userChosePlaceRef.current) return
     requestLocation(false)
   }, [requestLocation])
+
+  useEffect(() => {
+    if (locateStatus === 'pending' && !userChosePlaceRef.current) return
+    writeSkyPreferences({
+      place: {
+        id: selectedCity.id,
+        names: selectedCity.names,
+        latitude: selectedCity.latitude,
+        longitude: selectedCity.longitude,
+        timeZone: selectedCity.timeZone,
+        manual: manualPosition,
+      },
+    })
+  }, [selectedCity, manualPosition, locateStatus])
 
   return {
     cities,

@@ -6,6 +6,7 @@ import { fillEqjHorizonMatrices } from '@/engine/coordinates/skyMath'
 import { pickSkyObject } from './skyPicker'
 import { createStarPickGrid } from './starPickGrid'
 import { nudgeView, panView, zoomView } from './viewConstraints'
+import { releaseViewInertia, stepViewInertia, type InertiaSample, type InertiaVelocity } from './viewInertia'
 import type { SkySceneContext } from '@/engine/render/skyContext'
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
 import type { Star } from '@/shared/types/star'
@@ -33,6 +34,9 @@ export class SkyViewController {
   private listeners: AbortController | null = null
   private viewSyncTimer = 0
   private hoverFrame = 0
+  private inertiaFrame = 0
+  private inertia: (InertiaVelocity & { lastT: number; startedAt: number }) | null = null
+  private samples: InertiaSample[] = []
   private pendingHover: { x: number; y: number } | null = null
   private readonly starGrid = createStarPickGrid()
   private readonly starGridKey = { current: '' }
@@ -61,6 +65,51 @@ export class SkyViewController {
     this.pendingUiSync = false
     window.clearTimeout(this.viewSyncTimer)
     this.callbacks.onViewChange(next)
+  }
+
+  private rememberSample(x: number, y: number) {
+    this.samples.push({ t: performance.now(), x, y })
+    if (this.samples.length > 8) this.samples.shift()
+  }
+
+  /** 新的按下或卸载取消滑行。sync 为真时把停住的视角写回 React。 */
+  private stopInertia(sync: boolean) {
+    if (this.inertiaFrame) cancelAnimationFrame(this.inertiaFrame)
+    this.inertiaFrame = 0
+    this.inertia = null
+    if (sync && this.pendingUiSync) this.emitView({ ...this.simulationRef.current.view }, true)
+  }
+
+  private onInertiaFrame = (now: number) => {
+    const inertia = this.inertia
+    if (!inertia) return
+    const dt = now - inertia.lastT
+    inertia.lastT = now
+    const stepped = stepViewInertia(
+      this.simulationRef.current.view,
+      inertia,
+      dt,
+      now - inertia.startedAt,
+    )
+    inertia.vx = stepped.velocity.vx
+    inertia.vy = stepped.velocity.vy
+    if (stepped.done) {
+      this.inertia = null
+      this.inertiaFrame = 0
+      this.emitView(stepped.view, true)
+      return
+    }
+    this.emitView(stepped.view)
+    this.inertiaFrame = requestAnimationFrame(this.onInertiaFrame)
+  }
+
+  private beginInertia(now: number) {
+    const velocity = releaseViewInertia(this.samples, now)
+    this.samples = []
+    if (!velocity) return false
+    this.inertia = { ...velocity, lastT: now, startedAt: now }
+    this.inertiaFrame = requestAnimationFrame(this.onInertiaFrame)
+    return true
   }
 
   private flushViewSoon() {
@@ -121,12 +170,16 @@ export class SkyViewController {
 
   onPointerDown = (event: PointerEvent) => {
     this.onActivity()
+    this.stopInertia(false)
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
     const view = this.simulationRef.current.view
     if (this.pointers.size >= 2) {
       this.drag = null
+      this.samples = []
       this.pinch = { distance: Math.max(this.pointerDistance(), 1), fov: view.fov }
     } else {
+      this.samples = []
+      this.rememberSample(event.clientX, event.clientY)
       this.drag = { x: event.clientX, y: event.clientY, azimuth: view.azimuth, altitude: view.altitude, moved: false }
     }
     // 捕获失败不能挡住拖拽：部分触摸实现会在指针刚结束时抛 InvalidStateError。
@@ -149,6 +202,7 @@ export class SkyViewController {
       if (Math.hypot(event.clientX - this.drag.x, event.clientY - this.drag.y) > 5) this.drag.moved = true
       if (!this.drag.moved) return
       this.hideHover()
+      this.rememberSample(event.clientX, event.clientY)
       this.emitView(panView(
         { azimuth: this.drag.azimuth, altitude: this.drag.altitude, fov: this.simulationRef.current.view.fov },
         event.clientX - this.drag.x,
@@ -178,8 +232,9 @@ export class SkyViewController {
       }
     }
     if (this.pointers.size === 0) {
-      // 拖拽和捏合结束时才写回 React。捏合原先漏了这一步，视场会被下一次重渲染弹回去。
-      if (this.pendingUiSync) this.emitView({ ...this.simulationRef.current.view }, true)
+      // 快拖才滑行；滑行结束再写回 React。慢拖和捏合在这里写回。
+      const coast = this.drag?.moved ? this.beginInertia(performance.now()) : false
+      if (!coast && this.pendingUiSync) this.emitView({ ...this.simulationRef.current.view }, true)
       this.drag = null
     }
     if (this.ctx.renderer.domElement.hasPointerCapture(event.pointerId)) {
@@ -228,6 +283,7 @@ export class SkyViewController {
 
   /** 卸监听并取消待处理的 hover / 视角同步。 */
   unbind() {
+    this.stopInertia(false)
     window.clearTimeout(this.viewSyncTimer)
     cancelAnimationFrame(this.hoverFrame)
     this.hoverFrame = 0

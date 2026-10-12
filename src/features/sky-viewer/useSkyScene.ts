@@ -8,6 +8,7 @@ import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astr
 import type { ConstellationAnchor, ConstellationStars } from '@/engine/astronomy/constellationData'
 import { attachAstroWorker } from '@/engine/astronomy/attachAstroWorker'
 import { createSkyScene, disposeSkyScene } from '@/engine/render/createSkyScene'
+import { bindWebglContextRecovery } from '@/engine/render/webglContextRecovery'
 import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
 import { SkyViewController } from '@/engine/interaction/SkyViewController'
 import { skyObjectLabel, useLocale } from '@/i18n'
@@ -39,6 +40,8 @@ export function useSkyScene(options: {
   setViewportError: Dispatch<SetStateAction<AppError | null>>
   /** 递增时拆掉当前场景和 Worker 再挂一次，用于 Worker 失败后的重试。 */
   sceneEpoch: number
+  /** WebGL 上下文恢复后重建场景。 */
+  rebuildScene: () => void
 }) {
   const {
     catalog,
@@ -61,6 +64,7 @@ export function useSkyScene(options: {
   const previewView = useEffectEvent(options.onViewLive)
   const changeAtmosphere = useEffectEvent(options.onAtmosphereChange ?? (() => {}))
   const bodiesReady = useEffectEvent(options.onBodiesReady ?? (() => {}))
+  const rebuildScene = useEffectEvent(options.rebuildScene)
 
   useEffect(() => {
     if (!catalog) return
@@ -148,8 +152,13 @@ export function useSkyScene(options: {
       onAtmosphereChange: changeAtmosphere,
     })
     scheduler.wake = loop.wake
+    const unbindRecovery = bindWebglContextRecovery(ctx.renderer.domElement, {
+      onLost: () => loop.stop(),
+      onRestored: () => rebuildScene(),
+    })
 
     return () => {
+      unbindRecovery()
       releaseSkySession({
         stopLoop: () => loop.stop(),
         disconnectResize: () => resizeObserver.disconnect(),

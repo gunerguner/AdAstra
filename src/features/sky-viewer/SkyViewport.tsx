@@ -86,6 +86,7 @@ export default function SkyViewport({
     onAtmosphereChange,
     setViewportError,
     sceneEpoch,
+    rebuildScene: () => setSceneEpoch((epoch) => epoch + 1),
   })
 
   const blockingError = catalogError ?? (viewportError?.code === 'webgl' ? viewportError : null)

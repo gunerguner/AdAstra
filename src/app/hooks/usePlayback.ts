@@ -1,8 +1,8 @@
 /** 播放/暂停、倍率、时间轴拖动。时钟写 simulation.utcMillis，UI 控件低频刷新。 */
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react'
 import { SimulationClock } from '@/engine/clock/simulationClock'
-import { defaultPlaybackSpeed, TIMELINE_UI_INTERVAL_MS } from '@/config'
-import { formatDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
+import { defaultPlaybackSpeed, defaultTimeStepId, timeSteps, TIMELINE_UI_INTERVAL_MS, type TimeStepId } from '@/config'
+import { formatDateTimeLocal, shiftLocalUtc } from '@/engine/coordinates/dateTimeLocal'
 import type { Playback, LiveClockRefs } from '@/shared/types/playback'
 import type { SkySimulation } from '@/shared/types/sky'
 
@@ -26,6 +26,7 @@ export function usePlayback(
   const [currentTime, setCurrentTime] = useState(() => new Date())
   const [isPlaying, setIsPlaying] = useState(false)
   const [speed, setSpeed] = useState(defaultPlaybackSpeed)
+  const [timeStep, setTimeStepId] = useState<TimeStepId>(defaultTimeStepId)
   const [timelineOffset, setTimelineOffset] = useState(0)
   const clock = useRef(new SimulationClock())
   const timelineAnchor = useRef(currentTime.getTime())
@@ -140,9 +141,25 @@ export function usePlayback(
     if (scrubRaf.current) cancelAnimationFrame(scrubRaf.current)
   }, [])
 
+  const setTimeStep = (id: TimeStepId) => {
+    setTimeStepId(id)
+    const rate = timeSteps.find((step) => step.id === id)?.playRate
+    if (rate != null) setSpeed(rate)
+  }
+
   const adjustTime = (milliseconds: number) => {
     pausePlayback()
     commitTime(simulationRef.current.utcMillis + milliseconds)
+  }
+
+  const stepTime = (direction: -1 | 1) => {
+    const step = timeSteps.find((item) => item.id === timeStep) ?? timeSteps[0]
+    pausePlayback()
+    commitTime(shiftLocalUtc(simulationRef.current.utcMillis, timeZone, {
+      years: step.years * direction,
+      days: step.days * direction,
+      minutes: step.minutes * direction,
+    }))
   }
 
   const togglePlay = () => {
@@ -155,11 +172,14 @@ export function usePlayback(
     isPlaying,
     speed,
     setSpeed,
+    timeStep,
+    setTimeStep,
     timelineOffset,
     commitTime,
     pausePlayback,
     togglePlay,
     adjustTime,
+    stepTime,
     beginTimelineScrub,
     scrubTimeline,
     endTimelineScrub,
