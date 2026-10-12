@@ -2,7 +2,7 @@
  * 每帧编排：地平矩阵、大气、恒星 drawRange、相机、DOM 标签、太阳系点、render。
  * 时间由 SimulationClock 推进；太阳系位置来自 Worker 窗口插值。
  */
-import type { RefObject } from 'react'
+import type { Slot } from '@/shared/types/slot'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { ConstellationAnchor } from '@/engine/astronomy/constellationData'
 import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
@@ -29,10 +29,10 @@ export type SkyRenderLoop = {
 export function startSkyRenderLoop(options: {
   ctx: SkySceneContext
   catalog: RuntimeCatalog
-  simulationRef: RefObject<SkySimulation>
+  simulationRef: Slot<SkySimulation>
   constellationAnchors: ConstellationAnchor[]
   overlays: SkyOverlayRefs
-  bodySnapshotRef: RefObject<BodySnapshotWindow | null>
+  bodySnapshotRef: Slot<BodySnapshotWindow | null>
   requestBodySnapshot: (now: number, utcMillis: number, observer: SkySimulation['observer'], scrubbing: boolean) => void
   onAtmosphereChange?: (state: AtmosphereState) => void
 }): SkyRenderLoop {

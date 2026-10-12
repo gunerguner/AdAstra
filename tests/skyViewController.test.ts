@@ -60,12 +60,12 @@ describe('天空视角控制器', () => {
     const { controller, simulation, commits, live } = createController()
     controller.onPointerDown(pointer(1, 0, 0))
     controller.onPointerMove(pointer(1, 100, 0))
-    expect(simulation.current.view.azimuth).toBe(202)
-    expect(live.at(-1)?.azimuth).toBe(202)
+    expect(simulation.current.view.azimuth).toBeCloseTo(193.2)
+    expect(live.at(-1)?.azimuth).toBeCloseTo(193.2)
     expect(commits).toHaveLength(0)
     controller.onPointerUp(pointer(1, 100, 0))
     expect(commits).toHaveLength(1)
-    expect(commits[0]?.azimuth).toBe(202)
+    expect(commits[0]?.azimuth).toBeCloseTo(193.2)
   })
 
   it('捏合结束把视场写回 React', () => {

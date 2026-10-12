@@ -12,6 +12,7 @@ import { bindWebglContextRecovery } from '@/engine/render/webglContextRecovery'
 import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
 import { SkyViewController } from '@/engine/interaction/SkyViewController'
 import { skyObjectLabel, useLocale } from '@/i18n'
+import type { ObjectCardStats } from '@/shared/types/slot'
 import { releaseSkySession } from './releaseSkySession'
 
 export type SkyOverlayDomRefs = {
@@ -29,6 +30,7 @@ export function useSkyScene(options: {
   simulationRef: RefObject<SkySimulation>
   bodySnapshotRef: RefObject<BodySnapshotWindow | null>
   objectCardRef?: RefObject<HTMLElement | null>
+  objectCardStatsRef?: RefObject<ObjectCardStats>
   constellationStars: ConstellationStars[]
   constellationAnchors: ConstellationAnchor[]
   overlays: SkyOverlayDomRefs
@@ -48,6 +50,7 @@ export function useSkyScene(options: {
     simulationRef,
     bodySnapshotRef,
     objectCardRef,
+    objectCardStatsRef,
     constellationStars,
     constellationAnchors,
     overlays,
@@ -145,6 +148,7 @@ export function useSkyScene(options: {
         hoverRef: overlays.hoverRef,
         hoverTargetRef: overlays.hoverTargetRef,
         objectCardRef,
+        objectCardStatsRef,
         selectedRef: overlays.selectedRef,
       },
       bodySnapshotRef,
@@ -167,7 +171,7 @@ export function useSkyScene(options: {
         disposeScene: () => disposeSkyScene(ctx),
       })
     }
-  }, [catalog, objectCardRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars, overlays, setViewportError, sceneEpoch])
+  }, [catalog, objectCardRef, objectCardStatsRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars, overlays, setViewportError, sceneEpoch])
 
   useEffect(() => {
     if (!catalog) return

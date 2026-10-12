@@ -13,7 +13,9 @@ function writeLiveClock(
   clockRefs: LiveClockRefs,
 ) {
   const datetime = clockRefs.datetimeInput.current
-  if (datetime) datetime.value = formatDateTimeLocal(utcMillis, timeZone)
+  if (datetime && document.activeElement !== datetime) {
+    datetime.value = formatDateTimeLocal(utcMillis, timeZone)
+  }
   const year = clockRefs.yearLabel.current
   if (year) year.textContent = String(new Date(utcMillis).getFullYear())
 }
@@ -110,12 +112,13 @@ export function usePlayback(
     const tick = () => {
       if (document.hidden) return
       const utcMillis = clock.current.now()
-      simulationRef.current.utcMillis = utcMillis
+      const simulation = simulationRef.current
+      simulation.utcMillis = utcMillis
+      simulation.wake?.()
       const now = performance.now()
       if (now - lastUiTick >= TIMELINE_UI_INTERVAL_MS) {
         lastUiTick = now
         paintClock(utcMillis)
-        setCurrentTime(new Date(utcMillis))
       }
       frame = requestAnimationFrame(tick)
     }
@@ -137,6 +140,10 @@ export function usePlayback(
     }
   }, [isPlaying, paintClock, speed, simulationRef])
 
+  useEffect(() => {
+    paintClock(clock.current.now())
+  }, [paintClock])
+
   useEffect(() => () => {
     if (scrubRaf.current) cancelAnimationFrame(scrubRaf.current)
   }, [])
@@ -147,13 +154,9 @@ export function usePlayback(
     if (rate != null) setSpeed(rate)
   }
 
-  const adjustTime = (milliseconds: number) => {
-    pausePlayback()
-    commitTime(simulationRef.current.utcMillis + milliseconds)
-  }
-
   const stepTime = (direction: -1 | 1) => {
-    const step = timeSteps.find((item) => item.id === timeStep) ?? timeSteps[0]
+    const step = timeSteps.find((item) => item.id === timeStep)
+    if (!step) return
     pausePlayback()
     commitTime(shiftLocalUtc(simulationRef.current.utcMillis, timeZone, {
       years: step.years * direction,
@@ -178,7 +181,6 @@ export function usePlayback(
     commitTime,
     pausePlayback,
     togglePlay,
-    adjustTime,
     stepTime,
     beginTimelineScrub,
     scrubTimeline,

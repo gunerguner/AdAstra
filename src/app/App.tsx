@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { LocateFixed } from 'lucide-react'
 import type { SelectedSkyObject } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
@@ -24,9 +24,10 @@ import { useLocateTarget } from './hooks/useLocateTarget'
 import { useSimulationRef } from './hooks/useSimulationRef'
 import { useAtmosphereTheme } from './hooks/useAtmosphereTheme'
 import { useLocationNotice } from './hooks/useLocationNotice'
-import { useBodyMagnitudes } from './hooks/useBodyMagnitudes'
 import { useMediaQuery } from './hooks/useMediaQuery'
 import { useT } from '@/i18n'
+import { exclusiveCompactPin } from './compactPins'
+import type { ObjectCardStats } from '@/shared/types/slot'
 import styles from './App.module.css'
 
 /** 根组件：星表、观测点、图层、播放、天空视口和各控制面板。 */
@@ -52,6 +53,11 @@ export default function App() {
     setControlsPinned(pinned)
     if (pinned && isCompactViewport) setNavPinned(false)
   }
+  useEffect(() => {
+    const next = exclusiveCompactPin(isCompactViewport, navPinned, controlsPinned)
+    if (next.navPinned !== navPinned) setNavPinned(next.navPinned)
+    if (next.controlsPinned !== controlsPinned) setControlsPinned(next.controlsPinned)
+  }, [isCompactViewport, navPinned, controlsPinned])
 
   const simulationRef = useSimulationRef({
     latitude: observer.latitude,
@@ -71,20 +77,21 @@ export default function App() {
   }), [])
 
   const playback = usePlayback(observer.timeZone, simulationRef, clockRefs)
-  const { notice, setNotice, dismissNotice } = useLocationNotice(observer, locateStatus)
+  const { locationNotice, dismissLocationNotice } = useLocationNotice(observer, locateStatus)
+  const [actionNotice, setActionNotice] = useState<string | null>(null)
+  const notice = actionNotice ?? locationNotice
+  const dismissNotice = () => {
+    if (actionNotice) setActionNotice(null)
+    else dismissLocationNotice()
+  }
   const { atmospherePhase, onAtmosphereChange } = useAtmosphereTheme({
     simulationRef,
     latitude: observer.latitude,
     longitude: observer.longitude,
     daylightEffect: layers.daylightEffect,
   })
-  const { bodyMagnitudes, markBodiesReady } = useBodyMagnitudes({
-    bodySnapshotRef,
-    simulationRef,
-    currentTimeMs: playback.currentTime.getTime(),
-    latitude: observer.latitude,
-    longitude: observer.longitude,
-  })
+  const magnitudesRefreshRef = useRef<() => void>(() => {})
+  const objectCardStatsRef = useRef<ObjectCardStats>({ altitude: null, azimuth: null, magnitude: null })
 
   const locateTarget = useLocateTarget({
     catalog,
@@ -92,7 +99,7 @@ export default function App() {
     bodySnapshotRef,
     setView,
     setSelected,
-    setNotice,
+    setNotice: setActionNotice,
   })
 
   const resetNow = () => {
@@ -100,7 +107,7 @@ export default function App() {
     playback.commitTime(Date.now())
     resetView()
     setSelected(null)
-    setNotice(null)
+    setActionNotice(null)
   }
 
   return (
@@ -111,7 +118,7 @@ export default function App() {
         onCatalogRetry={retry}
         simulationRef={simulationRef}
         bodySnapshotRef={bodySnapshotRef}
-        onBodiesReady={markBodiesReady}
+        onBodiesReady={() => magnitudesRefreshRef.current()}
         onViewChange={setView}
         onViewLive={(next) => {
           const node = viewLabelRef.current
@@ -119,14 +126,23 @@ export default function App() {
         }}
         onSelect={(item) => {
           setSelected(item)
-          if (item) setNotice(null)
+          if (item) setActionNotice(null)
         }}
         selected={selected}
         objectCardRef={objectCardRef}
+        objectCardStatsRef={objectCardStatsRef}
         onAtmosphereChange={onAtmosphereChange}
       >
         {selected && catalog && (
-          <ObjectCard selected={selected} catalog={catalog} onClose={() => setSelected(null)} ref={objectCardRef} />
+          <ObjectCard
+            selected={selected}
+            catalog={catalog}
+            onClose={() => setSelected(null)}
+            ref={objectCardRef}
+            statsRef={objectCardStatsRef}
+            simulationRef={simulationRef}
+            bodySnapshotRef={bodySnapshotRef}
+          />
         )}
       </SkyViewport>
 
@@ -135,9 +151,9 @@ export default function App() {
         location={location}
         view={view}
         viewLabelRef={viewLabelRef}
-        datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
+        datetimeDefault={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
         datetimeInputRef={datetimeInputRef}
-        onNotice={setNotice}
+        onNotice={setActionNotice}
         onDateTimeChange={(value) => {
           const utcMillis = parseDateTimeLocal(value, observer.timeZone)
           if (utcMillis === null) return
@@ -156,7 +172,14 @@ export default function App() {
         onPinnedChange={pinNav}
       >
         {catalog ? (
-          <QuickNav catalog={catalog} bodyMagnitudes={bodyMagnitudes} onLocate={locateTarget} />
+          <QuickNav
+            catalog={catalog}
+            simulationRef={simulationRef}
+            bodySnapshotRef={bodySnapshotRef}
+            isPlaying={playback.isPlaying}
+            refreshRef={magnitudesRefreshRef}
+            onLocate={locateTarget}
+          />
         ) : null}
       </HoverDock>
 
@@ -166,7 +189,11 @@ export default function App() {
         <QuickViewSection view={view} onChange={setView} />
       </ControlPanel>
 
-      <Notice message={notice} sticky={locateStatus === 'pending'} onDismiss={dismissNotice} />
+      <Notice
+        message={notice}
+        sticky={actionNotice == null && locateStatus === 'pending'}
+        onDismiss={dismissNotice}
+      />
 
       <TimeDeck
         open={isTimeDeckOpen}

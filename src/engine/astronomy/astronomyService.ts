@@ -3,8 +3,6 @@ import { Body, Equator, Horizon, Illumination, MoonPhase, Observer as AstronomyO
 import type { Observer } from '@/shared/types/observer'
 import type { BodySnapshot } from './bodyInterpolation'
 
-export type { BodySnapshot, BodySnapshotWindow } from './bodyInterpolation'
-
 const bodyDefinitions = [
   [Body.Sun, 'sun'],
   [Body.Moon, 'moon'],

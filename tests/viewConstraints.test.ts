@@ -16,6 +16,12 @@ describe('视角约束', () => {
     expect(next.altitude).toBe(8)
   })
 
+  it('放大后同样的像素拖动转过更小的角度', () => {
+    const next = panView({ azimuth: 10, altitude: 0, fov: 50 }, 100, 50)
+    expect(next.azimuth).toBe((10 + 11) % 360)
+    expect(next.altitude).toBe(4)
+  })
+
   it('缩放夹在视场范围', () => {
     expect(zoomView(view, 0.1).fov).toBe(SKY_FOV_MIN)
     expect(zoomView(view, 10).fov).toBe(SKY_FOV_MAX)

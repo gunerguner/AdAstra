@@ -259,7 +259,7 @@ type AstroWorkerRequest = {
 
 移动端适配（≤ 680 px 竖屏为基准）：顶栏改为「品牌 + 语言 / 城市 + 坐标 / 时间」多行芯片布局，输入字号在粗指针设备上不小于 16 px 以避免 iOS 聚焦缩放；侧栏 hover 展开仅对 `(hover: hover) and (pointer: fine)` 生效，触摸设备点手柄钉住，窄屏（≤ 940 px）两侧钉住互斥；`env(safe-area-inset-*)` 通过 `viewport-fit=cover` 暴露并作用于顶栏、侧栏、时间面板。移动断点收窄 `--blur-*` 模糊半径，呼吸光晕动画仅保留给精确指针。
 
-默认图层（`src/config/defaultLayers.ts`）：恒星、星座、行星、地平、地面、黄道、天赤道、银河、昼夜效果开启；赤道网、地平网、地平以下关闭。
+默认图层（`src/config/index.ts` 的 `defaultLayers`）：恒星、星座、行星、地平、地面、黄道、天赤道、银河、昼夜效果开启；赤道网、地平网、地平以下关闭。
 
 ## 11. 性能
 
@@ -267,7 +267,7 @@ type AstroWorkerRequest = {
 
 - 高频视角和时间不进 React state。时钟文字通过 DOM ref 直接改，避免整树刷新。
 - 交互中满帧 rAF；静止约 250 ms 一帧（约 4 fps）。拖拽或时间变化后保持约 450 ms 满帧。
-- 根据帧时长调节 `devicePixelRatio` 上限，优先保流畅。
+- 渲染分辨率固定为 `devicePixelRatio = 1`，绘图缓冲与 CSS 像素一一对应，优先保流畅，不按帧时长升降。
 - 渲染循环避免每帧分配临时向量和闭包；插值结果写入预分配槽位。
 - 页面隐藏停止调度。WebGL 上下文丢失时暂停，由浏览器恢复后重建。
 

@@ -22,7 +22,6 @@ export type Playback = {
   commitTime: (utcMillis: number, resetTimeline?: boolean) => void
   pausePlayback: () => void
   togglePlay: () => void
-  adjustTime: (milliseconds: number) => void
   /** 按当前步长前进或后退，并暂停播放。 */
   stepTime: (direction: -1 | 1) => void
   beginTimelineScrub: (offset?: number) => void

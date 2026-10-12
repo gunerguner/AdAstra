@@ -1,5 +1,5 @@
 /** 每帧把方位字、星座名、黄道极、hover、信息卡钉到天球方向上。 */
-import type { RefObject } from 'react'
+import type { ObjectCardStats, Slot } from '@/shared/types/slot'
 import type { Camera, Vector3 } from 'three'
 import type { ConstellationAnchor } from '@/engine/astronomy/constellationData'
 import type { BodySnapshot } from '@/engine/astronomy/bodyInterpolation'
@@ -13,13 +13,14 @@ import type { Star } from '@/shared/types/star'
 import type { Vec3 } from '@/engine/render/skyContext'
 
 export type SkyOverlayRefs = {
-  cardinalRefs: RefObject<Record<string, HTMLDivElement | null>>
-  constellationNameRefs: RefObject<Record<string, HTMLDivElement | null>>
-  eclipticPoleRefs: RefObject<Record<string, HTMLDivElement | null>>
-  hoverRef: RefObject<HTMLDivElement | null>
-  hoverTargetRef: RefObject<{ id: string; type: 'star' | 'body' } | null>
-  objectCardRef?: RefObject<HTMLElement | null>
-  selectedRef: RefObject<SelectedSkyObject | null>
+  cardinalRefs: Slot<Record<string, HTMLDivElement | null>>
+  constellationNameRefs: Slot<Record<string, HTMLDivElement | null>>
+  eclipticPoleRefs: Slot<Record<string, HTMLDivElement | null>>
+  hoverRef: Slot<HTMLDivElement | null>
+  hoverTargetRef: Slot<{ id: string; type: 'star' | 'body' } | null>
+  objectCardRef?: Slot<HTMLElement | null>
+  objectCardStatsRef?: Slot<ObjectCardStats>
+  selectedRef: Slot<SelectedSkyObject | null>
 }
 
 export type SkyOverlayFrame = {
@@ -47,8 +48,6 @@ export function createSkyOverlayUpdater(options: {
   const { camera, uniforms, scratch, starById, constellationAnchors, overlays } = options
   const overlayNdc = { x: 0, y: 0, z: 0 }
   let activeCard: HTMLElement | null = null
-  let altitudeStatNode: Element | null = null
-  let azimuthStatNode: Element | null = null
   let cardWidth = 0
   let cardHeight = 0
   let frameWidth = 0
@@ -175,8 +174,6 @@ export function createSkyOverlayUpdater(options: {
       if (!card) return
       if (card !== activeCard) {
         activeCard = card
-        altitudeStatNode = card.querySelector('[data-stat="altitude"]')
-        azimuthStatNode = card.querySelector('[data-stat="azimuth"]')
         cardWidth = 0
         cardHeight = 0
       }
@@ -201,8 +198,13 @@ export function createSkyOverlayUpdater(options: {
         hideOverlay(card)
         return
       }
-      if (altitudeStatNode) altitudeStatNode.textContent = `${pose.altitude.toFixed(1)}°`
-      if (azimuthStatNode) azimuthStatNode.textContent = `${pose.azimuth.toFixed(1)}°`
+      const stats = overlays.objectCardStatsRef?.current
+      if (stats?.altitude) stats.altitude.textContent = `${pose.altitude.toFixed(1)}°`
+      if (stats?.azimuth) stats.azimuth.textContent = `${pose.azimuth.toFixed(1)}°`
+      if (currentSelected.type === 'body' && stats?.magnitude) {
+        const body = frame.bodySnapshots.find((item) => item.id === currentSelected.id)
+        if (body) stats.magnitude.textContent = body.magnitude.toFixed(2)
+      }
     },
   }
 }

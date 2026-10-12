@@ -18,7 +18,6 @@ function overlayNode() {
     style,
     offsetWidth: 80,
     offsetHeight: 40,
-    querySelector: () => null,
   } as unknown as HTMLElement
 }
 

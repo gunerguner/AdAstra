@@ -2,6 +2,7 @@
 import { useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import type { SelectedSkyObject, SkySimulation, SkyView } from '@/shared/types/sky'
+import type { ObjectCardStats } from '@/shared/types/slot'
 import type { AtmosphereState } from '@/engine/render/atmosphereState'
 import type { AppError } from '@/shared/errors/appError'
 import type { BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
@@ -21,6 +22,7 @@ type Props = {
   onSelect: (item: SelectedSkyObject | null) => void
   selected?: SelectedSkyObject | null
   objectCardRef?: RefObject<HTMLElement | null>
+  objectCardStatsRef?: RefObject<ObjectCardStats>
   bodySnapshotRef: RefObject<BodySnapshotWindow | null>
   onBodiesReady?: () => void
   onAtmosphereChange?: (state: AtmosphereState) => void
@@ -37,6 +39,7 @@ export default function SkyViewport({
   onSelect,
   selected,
   objectCardRef,
+  objectCardStatsRef,
   bodySnapshotRef,
   onBodiesReady,
   onAtmosphereChange,
@@ -76,6 +79,7 @@ export default function SkyViewport({
     simulationRef,
     bodySnapshotRef,
     objectCardRef,
+    objectCardStatsRef,
     constellationStars,
     constellationAnchors,
     overlays,

@@ -1,17 +1,24 @@
 /** 快速导航：太阳系天体和最亮恒星，点一下转到目标。 */
-import { useState } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
 import { Orbit, Star } from 'lucide-react'
 import { brightestStarIds, solarQuickTargets } from '@/config'
+import type { BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { bodyAppearance } from '@/engine/render/bodyAppearance'
 import type { RuntimeCatalog } from '@/engine/catalog/catalogService'
 import { localizedName, useLocale } from '@/i18n'
+import type { SkySimulation } from '@/shared/types/sky'
+import { useBodyMagnitudes } from './useBodyMagnitudes'
 import styles from './quickNav.module.css'
 
 type Tab = 'bodies' | 'stars'
 
 type Props = {
   catalog: RuntimeCatalog
-  bodyMagnitudes?: Record<string, number>
+  simulationRef: RefObject<SkySimulation>
+  bodySnapshotRef: RefObject<BodySnapshotWindow | null>
+  isPlaying: boolean
+  /** Worker 快照到达时调用，立刻重算星等。 */
+  refreshRef: RefObject<() => void>
   onLocate: (id: string, type: 'star' | 'body') => void
 }
 
@@ -20,9 +27,27 @@ function formatMagnitude(value: number) {
   return `${sign}${Math.abs(value).toFixed(2)}`
 }
 
-export default function QuickNav({ catalog, bodyMagnitudes, onLocate }: Props) {
+export default function QuickNav({
+  catalog,
+  simulationRef,
+  bodySnapshotRef,
+  isPlaying,
+  refreshRef,
+  onLocate,
+}: Props) {
   const { locale, t } = useLocale()
   const [tab, setTab] = useState<Tab>('bodies')
+  const { bodyMagnitudes, refresh } = useBodyMagnitudes({
+    simulationRef,
+    bodySnapshotRef,
+    isPlaying,
+  })
+  useEffect(() => {
+    refreshRef.current = refresh
+    return () => {
+      refreshRef.current = () => {}
+    }
+  }, [refresh, refreshRef])
   const stars = brightestStarIds.flatMap((id) => {
     const star = catalog.starById.get(id)
     return star ? [star] : []

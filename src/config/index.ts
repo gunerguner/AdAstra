@@ -37,7 +37,7 @@ export const timeSteps = [
 
 export type TimeStepId = (typeof timeSteps)[number]['id']
 
-/** 打开时仍是 ±1 小时，和原来的步进一致。 */
+/** 默认步长为 1 小时。 */
 export const defaultTimeStepId: TimeStepId = 'hour'
 
 /** 默认 5 分钟/秒。 */

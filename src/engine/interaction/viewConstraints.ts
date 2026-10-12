@@ -18,11 +18,12 @@ export function formatViewBearing(view: SkyView) {
   return `${Math.round(view.azimuth)}° · ${Math.round(view.altitude)}°`
 }
 
-/** 指针拖拽：delta 是像素，转成方位/仰角增量。 */
+/** 指针拖拽：delta 是像素，转成方位/仰角增量。视场越小，同样像素转过的角度越小。 */
 export function panView(view: SkyView, deltaX: number, deltaY: number): SkyView {
+  const scale = view.fov / 100
   return {
-    azimuth: wrapDegrees(view.azimuth + deltaX * 0.22),
-    altitude: clampViewAltitude(view.altitude + deltaY * 0.16),
+    azimuth: wrapDegrees(view.azimuth + deltaX * 0.22 * scale),
+    altitude: clampViewAltitude(view.altitude + deltaY * 0.16 * scale),
     fov: view.fov,
   }
 }

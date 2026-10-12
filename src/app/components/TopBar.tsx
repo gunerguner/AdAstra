@@ -23,7 +23,7 @@ type Props = {
   location: ReturnType<typeof useObserver>
   view: SkyView
   viewLabelRef: RefObject<HTMLElement | null>
-  datetimeValue: string
+  datetimeDefault: string
   datetimeInputRef: RefObject<HTMLInputElement | null>
   onDateTimeChange: (value: string) => void
   onNotice: (message: string) => void
@@ -33,7 +33,7 @@ export default function TopBar({
   location,
   view,
   viewLabelRef,
-  datetimeValue,
+  datetimeDefault,
   datetimeInputRef,
   onDateTimeChange,
   onNotice,
@@ -114,7 +114,7 @@ export default function TopBar({
             ref={datetimeInputRef}
             aria-label={t('location.time')}
             type="datetime-local"
-            value={datetimeValue}
+            defaultValue={datetimeDefault}
             onChange={(event) => onDateTimeChange(event.target.value)}
           />
         </label>

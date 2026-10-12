@@ -10,7 +10,7 @@ import {
   Sun,
   Sunset,
 } from 'lucide-react'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { memo, useEffect, useRef, type ReactNode } from 'react'
 import type { LiveClockRefs, Playback } from '@/shared/types/playback'
 import { playbackSpeeds, timeSteps, TIMELINE_RANGE_HOURS, TIMELINE_RANGE_MS } from '@/config'
 import type { AtmospherePhase } from '@/engine/render/atmosphereState'
@@ -33,6 +33,17 @@ function PhaseIcon({ phase }: { phase: AtmospherePhase }) {
   if (phase === 'night') return <Moon size={11} />
   return <Sunset size={11} />
 }
+
+/** 年份只在数字变化时由 React 写入；播放中的更新走 ref，避免被父级重渲染刷回旧值。 */
+const YearLabel = memo(function YearLabel({
+  year,
+  labelRef,
+}: {
+  year: number
+  labelRef: LiveClockRefs['yearLabel']
+}) {
+  return <strong ref={labelRef}>{year}</strong>
+})
 
 export default function TimeDeck({
   open,
@@ -62,7 +73,7 @@ export default function TimeDeck({
       <div className={styles.top}>
         <div className={styles.start}>
           <div className={`${styles.label} ${open ? '' : 'sr-only'}`}>
-            <strong ref={clockRefs.yearLabel}>{playback.currentTime.getFullYear()}</strong>
+            <YearLabel year={playback.currentTime.getFullYear()} labelRef={clockRefs.yearLabel} />
             <span className={styles.phase}>
               <PhaseIcon phase={phase} />
               {t(`phase.${phase}`)}
