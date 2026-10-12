@@ -11,6 +11,7 @@ import { createSkyScene, disposeSkyScene } from '@/engine/render/createSkyScene'
 import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
 import { SkyViewController } from '@/engine/interaction/SkyViewController'
 import { skyObjectLabel, useLocale } from '@/i18n'
+import { releaseSkySession } from './releaseSkySession'
 
 export type SkyOverlayDomRefs = {
   mountRef: RefObject<HTMLDivElement | null>
@@ -31,10 +32,13 @@ export function useSkyScene(options: {
   constellationAnchors: ConstellationAnchor[]
   overlays: SkyOverlayDomRefs
   onViewChange: (view: SkyView) => void
+  onViewLive: (view: SkyView) => void
   onSelect: (item: SelectedSkyObject | null) => void
   onBodiesReady?: () => void
   onAtmosphereChange?: (state: AtmosphereState) => void
   setViewportError: Dispatch<SetStateAction<AppError | null>>
+  /** 递增时拆掉当前场景和 Worker 再挂一次，用于 Worker 失败后的重试。 */
+  sceneEpoch: number
 }) {
   const {
     catalog,
@@ -45,6 +49,7 @@ export function useSkyScene(options: {
     constellationAnchors,
     overlays,
     setViewportError,
+    sceneEpoch,
   } = options
   const { locale, t } = useLocale()
   const localeRef = useRef(locale)
@@ -53,6 +58,7 @@ export function useSkyScene(options: {
   tRef.current = t
   const selectObject = useEffectEvent(options.onSelect)
   const changeView = useEffectEvent(options.onViewChange)
+  const previewView = useEffectEvent(options.onViewLive)
   const changeAtmosphere = useEffectEvent(options.onAtmosphereChange ?? (() => {}))
   const bodiesReady = useEffectEvent(options.onBodiesReady ?? (() => {}))
 
@@ -107,7 +113,7 @@ export function useSkyScene(options: {
     const controller = new SkyViewController(
       ctx,
       simulationRef,
-      { onSelect: selectObject, onViewChange: changeView },
+      { onSelect: selectObject, onViewChange: changeView, onViewLive: previewView },
       bodiesAt,
       stars,
       countStarsThroughMagnitude,
@@ -144,13 +150,15 @@ export function useSkyScene(options: {
     scheduler.wake = loop.wake
 
     return () => {
-      loop.stop()
-      resizeObserver.disconnect()
-      controller.unbind()
-      worker.terminate()
-      disposeSkyScene(ctx)
+      releaseSkySession({
+        stopLoop: () => loop.stop(),
+        disconnectResize: () => resizeObserver.disconnect(),
+        unbindController: () => controller.unbind(),
+        terminateWorker: () => worker.terminate(),
+        disposeScene: () => disposeSkyScene(ctx),
+      })
     }
-  }, [catalog, objectCardRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars, overlays, setViewportError])
+  }, [catalog, objectCardRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars, overlays, setViewportError, sceneEpoch])
 
   useEffect(() => {
     if (!catalog) return

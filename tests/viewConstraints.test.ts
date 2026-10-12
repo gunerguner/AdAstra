@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clampViewAltitude, nudgeView, panView, zoomView } from '@/engine/interaction/viewConstraints'
+import { clampViewAltitude, formatViewBearing, nudgeView, panView, zoomView } from '@/engine/interaction/viewConstraints'
 import { SKY_FOV_MAX, SKY_FOV_MIN } from '@/engine/render/skyProjection'
 
 const view = { azimuth: 10, altitude: 0, fov: 100 }
@@ -19,6 +19,10 @@ describe('视角约束', () => {
   it('缩放夹在视场范围', () => {
     expect(zoomView(view, 0.1).fov).toBe(SKY_FOV_MIN)
     expect(zoomView(view, 10).fov).toBe(SKY_FOV_MAX)
+  })
+
+  it('方位读数四舍五入到整度', () => {
+    expect(formatViewBearing({ azimuth: 180.6, altitude: -0.6, fov: 60 })).toBe('181° · -1°')
   })
 
   it('方向键微调视角', () => {

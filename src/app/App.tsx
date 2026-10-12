@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { LocateFixed } from 'lucide-react'
 import type { SelectedSkyObject } from '@/shared/types/sky'
 import { formatDateTimeLocal, parseDateTimeLocal } from '@/engine/coordinates/dateTimeLocal'
+import { formatViewBearing } from '@/engine/interaction/viewConstraints'
 import type { BodySnapshotWindow } from '@/engine/astronomy/bodyInterpolation'
 import { Notice } from '@/shared/ui'
 import ObjectCard from '@/features/object-details/ObjectCard'
@@ -61,6 +62,7 @@ export default function App() {
   })
   const bodySnapshotRef = useRef<BodySnapshotWindow | null>(null)
   const objectCardRef = useRef<HTMLElement>(null)
+  const viewLabelRef = useRef<HTMLElement>(null)
   const datetimeInputRef = useRef<HTMLInputElement>(null)
   const yearLabelRef = useRef<HTMLElement>(null)
   const clockRefs = useMemo(() => ({
@@ -111,6 +113,10 @@ export default function App() {
         bodySnapshotRef={bodySnapshotRef}
         onBodiesReady={markBodiesReady}
         onViewChange={setView}
+        onViewLive={(next) => {
+          const node = viewLabelRef.current
+          if (node) node.textContent = formatViewBearing(next)
+        }}
         onSelect={(item) => {
           setSelected(item)
           if (item) setNotice(null)
@@ -128,6 +134,7 @@ export default function App() {
       <TopBar
         location={location}
         view={view}
+        viewLabelRef={viewLabelRef}
         datetimeValue={formatDateTimeLocal(playback.currentTime.getTime(), observer.timeZone)}
         datetimeInputRef={datetimeInputRef}
         onNotice={setNotice}

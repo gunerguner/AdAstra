@@ -33,7 +33,7 @@ export function startSkyRenderLoop(options: {
   constellationAnchors: ConstellationAnchor[]
   overlays: SkyOverlayRefs
   bodySnapshotRef: RefObject<BodySnapshotWindow | null>
-  requestBodySnapshot: (now: number, utcMillis: number, observer: SkySimulation['observer']) => void
+  requestBodySnapshot: (now: number, utcMillis: number, observer: SkySimulation['observer'], scrubbing: boolean) => void
   onAtmosphereChange?: (state: AtmosphereState) => void
 }): SkyRenderLoop {
   const {
@@ -132,7 +132,7 @@ export function startSkyRenderLoop(options: {
       viewChanged,
       layersChanged,
     })
-    requestBodySnapshot(frameStartedAt, latest.utcMillis, latest.observer)
+    requestBodySnapshot(frameStartedAt, latest.utcMillis, latest.observer, !!latest.scrubbing)
     fillEqjHorizonMatrices(latest.utcMillis, latest.observer, uniforms.horizonMat, uniforms.eqjHorizonMat)
     uniforms.showBelow.value = latest.layers.showBelowHorizon ? 1 : 0
     const bodySnapshots = interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis)

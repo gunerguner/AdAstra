@@ -13,6 +13,11 @@ export function clampViewAltitude(altitude: number) {
   return clamp(altitude, VIEW_ALTITUDE_MIN, VIEW_ALTITUDE_MAX)
 }
 
+/** 顶栏读数。拖拽中直接写 DOM，松手后 React 用同一格式，避免对不上。 */
+export function formatViewBearing(view: SkyView) {
+  return `${Math.round(view.azimuth)}° · ${Math.round(view.altitude)}°`
+}
+
 /** 指针拖拽：delta 是像素，转成方位/仰角增量。 */
 export function panView(view: SkyView, deltaX: number, deltaY: number): SkyView {
   return {

@@ -1,15 +1,28 @@
 /** 顶栏：城市搜索、定位、时间、当前视角、中英切换。 */
 import { CircleDot, Compass, Locate, MapPin, Sparkles } from 'lucide-react'
-import type { RefObject } from 'react'
+import { memo, type RefObject } from 'react'
 import type { SkyView } from '@/shared/types/sky'
+import { formatViewBearing } from '@/engine/interaction/viewConstraints'
 import { localizedName, useLocale } from '@/i18n'
 import { useObserver } from '../hooks/useObserver'
 import CityCombobox from './CityCombobox'
 import styles from './TopBar.module.css'
 
+/** 方位数字单独 memo：拖拽时直接改 textContent，播放引起的顶栏重渲染不能把它刷回旧值。 */
+const ViewBearing = memo(function ViewBearing({
+  view,
+  labelRef,
+}: {
+  view: SkyView
+  labelRef: RefObject<HTMLElement | null>
+}) {
+  return <strong ref={labelRef}>{formatViewBearing(view)}</strong>
+})
+
 type Props = {
   location: ReturnType<typeof useObserver>
   view: SkyView
+  viewLabelRef: RefObject<HTMLElement | null>
   datetimeValue: string
   datetimeInputRef: RefObject<HTMLInputElement | null>
   onDateTimeChange: (value: string) => void
@@ -19,6 +32,7 @@ type Props = {
 export default function TopBar({
   location,
   view,
+  viewLabelRef,
   datetimeValue,
   datetimeInputRef,
   onDateTimeChange,
@@ -107,7 +121,7 @@ export default function TopBar({
         <div className={`${styles.stat} ${styles.view}`}>
           <Compass size={13} />
           <span>{t('location.view')}</span>
-          <strong>{Math.round(view.azimuth)}° · {Math.round(view.altitude)}°</strong>
+          <ViewBearing view={view} labelRef={viewLabelRef} />
         </div>
       </div>
       <div className={styles.lang} role="group" aria-label={t('brand.language')}>

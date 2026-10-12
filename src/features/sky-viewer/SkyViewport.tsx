@@ -17,6 +17,7 @@ type Props = {
   onCatalogRetry?: () => void
   simulationRef: RefObject<SkySimulation>
   onViewChange: (view: SkyView) => void
+  onViewLive: (view: SkyView) => void
   onSelect: (item: SelectedSkyObject | null) => void
   selected?: SelectedSkyObject | null
   objectCardRef?: RefObject<HTMLElement | null>
@@ -32,6 +33,7 @@ export default function SkyViewport({
   onCatalogRetry,
   simulationRef,
   onViewChange,
+  onViewLive,
   onSelect,
   selected,
   objectCardRef,
@@ -58,6 +60,7 @@ export default function SkyViewport({
     selectedRef,
   }), [])
   const [viewportError, setViewportError] = useState<AppError | null>(null)
+  const [sceneEpoch, setSceneEpoch] = useState(0)
 
   const constellationStars = useMemo(
     () => (catalog ? buildConstellationStars(catalog) : []),
@@ -77,10 +80,12 @@ export default function SkyViewport({
     constellationAnchors,
     overlays,
     onViewChange,
+    onViewLive,
     onSelect,
     onBodiesReady,
     onAtmosphereChange,
     setViewportError,
+    sceneEpoch,
   })
 
   const blockingError = catalogError ?? (viewportError?.code === 'webgl' ? viewportError : null)
@@ -96,7 +101,10 @@ export default function SkyViewport({
       {viewportError?.code === 'worker' && (
         <ErrorPanel
           error={viewportError}
-          onRetry={() => setViewportError(null)}
+          onRetry={() => {
+            setViewportError(null)
+            setSceneEpoch((epoch) => epoch + 1)
+          }}
         />
       )}
       <div className={styles.hover} ref={hoverRef} />

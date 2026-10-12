@@ -12,7 +12,10 @@ import type { Star } from '@/shared/types/star'
 import type { SelectedSkyObject } from '@/shared/types/sky'
 
 type Callbacks = {
+  /** 松手、滚轮结束、键盘等离散操作：写回 React。 */
   onViewChange: (view: SkyView) => void
+  /** 拖拽中的每一拍：只刷新方位读数，不触发整树重渲染。 */
+  onViewLive: (view: SkyView) => void
   onSelect: (item: SelectedSkyObject | null) => void
 }
 
@@ -25,7 +28,8 @@ export class SkyViewController {
   private pointers = new Map<number, { x: number; y: number }>()
   private pinch: { distance: number; fov: number } | null = null
   private lastTap: { x: number; y: number; time: number } | null = null
-  private lastViewSyncAt = 0
+  /** 拖拽/捏合/滚轮改过 ref，但还没写回 React。 */
+  private pendingUiSync = false
   private listeners: AbortController | null = null
   private viewSyncTimer = 0
   private hoverFrame = 0
@@ -45,15 +49,18 @@ export class SkyViewController {
     private readonly onActivity: () => void,
   ) {}
 
-  /** 把新视角写入 simulation ref；forceUiSync 时立刻通知 React。 */
+  /** 把新视角写入 simulation ref。拖拽中只刷读数；forceUiSync 才通知 React。 */
   emitView(next: SkyView, forceUiSync = false) {
     Object.assign(this.simulationRef.current.view, next)
     this.onActivity()
-    const now = performance.now()
-    if (forceUiSync || now - this.lastViewSyncAt >= 50) {
-      this.lastViewSyncAt = now
-      this.callbacks.onViewChange(next)
+    this.callbacks.onViewLive(next)
+    if (!forceUiSync) {
+      this.pendingUiSync = true
+      return
     }
+    this.pendingUiSync = false
+    window.clearTimeout(this.viewSyncTimer)
+    this.callbacks.onViewChange(next)
   }
 
   private flushViewSoon() {
@@ -114,15 +121,20 @@ export class SkyViewController {
 
   onPointerDown = (event: PointerEvent) => {
     this.onActivity()
-    this.ctx.renderer.domElement.setPointerCapture(event.pointerId)
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY })
     const view = this.simulationRef.current.view
     if (this.pointers.size >= 2) {
       this.drag = null
       this.pinch = { distance: Math.max(this.pointerDistance(), 1), fov: view.fov }
-      return
+    } else {
+      this.drag = { x: event.clientX, y: event.clientY, azimuth: view.azimuth, altitude: view.altitude, moved: false }
     }
-    this.drag = { x: event.clientX, y: event.clientY, azimuth: view.azimuth, altitude: view.altitude, moved: false }
+    // 捕获失败不能挡住拖拽：部分触摸实现会在指针刚结束时抛 InvalidStateError。
+    try {
+      this.ctx.renderer.domElement.setPointerCapture(event.pointerId)
+    } catch (error) {
+      if (!(error instanceof DOMException)) throw error
+    }
   }
 
   onPointerMove = (event: PointerEvent) => {
@@ -165,10 +177,11 @@ export class SkyViewController {
         this.callbacks.onSelect(this.hitAt(event.clientX, event.clientY))
       }
     }
-    if (this.drag?.moved && this.pointers.size === 0) {
-      this.emitView({ ...this.simulationRef.current.view }, true)
+    if (this.pointers.size === 0) {
+      // 拖拽和捏合结束时才写回 React。捏合原先漏了这一步，视场会被下一次重渲染弹回去。
+      if (this.pendingUiSync) this.emitView({ ...this.simulationRef.current.view }, true)
+      this.drag = null
     }
-    if (this.pointers.size === 0) this.drag = null
     if (this.ctx.renderer.domElement.hasPointerCapture(event.pointerId)) {
       this.ctx.renderer.domElement.releasePointerCapture(event.pointerId)
     }

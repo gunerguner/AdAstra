@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { resolve } from 'node:path'
+import { releaseSkySession } from '@/features/sky-viewer/releaseSkySession'
 
 describe('render resource lifecycle', () => {
   it('disposes body atlas with the rest of the sky scene', () => {
@@ -10,13 +11,17 @@ describe('render resource lifecycle', () => {
     expect(source).toContain('.forEach(disposeMesh)')
   })
 
-  it('stops the render loop, observers, worker and scene together', () => {
-    const source = readFileSync(resolve(import.meta.dirname, '../src/features/sky-viewer/useSkyScene.ts'), 'utf8')
-    expect(source).toContain('loop.stop()')
-    expect(source).toContain('resizeObserver.disconnect()')
-    expect(source).toContain('controller.unbind()')
-    expect(source).toContain('worker.terminate()')
-    expect(source).toContain('disposeSkyScene(ctx)')
+  it('按停帧、卸监听、释放 Worker、释放 GPU 的顺序卸载', () => {
+    const order: string[] = []
+    const mark = (name: string) => () => { order.push(name) }
+    releaseSkySession({
+      stopLoop: mark('stop'),
+      disconnectResize: mark('resize'),
+      unbindController: mark('unbind'),
+      terminateWorker: mark('terminate'),
+      disposeScene: mark('dispose'),
+    })
+    expect(order).toEqual(['stop', 'resize', 'unbind', 'terminate', 'dispose'])
   })
 
   it('keeps astronomy-engine out of the interpolation module', () => {
