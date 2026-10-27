@@ -15,7 +15,7 @@ Ad Astra 是纯前端静态 PWA，运行时没有后端、没有远程星历 API
 | 时间 | 内部只认 UTC 毫秒。播放按墙钟倍率推进，不按帧累加 |
 | 离线 | 生产构建注册 Service Worker，缓存应用壳和星表 |
 
-不引入 Stellarium Web Engine（授权与体量不适合这套静态应用）。不把 WebGPU 当作运行基线。精度按科普级：画面与肉眼所见大致相符，不用于望远镜指向或导航。
+精度按科普级：画面与肉眼所见大致相符，适用于辨认星空，不作为望远镜指向或导航依据。
 
 ## 2. 从输入到画面
 
@@ -111,7 +111,7 @@ engine/astronomy、clock、catalog、location
 - `engine` 不依赖 `i18n`。界面文案和天体显示名在 React 边界按当前语言解析；星表索引同时带中英名，切语言不重载星表。
 - `i18n` 只依赖 `data`，不依赖 `engine`；需要业务模型时声明最小结构化接口。
 
-有意保留的耦合：`skyGeometry.ts` 用 Three.js 的 `Vector3` 做网格细分；`startSkyRenderLoop.ts` 编排一帧（矩阵、插值、overlay、`render`），装配发生在 `SkyViewport.tsx`。
+`skyGeometry.ts` 用 Three.js 的 `Vector3` 做网格细分。一帧的矩阵、插值、overlay 和 `render` 由 `startSkyRenderLoop.ts` 编排，装配在 `SkyViewport.tsx`。
 
 ## 5. 时间
 
@@ -203,16 +203,16 @@ type AstroWorkerRequest = {
 +X 西
 ```
 
-方位角仍是北为零、向东增加。把东放到 `-X`，是因为 Three.js 相机朝向 `-Z` 时屏幕右侧为 `+X`：面朝南时左东右西，与抬头看天一致。若把东放到 `+X`，东西会左右镜像。
+方位角仍是北为零、向东增加。东在 `-X`：Three.js 相机朝向 `-Z` 时屏幕右侧为 `+X`，面朝南时左东右西，与抬头看天一致。
 
 相机是球心处的 `PerspectiveCamera`，用方位角和高度角生成观察方向，没有 roll。仰角限制约 −30°～89°，避免翻转到难以理解的姿态。默认面朝南、平视地平。
 
 ### 8.2 天空投影
 
-真正画到屏幕上时，不用透视盒子去「看」一个场景，而是把朝前的那一半天球摊成圆盘（立体投影思路）：
+画面把朝前的那一半天球按立体投影摊成圆盘：
 
 - 地平略向下抬（`SKY_HORIZON_LIFT`），平视时多露出天空、少露出地下；
-- 转到天球背面的方向被裁掉，画面外是虚空色，看起来是「球」而不是矩形视锥；
+- 转到天球背面的方向被裁掉，画面外是虚空色，可见区域呈圆形天空；
 - 视场约 38°～128°，默认 100°。
 
 同一套投影函数同时用于 GLSL 顶点和 DOM 标签 / 拾取，避免星点和标签各算各的。
@@ -267,7 +267,7 @@ type AstroWorkerRequest = {
 
 - 高频视角和时间不进 React state。时钟文字通过 DOM ref 直接改，避免整树刷新。
 - 交互中满帧 rAF；静止约 250 ms 一帧（约 4 fps）。拖拽或时间变化后保持约 450 ms 满帧。
-- 渲染分辨率固定为 `devicePixelRatio = 1`，绘图缓冲与 CSS 像素一一对应，优先保流畅，不按帧时长升降。
+- 渲染分辨率固定为 `devicePixelRatio = 1`，绘图缓冲与 CSS 像素一一对应。
 - 渲染循环避免每帧分配临时向量和闭包；插值结果写入预分配槽位。
 - 页面隐藏停止调度。WebGL 上下文丢失时暂停，由浏览器恢复后重建。
 
@@ -310,20 +310,9 @@ pnpm verify          # 以上全部
 
 静态部署要求 HTTPS（或 localhost）、`.bin` 以 `application/octet-stream` 提供。带内容哈希的资源可长期缓存；`index.html` 与 `service-worker.js` 必须短缓存，否则用户会卡在旧壳上。Docker 为单 Nginx 容器，见仓库 `docker/README.md`。
 
-扩大星表（更多暗星）是数据授权问题，不是渲染上限：GPU 路径按批次点精灵和 `drawRange` 设计。来源核验步骤见 [数据发布门禁](data-release-gate.md)。
+星表来源核验见 [数据发布门禁](data-release-gate.md)。
 
-## 15. 架构决策
-
-| 编号 | 结论 |
-| --- | --- |
-| ADR-001 | 生产渲染路径是 WebGL2 |
-| ADR-002 | 不引入运行时后端 |
-| ADR-003 | 太阳系计算用 Astronomy Engine |
-| ADR-004 | 星表在构建期规范化，运行时格式与源目录解耦 |
-| ADR-005 | 主线程画、Worker 算。同一帧要更新矩阵、相机、DOM overlay 和 `render`，不把绘制拆到 OffscreenCanvas |
-| ADR-006 | 星表按视星等排序，筛选走二分 + `drawRange` |
-
-## 16. 参考
+## 15. 参考
 
 - Astronomy Engine：<https://github.com/cosinekitty/astronomy>
 - Three.js：<https://threejs.org/>

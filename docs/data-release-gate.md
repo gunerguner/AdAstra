@@ -4,22 +4,18 @@
 
 | 数据包 | 状态 | 可用于 |
 | --- | --- | --- |
-| `fixture-bright-stars` | 已锁定，项目自有测试夹具 | 开发、CI、性能 PoC、`pnpm build` |
+| `fixture-bright-stars` | 已锁定，项目自有星表 | 开发、CI、`pnpm build` |
 | BSC5P 候选源 | 等待源级书面授权核验 | 不可进入生产包 |
 | SAO 候选源 | 等待源级书面授权核验 | 不可进入生产包 |
 
 `pnpm catalog:production` 会读取 `data/licenses/catalog-sources.json`。只要
 `productionAllowed` 仍为 `false`，构建立即失败，从而避免把候选数据误发布。
 
-## 夹具与生产星表
+## 现行星表
 
-夹具（fixture）是仓库内手写的小样本星表，用来把渲染、连线和筛选跑通，不是全天正式目录。
+现行星表是 `data/stars.yaml`（约 420 颗：全天 V≤3.0 亮星 + 57 个著名星座棒状图顶点，V≤4.5）。`pnpm catalog:fixture` 生成 `public/data/v1/`。`pnpm dev` 和 `pnpm build` 都使用这份星表。
 
-- **当前会打进包的**：`data/stars.yaml`（约 420 颗：全天 V≤3.0 亮星 + 57 个著名星座棒状图顶点，V≤4.5）经 `pnpm catalog:fixture` 生成 `public/data/v1/`。
-- **`pnpm dev` 和 `pnpm build`** 都走夹具。页面上星星少，是数据少，不是 GPU 画不下。
-- **产品目标不是银河系每一颗星。** 设计范围是科普级肉眼星到略暗于肉眼：核心包视星等约 `<= +5.5`，扩展包约 `+5.5` 至 `+8.0`（大约几千到一两万颗）。Gaia 量级的完整星表不在范围内。
-- **书面授权通过，不会自动长出星表。** 门禁只决定「可不可以发布候选目录」。`catalog:production` 目前仍读取同一份 `stars.yaml`，只是多做授权检查。BSC5P / SAO 的固定版本下载、许可证过滤、字段归一化和打成核心/扩展二进制，构建期适配器尚未接入。
-- 授权与适配器都就绪后，运行时仍读统一的 `manifest` + 二进制星表；渲染用单批次点精灵和按视星等的 `drawRange`，不必改交互层。
+`pnpm catalog:production` 在 `productionAllowed` 仍为 `false` 时失败。检查通过前，它读取的仍是同一份 `stars.yaml`。BSC5P 与 SAO 在源级书面授权完成前不进入构建。
 
 ## 归档要求
 
