@@ -28,6 +28,15 @@
       "writtenVerification": "pending",
       "approvedForProduction": false,
       "notes": "禁止打包到生产数据，直到法律/数据所有方归档书面授权结论。"
+    },
+    {
+      "id": "hyg-v36-1",
+      "role": "milkyway-texture-candidate",
+      "license": "CC BY-SA 4.0（HYG Database，含署名与相同方式共享要求）",
+      "sourceUrl": "https://github.com/astronexus/HYG-Database",
+      "writtenVerification": "pending",
+      "approvedForProduction": false,
+      "notes": "由 scripts/milkyway/build-milkyway.mjs 派生银河亮度纹理，产物写入 public/data/dev/（已 gitignore）。仅用于本地开发预览；生产发布前须完成书面授权核验并决定署名展示方式。"
     }
   ]
 }

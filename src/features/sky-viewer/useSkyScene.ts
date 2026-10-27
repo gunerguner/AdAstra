@@ -8,6 +8,8 @@ import { interpolateBodySnapshots, type BodySnapshotWindow } from '@/engine/astr
 import type { ConstellationAnchor, ConstellationStars } from '@/engine/astronomy/constellationData'
 import { attachAstroWorker } from '@/engine/astronomy/attachAstroWorker'
 import { createSkyScene, disposeSkyScene } from '@/engine/render/createSkyScene'
+import { beginMilkyWayTextureLoad } from '@/engine/render/milkyWayTexture'
+import type { Texture } from 'three'
 import { bindWebglContextRecovery } from '@/engine/render/webglContextRecovery'
 import { startSkyRenderLoop } from '@/engine/render/startSkyRenderLoop'
 import { SkyViewController } from '@/engine/interaction/SkyViewController'
@@ -107,6 +109,17 @@ export function useSkyScene(options: {
     }
     ctx.renderer.domElement.setAttribute('aria-label', tRef.current('sky.canvasLabel'))
 
+    // 真实银河纹理是可选项：烘焙产物缺失时银河保持程序噪声着色。
+    const milkyWayTexture = beginMilkyWayTextureLoad()
+    let milkyWayMap: Texture | null = null
+    milkyWayTexture.promise.then((texture) => {
+      if (!texture) return
+      milkyWayMap = texture
+      ctx.materials.milkyWay.uniforms.uMap.value = texture
+      ctx.materials.milkyWay.uniforms.uHasMap.value = 1
+      ctx.materials.milkyWay.needsUpdate = true
+    }).catch(() => {})
+
     const resizeObserver = new ResizeObserver(ctx.resize)
     resizeObserver.observe(mount)
 
@@ -162,6 +175,7 @@ export function useSkyScene(options: {
     })
 
     return () => {
+      milkyWayTexture.cancel()
       unbindRecovery()
       releaseSkySession({
         stopLoop: () => loop.stop(),
@@ -170,6 +184,7 @@ export function useSkyScene(options: {
         terminateWorker: () => worker.terminate(),
         disposeScene: () => disposeSkyScene(ctx),
       })
+      milkyWayMap?.dispose()
     }
   }, [catalog, objectCardRef, objectCardStatsRef, bodySnapshotRef, simulationRef, constellationAnchors, constellationStars, overlays, setViewportError, sceneEpoch])
 

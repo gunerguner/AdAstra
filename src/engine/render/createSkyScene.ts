@@ -108,6 +108,7 @@ export function createSkyScene(options: {
       constellationLine: grids.constellationLine,
       equatorialGrid: grids.equatorialGrid,
       horizontalGrid: grids.horizontalGrid,
+      milkyWay: milkyWay.material,
       skyDome: skyDome.material,
       ground: helpers.groundMaterial,
       skyLimb: skyLimb.material,
@@ -136,6 +137,7 @@ export function disposeSkyScene(ctx: SkySceneContext) {
   ctx.materials.constellationLine.dispose()
   ctx.materials.equatorialGrid.dispose()
   ctx.materials.horizontalGrid.dispose()
+  ctx.materials.milkyWay.dispose()
   disposeBodiesLayer(ctx.layers.bodyPoints)
   ctx.renderer.dispose()
   ctx.renderer.domElement.remove()

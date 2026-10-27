@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   applyHorizonMatrixInto,
+  atmosphericAirmass,
+  atmosphericTransmitRgb,
   eclipticEquatorialUnit,
   equatorialUnit,
   estimateSunHorizontal,
@@ -87,5 +89,23 @@ describe('skyMath', () => {
     expect(sun.altitude).toBeGreaterThan(20)
     expect(sun.azimuth).toBeGreaterThanOrEqual(0)
     expect(sun.azimuth).toBeLessThan(360)
+  })
+
+  it('computes Kasten–Young airmass at reference altitudes', () => {
+    expect(atmosphericAirmass(90)).toBeCloseTo(1, 3)
+    expect(atmosphericAirmass(30)).toBeCloseTo(2.0, 1)
+    expect(atmosphericAirmass(10)).toBeCloseTo(5.6, 1)
+    expect(atmosphericAirmass(0)).toBeGreaterThan(30)
+    expect(atmosphericAirmass(-5)).toBe(atmosphericAirmass(0))
+  })
+
+  it('dims every band with altitude and dims blue faster than red', () => {
+    const zenith = atmosphericTransmitRgb(90)
+    const horizonish = atmosphericTransmitRgb(5)
+    expect(zenith.every((t) => t > 0.75 && t <= 1)).toBe(true)
+    expect(horizonish[2]).toBeLessThan(horizonish[0])
+    expect(horizonish[0]).toBeLessThan(1)
+    const deeper = atmosphericTransmitRgb(1)
+    expect(deeper[2]).toBeLessThan(horizonish[2])
   })
 })

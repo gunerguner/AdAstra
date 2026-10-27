@@ -93,6 +93,24 @@ vec4 projectSky(vec3 worldPos) {
 ${skyOutsideViewGlsl}
 `
 
+/**
+ * Kasten–Young（1989）大气质量 + 分波段透过率。输入地平向量的 y 分量（= sin 高度角）。
+ * 消光系数按 R/G/B 波段给出（星等/大气质量），蓝光被吸收得更多，
+ * 所以低空的恒星会自然变暗、变红——不需要再手工混色。
+ */
+export const atmosphereTransmitGlsl = /* glsl */ `
+float skyAirmass(float sinAlt) {
+  float altDeg = degrees(asin(clamp(sinAlt, 0.0, 1.0)));
+  float am = 1.0 / (max(sinAlt, 0.0) + 0.50572 * pow(6.07995 + altDeg, -1.6364));
+  return max(am, 1.0);
+}
+vec3 skyTransmit(float sinAlt) {
+  float am = skyAirmass(sinAlt);
+  vec3 k = vec3(0.105, 0.16, 0.26);
+  return max(exp(-0.921035 * k * am), vec3(0.05));
+}
+`
+
 export const skyViewDirFromNdcGlsl = /* glsl */ `
 vec3 skyViewDirFromNdc(vec2 ndc) {
   float tanQ = tan(uFov * 0.25);

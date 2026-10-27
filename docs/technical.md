@@ -227,7 +227,7 @@ type AstroWorkerRequest = {
 
 黄道按固定黄赤交角（J2000 约 23.439°）采样黄经 0°–360°，再转入赤道方向；黄北极 / 黄南极为同一交角下的 J2000 方向，用屏幕十字标签，随黄道图层显隐。天赤道是赤纬 0 的大圆。网格在创建时生成，显隐只改材质可见性。大圆沿球面细分，避免长弦穿进天球。
 
-银河是银道坐标系下的程序带（IAU 北银极与银心），加性混合，白天被压暗。不是全天摄影纹理。
+银河默认用银道坐标系下的程序带（IAU 北银极与银心），加性混合，白天被压暗。若 `public/data/dev/milkyway.png` 存在（`pnpm milkyway:dev` 从 HYG 星表烘焙，见 `docs/data-release-gate.md`），运行时改用真实纹理：按银道方向采样 equirect 纹理，fbm 退为细部调制；文件缺失时安静回退到程序带。恒星与银河的大气消光用 Kasten–Young 大气质量 × 分波段消光系数（`skyProjection.ts` 的 `atmosphereTransmitGlsl`），低空恒星因此自然变暗、变红。
 
 ### 9.2 昼夜
 

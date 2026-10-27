@@ -172,6 +172,25 @@ export function horizonAnglesFromVector(vector: { x: number; y: number; z: numbe
   }
 }
 
+/**
+ * Kasten–Young（1989）大气质量。输入高度角（度），负高度角按地平处理。
+ * 与渲染层 skyProjection.ts 里的 atmosphereTransmitGlsl 保持同一公式。
+ */
+export function atmosphericAirmass(altitudeDeg: number) {
+  const alt = Math.max(altitudeDeg, 0)
+  const denom = Math.sin(degToRad(alt)) + 0.50572 * Math.pow(6.07995 + alt, -1.6364)
+  return Math.max(1 / denom, 1)
+}
+
+/** 晴夜海平面分波段消光系数（星等/大气质量），R/G/B。蓝光被大气吸收得更多。 */
+export const ATMOSPHERIC_EXTINCTION_RGB = [0.105, 0.16, 0.26] as const
+
+/** 分波段大气透过率：亮度比值 = 10^(-0.4·k·大气质量)，下限钳制避免完全消失。 */
+export function atmosphericTransmitRgb(altitudeDeg: number) {
+  const am = atmosphericAirmass(altitudeDeg)
+  return ATMOSPHERIC_EXTINCTION_RGB.map((k) => Math.max(Math.exp(-0.921035 * k * am), 0.05))
+}
+
 const sunHorizonMatrix = new Float32Array(9)
 const sunHorizonVector = { x: 0, y: 0, z: 0 }
 

@@ -45,9 +45,11 @@ describe('天体快照插值', () => {
     expect(Math.min(body.azimuth, 360 - body.azimuth)).toBeCloseTo(0, 2)
   })
 
-  it('把窗口外时间夹到首尾样本，避免过冲', () => {
-    expect(interpolateBodySnapshots(window, 500)[0].altitude).toBe(10)
-    expect(interpolateBodySnapshots(window, 2_500)[0].altitude).toBe(14)
+  it('窗口覆盖不了当前时刻时不外推，交给低精度太阳估计兜底', () => {
+    expect(interpolateBodySnapshots(window, 500)).toHaveLength(0)
+    expect(interpolateBodySnapshots(window, 2_500)).toHaveLength(0)
+    expect(interpolateBodySnapshots(window, 1_000)[0].altitude).toBe(10)
+    expect(interpolateBodySnapshots(window, 2_000)[0].altitude).toBe(14)
   })
 
   it('在同一窗口与时间上复用插值结果', () => {

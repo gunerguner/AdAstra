@@ -25,6 +25,7 @@
     "catalog:production": "node scripts/catalog/build-catalog.mjs --production",
     "gate:data": "node scripts/catalog/check-release-gate.mjs",
     "astro:golden": "node scripts/astronomy/check-golden.mjs",
+    "milkyway:dev": "node scripts/milkyway/build-milkyway.mjs",
     "build:release": "pnpm gate:data && pnpm catalog:production && pnpm verify && vite build"
   },
   "repository": {

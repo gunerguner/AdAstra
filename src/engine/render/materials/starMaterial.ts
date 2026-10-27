@@ -1,6 +1,6 @@
-/** 恒星点着色：地平矩阵可见性、视星等大小、衍射尖刺。 */
+/** 恒星点着色：地平矩阵可见性、视星等大小、分波段大气消光、衍射尖刺。 */
 import { AdditiveBlending, ShaderMaterial } from 'three'
-import { applyHorizonGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
+import { applyHorizonGlsl, atmosphereTransmitGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
 export function makeStarMaterial(uniforms: {
@@ -30,6 +30,7 @@ export function makeStarMaterial(uniforms: {
       uniform float uShowBelow;
       uniform float uDaylight;
       ${applyHorizonGlsl}
+      ${atmosphereTransmitGlsl}
       ${skyProjectionUniformDeclsGlsl}
       varying vec3 vColor;
       varying float vBright;
@@ -38,10 +39,9 @@ export function makeStarMaterial(uniforms: {
         vec3 h = applyHorizon(position);
         vec3 viewDir = skyViewDir(h);
         float visible = max(step(0.0, h.y), uShowBelow) * (1.0 - skyOutsideView(viewDir));
-        float extinction = mix(1.0, clamp((h.y + 0.05) * 3.6, 0.12, 1.0), 0.82);
         float fade = mix(1.0, clamp((h.y + 0.08) * 5.2, 0.08, 1.0), uDaylight);
-        vColor = mix(color, vec3(1.0, 0.78, 0.55), (1.0 - extinction) * 0.55);
-        vBright = brightness * visible * fade * extinction;
+        vColor = color * skyTransmit(h.y);
+        vBright = brightness * visible * fade;
         gl_Position = projectSkyDir(viewDir);
         gl_PointSize = size * uPixelRatio * visible * step(gl_Position.z, 1.2) * clamp(1.22 / uFov, 0.52, 1.9);
       }

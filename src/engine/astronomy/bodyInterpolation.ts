@@ -91,8 +91,11 @@ function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: B
 export function interpolateBodySnapshots(window: BodySnapshotWindow | null, utcMillis: number): BodySnapshot[] {
   if (!window) return EMPTY
   if (window === cachedWindow && utcMillis === cachedUtcMillis) return result
-  const span = Math.max(window.toUtcMillis - window.fromUtcMillis, 1)
-  const t = clamp((utcMillis - window.fromUtcMillis) / span, 0, 1)
+  const span = window.toUtcMillis - window.fromUtcMillis
+  // 窗口覆盖不了当前时刻（拖时间轴后旧窗口还没被新采样替换）时不外推：
+  // 把日落插成日出会让昼夜效果卡在错误相位，直到下一次相位变化才恢复。
+  if (span <= 0 || utcMillis < window.fromUtcMillis || utcMillis > window.toUtcMillis) return EMPTY
+  const t = (utcMillis - window.fromUtcMillis) / span
   nextById.clear()
   for (const body of window.to) nextById.set(body.id, body)
   result.length = window.from.length

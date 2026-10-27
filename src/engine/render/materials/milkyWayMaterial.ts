@@ -1,6 +1,6 @@
-/** 银河带：银道坐标 + fbm 噪声，加性混合，白天压暗。 */
+/** 银河带：银道坐标 + 真实纹理（可选）/程序噪声兜底，Kasten–Young 消光，加性混合，白天压暗。 */
 import { AdditiveBlending, DoubleSide, ShaderMaterial, Vector3 } from 'three'
-import { applyHorizonGlsl, skyOutsideViewGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
+import { applyHorizonGlsl, atmosphereTransmitGlsl, skyOutsideViewGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
 
 export function makeMilkyWayMaterial(
@@ -29,12 +29,15 @@ export function makeMilkyWayMaterial(
       uGalZ: { value: galZ },
       uFov: uniforms.sky.uFov,
       uAspect: uniforms.sky.uAspect,
+      uMap: { value: null },
+      uHasMap: { value: 0 },
     },
     vertexShader: `
       uniform vec3 uGalX;
       uniform vec3 uGalY;
       uniform vec3 uGalZ;
       ${applyHorizonGlsl}
+      ${atmosphereTransmitGlsl}
       ${skyProjectionUniformDeclsGlsl}
       varying vec3 vGal;
       varying float vAlt;
@@ -51,9 +54,12 @@ export function makeMilkyWayMaterial(
     fragmentShader: `
       uniform float uShowBelow;
       uniform float uDaylight;
+      uniform sampler2D uMap;
+      uniform float uHasMap;
       varying vec3 vGal;
       varying float vAlt;
       varying vec3 vViewDir;
+      ${atmosphereTransmitGlsl}
       ${skyOutsideViewGlsl}
       float hash13(vec3 p) {
         p = fract(p * vec3(443.8975, 441.423, 437.195));
@@ -89,35 +95,52 @@ export function makeMilkyWayMaterial(
       void main() {
         if (skyOutsideView(vViewDir) > 0.5) discard;
         float visible = max(step(-0.02, vAlt), uShowBelow);
-        float extinction = mix(1.0, clamp((vAlt + 0.04) * 3.2, 0.08, 1.0), 0.78);
-        float fade = mix(1.0, clamp((vAlt + 0.06) * 4.4, 0.0, 1.0), uDaylight) * extinction;
+        vec3 trans = skyTransmit(max(vAlt, 0.0));
+        float fade = mix(1.0, clamp((vAlt + 0.06) * 4.4, 0.0, 1.0), uDaylight);
         if (visible * fade < 0.01) discard;
 
         vec3 g = normalize(vGal);
         float lat = abs(g.z);
-        float plane = exp(-lat * lat * 34.0);
-        float halo = exp(-lat * lat * 7.5) * 0.42;
         float towardCenter = clamp(g.x * 0.58 + 0.42, 0.0, 1.0);
-        float bulge = exp(-length(g - vec3(1.0, 0.0, 0.0)) * 2.15);
-
         float clouds = fbm(g * 7.4);
         float wisps = fbm(g * 16.5 + 2.7);
-        float lanes = smoothstep(0.38, 0.78, fbm(g * 11.2 + vec3(4.1, 1.3, 2.0)));
-        float dust = lanes * plane * (0.25 + 0.75 * towardCenter);
 
-        float glow = (plane * 0.72 + halo) * (0.28 + 0.85 * towardCenter);
-        glow += bulge * 0.28;
-        glow *= 0.42 + clouds * 0.55 + wisps * 0.18;
-        glow *= 1.0 - dust * 0.78;
+        vec3 col;
+        float glow;
+        if (uHasMap > 0.5) {
+          // 真实纹理：等距圆柱投影，u=银经（列 0 是 l=-180°），v=银纬（顶行 b=+90°）。
+          vec2 uv = vec2(
+            fract(atan(g.y, g.x) * 0.15915494 + 0.5),
+            clamp(asin(clamp(g.z, -1.0, 1.0)), -1.57035, 1.57035) * 0.31830989 + 0.5
+          );
+          vec3 tex = texture2D(uMap, uv).rgb;
+          float lum = max(dot(tex, vec3(0.2126, 0.7152, 0.0722)), 0.004);
+          col = tex / lum;
+          // fbm 只做细部调制，大尺度结构交给纹理；幂次压缩收窄两翼、突出亮带核心
+          glow = pow(lum, 1.45) * 2.8 * (0.86 + clouds * 0.34 + wisps * 0.1);
+        } else {
+          float plane = exp(-lat * lat * 34.0);
+          float halo = exp(-lat * lat * 7.5) * 0.42;
+          float bulge = exp(-length(g - vec3(1.0, 0.0, 0.0)) * 2.15);
+          float lanes = smoothstep(0.38, 0.78, fbm(g * 11.2 + vec3(4.1, 1.3, 2.0)));
+          float dust = lanes * plane * (0.25 + 0.75 * towardCenter);
+
+          glow = (plane * 0.72 + halo) * (0.28 + 0.85 * towardCenter);
+          glow += bulge * 0.28;
+          glow *= 0.42 + clouds * 0.55 + wisps * 0.18;
+          glow *= 1.0 - dust * 0.78;
+
+          vec3 cold = vec3(0.58, 0.66, 0.82);
+          vec3 warm = vec3(0.78, 0.72, 0.62);
+          vec3 lane = vec3(0.28, 0.22, 0.2);
+          col = mix(cold, warm, clamp(bulge * 0.8 + towardCenter * 0.15, 0.0, 1.0));
+          col = mix(col, lane, dust * 0.45);
+          float sparkle = pow(vnoise(g * 92.0), 18.0) * plane * 0.12;
+          col += vec3(0.9, 0.9, 1.0) * sparkle;
+        }
+
         glow *= fade * visible * 0.32;
-
-        vec3 cold = vec3(0.58, 0.66, 0.82);
-        vec3 warm = vec3(0.78, 0.72, 0.62);
-        vec3 lane = vec3(0.28, 0.22, 0.2);
-        vec3 col = mix(cold, warm, clamp(bulge * 0.8 + towardCenter * 0.15, 0.0, 1.0));
-        col = mix(col, lane, dust * 0.45);
-        float sparkle = pow(vnoise(g * 92.0), 18.0) * plane * 0.12;
-        col += vec3(0.9, 0.9, 1.0) * sparkle;
+        col *= trans;
 
         gl_FragColor = vec4(col * glow, clamp(glow * 0.85, 0.0, 0.22));
       }

@@ -65,6 +65,7 @@ export type SkySceneContext = {
     constellationLine: ShaderMaterial
     equatorialGrid: ShaderMaterial
     horizontalGrid: ShaderMaterial
+    milkyWay: ShaderMaterial
     skyDome: ShaderMaterial
     ground: ShaderMaterial
     skyLimb: ShaderMaterial

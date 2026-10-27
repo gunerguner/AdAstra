@@ -21,6 +21,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# 数据门禁候选源（HYG 派生银河纹理，完成书面核验前不进仓库）
+data/milkyway/*.csv
+data/milkyway/*.gz
+public/data/dev/
+
 # Environment (keep *.example)
 .env
 .env.*
