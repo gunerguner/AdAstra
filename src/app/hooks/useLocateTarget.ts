@@ -28,7 +28,7 @@ export function useLocateTarget(options: {
     const result = locateSkyTarget({
       id,
       type,
-      bodies: interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis),
+      bodies: interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis, latest.observer),
       starById: catalog.starById,
       utcMillis: latest.utcMillis,
       observer: latest.observer,

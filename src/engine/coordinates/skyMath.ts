@@ -155,13 +155,18 @@ export function applyHorizonMatrixInto(
   return out
 }
 
-/** 黄道上某黄经对应的赤道方向。 */
-export function eclipticEquatorialUnit(longitudeDeg: number) {
+/** 黄道上某黄经对应的赤道方向，写入 out。热路径请用此变体。 */
+export function eclipticEquatorialUnitInto(longitudeDeg: number, out: { x: number; y: number; z: number }) {
   const obliquity = degToRad(OBLIQUITY_DEG)
   const lon = degToRad(longitudeDeg)
   const ra = Math.atan2(Math.sin(lon) * Math.cos(obliquity), Math.cos(lon))
   const dec = Math.asin(Math.sin(obliquity) * Math.sin(lon))
-  return equatorialUnit(((ra < 0 ? ra + Math.PI * 2 : ra) / (Math.PI * 2)) * HOURS_PER_DAY, radToDeg(dec))
+  return equatorialUnitInto(((ra < 0 ? ra + Math.PI * 2 : ra) / (Math.PI * 2)) * HOURS_PER_DAY, radToDeg(dec), out)
+}
+
+/** 分配新对象的黄道 → 赤道方向。热路径请用 eclipticEquatorialUnitInto。 */
+export function eclipticEquatorialUnit(longitudeDeg: number) {
+  return eclipticEquatorialUnitInto(longitudeDeg, { x: 0, y: 0, z: 0 })
 }
 
 /** 地平单位向量 → 高度角、方位角（度）。y 是天顶分量。 */
@@ -193,17 +198,43 @@ export function atmosphericTransmitRgb(altitudeDeg: number) {
 
 const sunHorizonMatrix = new Float32Array(9)
 const sunHorizonVector = { x: 0, y: 0, z: 0 }
+const sunEquatorialVector = { x: 0, y: 0, z: 0 }
+
+/** 太阳平黄经（度）。Meeus 低精度，昼夜判断与日盘兜底共用。 */
+function sunEclipticLongitude(utcMillis: number) {
+  const d = julianDay(utcMillis) - JULIAN_J2000
+  const meanAnomaly = degToRad(357.528 + 0.9856003 * d)
+  return 280.46 + 0.9856474 * d + 1.915 * Math.sin(meanAnomaly) + 0.02 * Math.sin(2 * meanAnomaly)
+}
+
+/** 太阳低精度赤道单位向量，写入 out。与 Worker 星历差约 1°，只做兜底。 */
+export function estimateSunEquatorialInto(utcMillis: number, out: { x: number; y: number; z: number }) {
+  return eclipticEquatorialUnitInto(sunEclipticLongitude(utcMillis), out)
+}
 
 /**
- * Meeus 低精度太阳地平坐标。给首帧大气/UI 用，不代替 Worker 星历。
+ * Meeus 低精度太阳地平坐标。给昼夜判断和 UI 用，不代替 Worker 星历。
  * 精度约 1°，足够判断昼夜，避免星历到达前先画成夜晚再整页冲成白昼。
  */
 export function estimateSunHorizontal(utcMillis: number, observer: Observer) {
-  const d = julianDay(utcMillis) - JULIAN_J2000
-  const meanAnomaly = degToRad(357.528 + 0.9856003 * d)
-  const longitude = 280.46 + 0.9856474 * d + 1.915 * Math.sin(meanAnomaly) + 0.02 * Math.sin(2 * meanAnomaly)
   fillHorizonMatrix(utcMillis, observer, sunHorizonMatrix)
   return horizonAnglesFromVector(
-    applyHorizonMatrixInto(eclipticEquatorialUnit(longitude), sunHorizonMatrix, sunHorizonVector),
+    applyHorizonMatrixInto(estimateSunEquatorialInto(utcMillis, sunEquatorialVector), sunHorizonMatrix, sunHorizonVector),
   )
+}
+
+/** 太阳低精度快照兜底：赤经（时）、赤纬（度）、地平角。窗口盖不住时给日盘与拾取用。 */
+export function estimateSunBodyInto(
+  utcMillis: number,
+  observer: Observer,
+  out: { altitude: number; azimuth: number; raHours: number; decDeg: number },
+) {
+  const equatorial = estimateSunEquatorialInto(utcMillis, sunEquatorialVector)
+  out.raHours = ((radToDeg(Math.atan2(equatorial.y, equatorial.x)) / DEG_PER_HOUR) + HOURS_PER_DAY) % HOURS_PER_DAY
+  out.decDeg = radToDeg(Math.asin(equatorial.z))
+  fillHorizonMatrix(utcMillis, observer, sunHorizonMatrix)
+  const angles = horizonAnglesFromVector(applyHorizonMatrixInto(equatorial, sunHorizonMatrix, sunHorizonVector))
+  out.altitude = angles.altitude
+  out.azimuth = angles.azimuth
+  return out
 }

@@ -83,7 +83,7 @@ export function startSkyRenderLoop(options: {
   }
 
   const scheduleNext = (fullRate: boolean) => {
-    if (!running || document.hidden) return
+    if (!running || document.hidden || frame) return
     const delay = nextFrameDelayMs(fullRate)
     if (delay === 0) {
       frame = requestAnimationFrame(render)
@@ -91,15 +91,18 @@ export function startSkyRenderLoop(options: {
     }
     idleTimer = window.setTimeout(() => {
       idleTimer = 0
-      if (!running || document.hidden) return
+      if (!running || document.hidden || frame) return
       frame = requestAnimationFrame(render)
     }, delay)
   }
 
   const wake = () => {
     lastWakeAt = performance.now()
-    if (!running || document.hidden) return
-    cancelScheduled()
+    // 已有帧在排队就别取消重排：悬停/播放每个指针事件都调 wake，
+    // 取消再请求会把渲染帧推到下一个 vsync，播放中的星空因此一顿一顿。
+    if (!running || document.hidden || frame) return
+    window.clearTimeout(idleTimer)
+    idleTimer = 0
     frame = requestAnimationFrame(render)
   }
   simulationRef.current.wake = wake
@@ -114,6 +117,7 @@ export function startSkyRenderLoop(options: {
   }
 
   const render = () => {
+    frame = 0
     if (!running) return
     if (document.hidden) return
     const frameStartedAt = performance.now()
@@ -135,7 +139,7 @@ export function startSkyRenderLoop(options: {
     requestBodySnapshot(frameStartedAt, latest.utcMillis, latest.observer, !!latest.scrubbing)
     fillEqjHorizonMatrices(latest.utcMillis, latest.observer, uniforms.horizonMat, uniforms.eqjHorizonMat)
     uniforms.showBelow.value = latest.layers.showBelowHorizon ? 1 : 0
-    const bodySnapshots = interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis)
+    const bodySnapshots = interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis, latest.observer)
     syncAtmosphereUniforms({
       uniforms,
       utcMillis: latest.utcMillis,

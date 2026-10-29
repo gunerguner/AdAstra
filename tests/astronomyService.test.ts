@@ -52,6 +52,33 @@ describe('天体快照插值', () => {
     expect(interpolateBodySnapshots(window, 2_000)[0].altitude).toBe(14)
   })
 
+  it('带上观测点后，窗口盖不住时只兜底太阳且与星历吻合', () => {
+    const utc = Date.UTC(2026, 9, 29, 4, 0)
+    const observer = { latitude: 31.23, longitude: 121.47 }
+    const bodies = interpolateBodySnapshots(
+      { fromUtcMillis: 1_000, toUtcMillis: 2_000, from: [sample()], to: [sample()] },
+      utc,
+      observer,
+    )
+    expect(bodies).toHaveLength(1)
+    expect(bodies[0].id).toBe('sun')
+    const exact = astronomyService.getBodies(new Date(utc), observer).find((body) => body.id === 'sun')
+    expect(exact).toBeDefined()
+    expect(Math.abs(bodies[0].raHours - exact!.raHours)).toBeLessThan(0.15)
+    expect(Math.abs(bodies[0].decDeg - exact!.decDeg)).toBeLessThan(2)
+    expect(Math.abs(bodies[0].altitude - exact!.altitude)).toBeLessThan(2.5)
+    expect(Math.abs(bodies[0].azimuth - exact!.azimuth)).toBeLessThan(2.5)
+  })
+
+  it('兜底与插值互不串台，同一时刻复用兜底结果', () => {
+    const observer = { latitude: 0, longitude: 0 }
+    const fallback = interpolateBodySnapshots(window, 500, observer)
+    expect(interpolateBodySnapshots(window, 500, observer)).toBe(fallback)
+    const interpolated = interpolateBodySnapshots(window, 1_500)
+    expect(interpolated[0].id).toBe('moon')
+    expect(interpolateBodySnapshots(window, 500, observer)[0].id).toBe('sun')
+  })
+
   it('窗口时间范围改掉后，不再复用范围外的上一次插值', () => {
     const live: BodySnapshotWindow = {
       fromUtcMillis: 1_000,

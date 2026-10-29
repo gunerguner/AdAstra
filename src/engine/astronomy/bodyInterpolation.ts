@@ -4,6 +4,8 @@
  */
 import { clamp, degToRad, lerp, lerpDegrees, radToDeg } from '@/shared/math'
 import { DEG_PER_HOUR, HOURS_PER_DAY } from '@/engine/coordinates/astroConstants'
+import { estimateSunBodyInto } from '@/engine/coordinates/skyMath'
+import type { Observer } from '@/shared/types/observer'
 
 /** 某一时刻一颗太阳系天体的地平/赤道坐标与外观。 */
 export type BodySnapshot = {
@@ -92,31 +94,56 @@ function windowCovers(window: BodySnapshotWindow, utcMillis: number) {
   return span > 0 && utcMillis >= window.fromUtcMillis && utcMillis <= window.toUtcMillis
 }
 
-/** t∈[0,1] 在两个采样时刻之间插值。方位走劣弧，位置走球面，避免穿越地心。 */
-export function interpolateBodySnapshots(window: BodySnapshotWindow | null, utcMillis: number): BodySnapshot[] {
-  if (!window || !Number.isFinite(utcMillis)) return EMPTY
-  // 窗口盖不住当前时刻时不外推，也不要复用上一次插值。
-  // 旧结果的高度是采样时刻的，拿去画昼夜会把日落钉死，直到下一次相位变化才恢复。
-  if (!windowCovers(window, utcMillis)) {
-    if (cachedWindow === window) {
-      cachedWindow = null
-      cachedUtcMillis = Number.NaN
+/** 快照窗口盖不住时的太阳兜底：低精度估算，只保证日盘、拾取和信息卡不消失。 */
+const sunFallback: BodySnapshot = {
+  id: 'sun',
+  altitude: 0,
+  azimuth: 0,
+  raHours: 0,
+  decDeg: 0,
+  magnitude: -26.7,
+  phaseAngle: 0,
+  phaseFraction: 1,
+  synodicDeg: undefined,
+  ringTilt: undefined,
+}
+const sunFallbackList: BodySnapshot[] = [sunFallback]
+let cachedFallbackUtcMillis = Number.NaN
+
+/**
+ * t∈[0,1] 在两个采样时刻之间插值。方位走劣弧，位置走球面，避免穿越地心。
+ * 窗口盖不住当前时刻（拖时间轴后旧窗口还没被新采样替换）时不外推其余天体，
+ * 太阳改用低精度估算兜底——把采样时刻的高度继续画下去，会把日落钉死到下一次相位变化。
+ */
+export function interpolateBodySnapshots(
+  window: BodySnapshotWindow | null,
+  utcMillis: number,
+  observer?: Observer,
+): BodySnapshot[] {
+  if (!Number.isFinite(utcMillis)) return EMPTY
+  if (window && windowCovers(window, utcMillis)) {
+    if (window === cachedWindow && utcMillis === cachedUtcMillis) return result
+    cachedFallbackUtcMillis = Number.NaN
+    const span = window.toUtcMillis - window.fromUtcMillis
+    const t = (utcMillis - window.fromUtcMillis) / span
+    nextById.clear()
+    for (const body of window.to) nextById.set(body.id, body)
+    result.length = window.from.length
+    for (let index = 0; index < window.from.length; index += 1) {
+      const from = window.from[index]
+      const to = nextById.get(from.id)
+      const out = slot(index)
+      result[index] = to ? interpolatePair(from, to, t, out) : Object.assign(out, from)
     }
-    return EMPTY
+    cachedWindow = window
+    cachedUtcMillis = utcMillis
+    return result
   }
-  if (window === cachedWindow && utcMillis === cachedUtcMillis) return result
-  const span = window.toUtcMillis - window.fromUtcMillis
-  const t = (utcMillis - window.fromUtcMillis) / span
-  nextById.clear()
-  for (const body of window.to) nextById.set(body.id, body)
-  result.length = window.from.length
-  for (let index = 0; index < window.from.length; index += 1) {
-    const from = window.from[index]
-    const to = nextById.get(from.id)
-    const out = slot(index)
-    result[index] = to ? interpolatePair(from, to, t, out) : Object.assign(out, from)
-  }
-  cachedWindow = window
-  cachedUtcMillis = utcMillis
-  return result
+  cachedWindow = null
+  cachedUtcMillis = Number.NaN
+  if (!observer) return EMPTY
+  if (utcMillis === cachedFallbackUtcMillis) return sunFallbackList
+  cachedFallbackUtcMillis = utcMillis
+  estimateSunBodyInto(utcMillis, observer, sunFallback)
+  return sunFallbackList
 }

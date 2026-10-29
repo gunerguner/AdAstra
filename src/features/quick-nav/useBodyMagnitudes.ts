@@ -28,7 +28,7 @@ export function useBodyMagnitudes(options: {
   }, [isPlaying, refresh])
 
   const bodyMagnitudes = Object.fromEntries(
-    interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)
+    interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis, simulationRef.current.observer)
       .map((body) => [body.id, body.magnitude]),
   )
 

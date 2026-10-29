@@ -53,7 +53,7 @@ export default function ObjectCard({
   useEffect(() => {
     if (selected.type !== 'body') return
     const pull = () => {
-      const body = interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)
+      const body = interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis, simulationRef.current.observer)
         .find((item) => item.id === selected.id)
       if (!body) return
       const phaseKey = body.id === 'moon' && body.synodicDeg != null ? moonPhaseName(body.synodicDeg) : undefined

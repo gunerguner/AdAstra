@@ -128,7 +128,7 @@ export function useSkyScene(options: {
       if (overlays.hoverRef.current) overlays.hoverRef.current.style.display = 'none'
       ctx.renderer.domElement.style.cursor = ''
     }
-    const bodiesAt = () => interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis)
+    const bodiesAt = () => interpolateBodySnapshots(bodySnapshotRef.current, simulationRef.current.utcMillis, simulationRef.current.observer)
     const scheduler = { wake() {} }
     const controller = new SkyViewController(
       ctx,
