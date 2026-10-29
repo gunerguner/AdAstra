@@ -87,14 +87,25 @@ function interpolatePair(from: BodySnapshot, to: BodySnapshot, t: number, out: B
   return out
 }
 
+function windowCovers(window: BodySnapshotWindow, utcMillis: number) {
+  const span = window.toUtcMillis - window.fromUtcMillis
+  return span > 0 && utcMillis >= window.fromUtcMillis && utcMillis <= window.toUtcMillis
+}
+
 /** t∈[0,1] 在两个采样时刻之间插值。方位走劣弧，位置走球面，避免穿越地心。 */
 export function interpolateBodySnapshots(window: BodySnapshotWindow | null, utcMillis: number): BodySnapshot[] {
-  if (!window) return EMPTY
+  if (!window || !Number.isFinite(utcMillis)) return EMPTY
+  // 窗口盖不住当前时刻时不外推，也不要复用上一次插值。
+  // 旧结果的高度是采样时刻的，拿去画昼夜会把日落钉死，直到下一次相位变化才恢复。
+  if (!windowCovers(window, utcMillis)) {
+    if (cachedWindow === window) {
+      cachedWindow = null
+      cachedUtcMillis = Number.NaN
+    }
+    return EMPTY
+  }
   if (window === cachedWindow && utcMillis === cachedUtcMillis) return result
   const span = window.toUtcMillis - window.fromUtcMillis
-  // 窗口覆盖不了当前时刻（拖时间轴后旧窗口还没被新采样替换）时不外推：
-  // 把日落插成日出会让昼夜效果卡在错误相位，直到下一次相位变化才恢复。
-  if (span <= 0 || utcMillis < window.fromUtcMillis || utcMillis > window.toUtcMillis) return EMPTY
   const t = (utcMillis - window.fromUtcMillis) / span
   nextById.clear()
   for (const body of window.to) nextById.set(body.id, body)

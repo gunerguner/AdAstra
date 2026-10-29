@@ -1,4 +1,4 @@
-/** 银河带：银道坐标 + 真实纹理（可选）/程序噪声兜底，Kasten–Young 消光，加性混合，白天压暗。 */
+/** 银河带：银道坐标 + 真实纹理（可选）/程序噪声兜底，Kasten–Young 消光，加性混合。暗扩展源，白昼基本隐去。 */
 import { AdditiveBlending, DoubleSide, ShaderMaterial, Vector3 } from 'three'
 import { applyHorizonGlsl, atmosphereTransmitGlsl, skyOutsideViewGlsl, skyProjectionGlsl, skyProjectionUniformDeclsGlsl } from '@/engine/render/skyProjection'
 import type { SkyProjectionUniforms } from '@/engine/render/skyContext'
@@ -96,7 +96,11 @@ export function makeMilkyWayMaterial(
         if (skyOutsideView(vViewDir) > 0.5) discard;
         float visible = max(step(-0.02, vAlt), uShowBelow);
         vec3 trans = skyTransmit(max(vAlt, 0.0));
-        float fade = mix(1.0, clamp((vAlt + 0.06) * 4.4, 0.0, 1.0), uDaylight);
+        // uDaylight 从航海曙暮光走到满白天。只按高度衰减时，天顶白天仍是满亮度，
+        // 加性光带叠在蓝天上比夜里更扎眼。太阳约 -4° 时整带隐去，曙暮光里先淡地平。
+        float dayFade = 1.0 - smoothstep(0.0, 0.42, uDaylight);
+        float horizonFade = mix(1.0, clamp((vAlt + 0.04) * 3.6, 0.0, 1.0), smoothstep(0.0, 0.28, uDaylight));
+        float fade = dayFade * horizonFade;
         if (visible * fade < 0.01) discard;
 
         vec3 g = normalize(vGal);

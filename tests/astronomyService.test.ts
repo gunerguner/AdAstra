@@ -52,6 +52,20 @@ describe('天体快照插值', () => {
     expect(interpolateBodySnapshots(window, 2_000)[0].altitude).toBe(14)
   })
 
+  it('窗口时间范围改掉后，不再复用范围外的上一次插值', () => {
+    const live: BodySnapshotWindow = {
+      fromUtcMillis: 1_000,
+      toUtcMillis: 2_000,
+      from: [sample({ id: 'sun', altitude: 20 })],
+      to: [sample({ id: 'sun', altitude: -30, raHours: 0.2, azimuth: 10 })],
+    }
+    expect(interpolateBodySnapshots(live, 1_000)[0].altitude).toBe(20)
+    live.fromUtcMillis = 5_000
+    live.toUtcMillis = 6_000
+    expect(interpolateBodySnapshots(live, 1_000)).toHaveLength(0)
+    expect(interpolateBodySnapshots(live, 5_000)[0].altitude).toBe(20)
+  })
+
   it('在同一窗口与时间上复用插值结果', () => {
     const first = interpolateBodySnapshots(window, 1_500)
     const second = interpolateBodySnapshots(window, 1_500)

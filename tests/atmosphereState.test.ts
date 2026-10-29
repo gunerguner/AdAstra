@@ -20,6 +20,8 @@ describe('atmosphere state', () => {
   })
 
   it('keeps daylight continuous across one-degree steps', () => {
+    expect(atmosphereState(-20, 0, true).daylight).toBe(0)
+    expect(atmosphereState(20, 0, true).daylight).toBe(1)
     let previous = atmosphereState(ASTRONOMICAL_TWILIGHT_ALTITUDE_DEG, 0, true).daylight
     for (let altitude = -17; altitude <= 8; altitude += 1) {
       const next = atmosphereState(altitude, 0, true).daylight

@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { atmosphereState } from '@/engine/render/atmosphereState'
 import { bodyPickSize, bodyPointSize, bodyVisualScale, starBrightness, SUN_DAY_GLOW_SCALE, SUN_GLOW_SCALE } from '@/engine/render/bodyAppearance'
 
 describe('body appearance', () => {
@@ -8,12 +7,10 @@ describe('body appearance', () => {
     expect(bodyVisualScale('moon', -10)).toBe(1)
   })
 
-  it('clamps planet scale and daylight values', () => {
+  it('clamps planet scale and fades dim stars in daylight', () => {
     expect(bodyVisualScale('mars', 20)).toBe(0.7)
     expect(bodyPointSize('mars', 1)).toBeGreaterThan(0)
     expect(starBrightness(20)).toBe(0)
-    expect(atmosphereState(-20, 0, true).daylight).toBe(0)
-    expect(atmosphereState(20, 0, true).daylight).toBe(1)
   })
 
   it('keeps planets smaller than the Moon and Sun disc', () => {

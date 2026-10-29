@@ -138,8 +138,6 @@ export function startSkyRenderLoop(options: {
     const bodySnapshots = interpolateBodySnapshots(bodySnapshotRef.current, latest.utcMillis)
     syncAtmosphereUniforms({
       uniforms,
-      scratch,
-      sun: bodySnapshots.find((body) => body.id === 'sun'),
       utcMillis: latest.utcMillis,
       observer: latest.observer,
       daylightEffect: latest.layers.daylightEffect,
