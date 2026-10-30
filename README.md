@@ -8,6 +8,10 @@ It is a popular-science sky simulation: close enough to what you see with the na
 
 **Preview**: [https://adastra.zhangzhicheng.info/](https://adastra.zhangzhicheng.info/)
 
+![Day](docs/assets/day.png)
+![Dawn](docs/assets/dawn.png)
+![Night](docs/assets/night.png)
+
 ## What you can do
 
 - **The sky at any place and time**: Choose Shanghai, Beijing, London, New York, or Sydney, or enter latitude and longitude; set the date and time in the local time zone.

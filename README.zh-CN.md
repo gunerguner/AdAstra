@@ -8,6 +8,10 @@ Ad Astra 是一款可交互、可离线使用的实时星空 Web 应用。给定
 
 **预览**：[https://adastra.zhangzhicheng.info/](https://adastra.zhangzhicheng.info/)
 
+![白昼](docs/assets/day.png)
+![曙暮](docs/assets/dawn.png)
+![夜晚](docs/assets/night.png)
+
 ## 能做什么
 
 - **任意时空下的星空**：选择上海、北京、伦敦、纽约、悉尼，或手动输入经纬度；按当地时区设置日期和时间。
