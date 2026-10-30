@@ -9,7 +9,7 @@ const LINKS = [
   { key: 'react', title: 'React', href: 'https://react.dev/' },
   { key: 'three', title: 'Three', href: 'https://threejs.org/' },
   { key: 'github', title: 'GitHub', href: 'https://github.com/gunerguner/AdAstra' },
-  { key: 'hyg', title: '银河纹理：HYG v4.4（CC BY-SA 4.0）', href: 'https://codeberg.org/astronexus/hyg' },
+  { key: 'hyg', title: 'HYG', hint: '银河纹理数据来自 HYG Database v4.4（CC BY-SA 4.0）', href: 'https://codeberg.org/astronexus/hyg' },
   { key: 'icp', title: '沪ICP备2020026170号', href: 'https://beian.miit.gov.cn/' },
 ] as const
 
@@ -21,6 +21,7 @@ export default function SiteFooter() {
           key={link.key}
           className={styles.link}
           href={link.href}
+          title={'hint' in link ? link.hint : undefined}
           target="_blank"
           rel="noopener noreferrer"
         >
