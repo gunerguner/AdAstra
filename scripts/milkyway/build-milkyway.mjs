@@ -34,9 +34,9 @@ const TONE_GAMMA = 0.68
 const BLACK_POINT = 0.12
 // 强平滑"带底光"层在混合中的权重。
 const BROAD_WEIGHT = 0.55
-const SOURCE_URL = 'https://raw.githubusercontent.com/astronexus/HYG-Database/main/hyg/v3/hyg_v36_1.csv.gz'
+const SOURCE_URL = 'https://codeberg.org/astronexus/hyg/raw/branch/main/data/hyg/CURRENT/hyg_v44.csv.gz'
 
-const archiveGz = resolve(root, 'data/milkyway/hyg_v36_1.csv.gz')
+const archiveGz = resolve(root, 'data/milkyway/hyg_v44.csv.gz')
 const outputDir = resolve(root, 'public/data/dev')
 
 // 与运行时同一套银道基向量（见 astroConstants 与 milkyWayLayer），
@@ -83,7 +83,8 @@ async function loadStars() {
   const csv = gunzipSync(gz).toString('utf8')
   const lines = csv.split('\n')
   const header = lines[0].split(',')
-  const col = Object.fromEntries(header.map((name, index) => [name, index]))
+  // HYG CSV 的列名带引号（"ra"），去掉引号再映射下标。
+  const col = Object.fromEntries(header.map((name, index) => [name.replace(/^"|"$/g, ''), index]))
   const stars = []
   for (let i = 1; i < lines.length; i += 1) {
     const line = lines[i]

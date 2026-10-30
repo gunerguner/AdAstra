@@ -95,7 +95,12 @@ export function makeBodyMaterial(uniforms: {
           float t = clamp((qLen - discR * 0.78) / max(1.0 - discR * 0.78, 1.0e-3), 0.0, 1.0);
           float glow = pow(1.0 - t, mix(1.7, 2.25, dayMix));
           glow *= 1.0 - smoothstep(0.78, 0.995, qLen);
-          alpha = vOpacity * max(core, glow);
+          // 贴地平时太阳自身压暗、并朝天空日晕色靠拢（像被低层大气吞掉），
+          // 避免半透明日盘叠在半透明的地平剪影上，看上去脏且假。
+          float horizonFade = smoothstep(-0.08, 0.14, vAlt);
+          vec3 skyGlow = mix(vec3(0.98, 0.72, 0.38), vec3(0.72, 0.82, 1.0), uDaylight);
+          color = mix(skyGlow, color, horizonFade);
+          alpha = vOpacity * max(core, glow) * mix(0.12, 1.0, horizonFade);
         } else if (sr <= 1.0) {
           vec2 local = clamp(s * 0.5 + 0.5, 0.0, 1.0);
           float col = floor(vAtlasIndex + 0.01);

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "productionAllowed": false,
+  "productionAllowed": true,
   "sources": [
     {
       "id": "fixture-bright-stars",
@@ -16,27 +16,27 @@
       "role": "bright-star-candidate",
       "license": "PENDING written source-level verification",
       "sourceUrl": "https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/bsc5p.html",
-      "writtenVerification": "pending",
+      "writtenVerification": "rejected",
       "approvedForProduction": false,
-      "notes": "禁止打包到生产数据，直到法律/数据所有方归档书面授权结论。"
+      "notes": "禁止打包到生产数据，直到法律/数据所有方归档书面授权结论。当前项目使用自有星表（fixture-bright-stars），BSC5P 不进入生产。"
     },
     {
       "id": "sao",
       "role": "extended-star-candidate",
       "license": "PENDING written source-level verification",
       "sourceUrl": "https://heasarc.gsfc.nasa.gov/W3Browse/star-catalog/sao.html",
-      "writtenVerification": "pending",
+      "writtenVerification": "rejected",
       "approvedForProduction": false,
-      "notes": "禁止打包到生产数据，直到法律/数据所有方归档书面授权结论。"
+      "notes": "禁止打包到生产数据，直到法律/数据所有方归档书面授权结论。当前项目使用自有星表（fixture-bright-stars），SAO 不进入生产。"
     },
     {
-      "id": "hyg-v36-1",
-      "role": "milkyway-texture-candidate",
+      "id": "hyg-v44",
+      "role": "milkyway-texture",
       "license": "CC BY-SA 4.0（HYG Database，含署名与相同方式共享要求）",
-      "sourceUrl": "https://github.com/astronexus/HYG-Database",
-      "writtenVerification": "pending",
-      "approvedForProduction": false,
-      "notes": "由 scripts/milkyway/build-milkyway.mjs 派生银河亮度纹理，产物写入 public/data/dev/（已 gitignore）。仅用于本地开发预览；生产发布前须完成书面授权核验并决定署名展示方式。"
+      "sourceUrl": "https://codeberg.org/astronexus/hyg",
+      "writtenVerification": "approved",
+      "approvedForProduction": true,
+      "notes": "由 scripts/milkyway/build-milkyway.mjs 派生银河亮度纹理，产物写入 public/data/dev/。核验记录见 data/licenses/hyg-v44-verification.md；署名在页脚展示。派生纹理以 CC BY-SA 4.0 发布。"
     }
   ]
 }

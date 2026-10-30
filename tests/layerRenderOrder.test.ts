@@ -27,6 +27,9 @@ describe('layer render order', () => {
     expect(helpers.ecliptic.renderOrder).toBeLessThan(helpers.ground.renderOrder)
     expect(helpers.equator.renderOrder).toBeLessThan(helpers.ground.renderOrder)
     expect(helpers.ground.renderOrder).toBeLessThan(bodies.points.renderOrder)
+    // 地平圈/辉光画在天体之上：低垂的月亮/行星被山脊挡住，日盘靠自身压暗+天色混合。
+    expect(helpers.horizon.renderOrder).toBeGreaterThan(bodies.points.renderOrder)
+    expect(helpers.horizonGlow.renderOrder).toBeGreaterThan(bodies.points.renderOrder)
   })
 
   it('crops the celestial sphere after all sky content', () => {

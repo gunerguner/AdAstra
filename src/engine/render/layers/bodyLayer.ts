@@ -48,7 +48,9 @@ export function createBodiesLayer(
   })
   const points = new Points(geometry, material)
   points.frustumCulled = false
-  points.renderOrder = 10
+  // 画在地平剪影(5)之后、地平圈/辉光(6)之前：太阳贴地平时自己压暗，
+  // 低垂的月亮/行星被山脊盖住，不再透过半透明剪影。
+  points.renderOrder = 5.5
   points.userData.atlas = atlas
   return { points, geometry, material }
 }
